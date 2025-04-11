@@ -183,6 +183,9 @@ const verifyEmail = asyncHandler(async (req, res) => {
         throw new APIError(400, "Token is invalid or expired")
     }
 
+    // if user is found then we need to update emailVerificationToken and emailVerificationExpiry to undefined
+    // so user can not use the same token again
+    // and isEmailVerified to true
     user.emailVerificationToken = undefined
     user.emailVerificationExpiry = undefined
     user.isEmailVerified = true
@@ -253,10 +256,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new APIError(401, "Invalid refresh token or expired")
     }
 
+    // check if refresh token is same as in the database
+    // if not then throw error
     if (incomingRefreshToken !== user.refreshToken) {
         throw new APIError(401, "Refresh token is expired or used")
     }
 
+    // generate new access and refresh token
+    // and save refresh token in the database
     const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshToken(user._id)
 
     const options = {
@@ -355,6 +362,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
     }
 
     user.password = confirmPassword
+
+    // undefine the token and expiry time
+    // so that user can not use the same token again
     user.forgotPasswordToken = undefined
     user.forgotPasswordExpiry = undefined
     await user.save({ validateBeforeSave: false })
