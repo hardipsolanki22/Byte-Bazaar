@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 
 
 
-const verifyJWT = asyncHandler(async (req, res, next) => {
+const verifyJWT = asyncHandler(async (req, _, next) => {
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer", "")
 
     if (!token) {
@@ -26,4 +26,25 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
 
 })
 
-export { verifyJWT }
+// This middleware check whether an user is ADMIN 
+
+const verifyPermisson = (role) => {
+    // TODO::  return 
+    return asyncHandler(async (req, _, next) => {
+        if (!req.user?._id) {
+            throw new APIError(401, "Unauthorizes request")
+        }
+
+        if (role === req.user.role) {
+            next()
+        } else {
+            throw new APIError(403, "You are not allowed to perform this action")
+        }
+
+    })
+}
+
+export {
+    verifyJWT,
+    verifyPermisson
+}

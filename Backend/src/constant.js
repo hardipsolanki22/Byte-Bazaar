@@ -15,4 +15,4 @@ export const availableRole = Object.values(userRole)
 
 export const availableOrderStatus = Object.values(orderStatus)
 
-export const USER_TEMPORARY_TOKEN_EXPITY = 20 * 60 * 1000 // 20 minutes
+export const USER_TEMPORARY_TOKEN_EXPITY = 1000 * 20 * 60 // 20 minutes

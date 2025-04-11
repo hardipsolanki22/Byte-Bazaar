@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const ratingSchema = new Schema({
-    content: {
+    comment: {
         type: String,
         required: true,
     },
@@ -15,8 +15,10 @@ const ratingSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    rateing: {
+    ratingBYUser: {
         type: Number,
+        min: 1,
+        max: 5,
         required: true
     }
 }, { timestamps: true })

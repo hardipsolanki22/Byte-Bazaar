@@ -13,6 +13,7 @@ const errorHandler = (err, req, res, next) => {
         error = new APIError(statusCode, message, error.errors, error.stack)
 
     }
+    
     const response = {
         ...error,
         message: error.message,
