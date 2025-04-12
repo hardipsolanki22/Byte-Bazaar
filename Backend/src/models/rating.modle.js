@@ -15,7 +15,7 @@ const ratingSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    ratingBYUser: {
+    rating: {
         type: Number,
         min: 1,
         max: 5,

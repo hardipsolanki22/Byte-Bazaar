@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { createRating, deleteRating } from "../controllers/rating.controller.js";
+import { createRating, deleteRating, getAllRating, updateRating } from "../controllers/rating.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 
 const router = Router();
 
-router.route("/")
+router.route("/products/:productId")
+    .get(verifyJWT, getAllRating)
     .post(verifyJWT, createRating)
+router.route("/:ratingId")
+    .patch(verifyJWT, updateRating)
     .delete(verifyJWT, deleteRating)
 
 export default router
