@@ -116,11 +116,13 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const { limit = 8, page = 1 } = req.query;
 
 
+    // aggregation pipeline to get all products with average rating
     const aggregation = Product.aggregate([
         {
             $match: {}
         },
         {
+        // lookup to get all ratings of product
             $lookup: {
                 from: "ratings",
                 localField: "_id",
@@ -139,6 +141,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
             }
         },
         {
+            // get average rating of product
             $addFields: {
                 averageRating: {
                     $avg: "$productRating.rating"
@@ -146,6 +149,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
             }
         },
         {
+            // project to get only required fields
             $project: {
                 name: 1,
                 price: 1,
@@ -155,6 +159,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
         }
     ])
 
+    // using aggregatePaginate to paginate the products
+    // aggregatePaginateOption is a helper function to get the options for aggregatePaginate
     const products = await Product.aggregatePaginate(aggregation,
         aggregatePaginateOption({
             page,
@@ -180,6 +186,7 @@ const getProduct = asyncHandler(async (req, res) => {
         throw new APIError(400, "Product id is required")
     }
 
+    // aggregation pipeline to get product with average rating and user details
     const product = await Product.aggregate([
         {
             $match: {
@@ -187,6 +194,7 @@ const getProduct = asyncHandler(async (req, res) => {
             }
         },
         {
+            // lookup to get all ratings of product
             $lookup: {
                 from: "ratings",
                 localField: "_id",
@@ -199,6 +207,7 @@ const getProduct = asyncHandler(async (req, res) => {
                         }
                     },
                     {
+                        // lookup to get user details
                         $lookup: {
                             from: "users",
                             localField: "user",
@@ -206,6 +215,7 @@ const getProduct = asyncHandler(async (req, res) => {
                             as: "user",
                             pipeline: [
                                 {
+                                    // project to get only required fields
                                     $project: {
                                         fullName: 1,
                                         avatar: 1
@@ -216,6 +226,7 @@ const getProduct = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
+                            // get first user details from user array
                             user: { $arrayElemAt: ["$user", 0] }
                         }
                     }
@@ -224,12 +235,14 @@ const getProduct = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
+                // get average rating of product
                 averageRating: {
                     $avg: "$productRating.rating"
                 }
             }
         },
         {
+            // project to get only required fields
             $project: {
                 name: 1,
                 description: 1,
@@ -271,6 +284,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         throw new APIError(404, "Category does not exists")
     }
 
+    // aggregation pipeline to get products by category with average rating
     const aggregation = Product.aggregate([
         {
             $match: {
@@ -278,6 +292,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
             }
         },
         {
+            /// lookup to get all ratings of product
             $lookup: {
                 from: "ratings",
                 localField: "_id",
@@ -287,12 +302,14 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
+                // get average rating of product
                 averageRating: {
                     $avg: "$productRating.rating"
                 }
             }
         },
         {
+            // project to get only required fields
             $project: {
                 name: 1,
                 price: 1,
@@ -302,6 +319,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         }
     ])
 
+    // using aggregatePaginate to paginate the products
     const products = await Product.aggregatePaginate(aggregation, aggregatePaginateOption({
         page,
         limit,
@@ -311,6 +329,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         }
     }))
 
+    // check if products exists or not
     if (!products.products.length) {
         throw new APIError(404, "No products found in this category")
     }
@@ -323,7 +342,6 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
 
 })
 
-// TODO:: handle subImages update
 const updateProduct = asyncHandler(async (req, res) => {
     const { productId } = req.params;
     const { name, description, price, stock, category } = req.body;
@@ -346,14 +364,12 @@ const updateProduct = asyncHandler(async (req, res) => {
     }
 
     const mainImage = mainImageLocalPath && await uploadCloudinary(mainImageLocalPath)
-    console.log("main image: ", mainImage);
-    console.log("main image localpath: ", mainImageLocalPath)
-
 
     if (mainImageLocalPath !== undefined && !mainImage) {
         throw new APIError(500, "Internal server error while upload main image")
     }
 
+    // destroy previous mainImage if exists
     mainImage && await destroyCloudinary(product.mainImage)
 
     // handle subImages upload if exists
@@ -379,10 +395,13 @@ const updateProduct = asyncHandler(async (req, res) => {
                 description,
                 stock,
                 price,
-                ...(mainImage && { mainImage }),
-                ...(subImages.length > 0 && { subImages })
+                ...(mainImage && { mainImage }), // if mainImage is not undefined then update mainImage
+                ...(subImages.length > 0 && { subImages }) // if subImages is not empty then update subImages
 
             }
+        },
+        {
+            new: true,
         }
     )
 
@@ -431,16 +450,19 @@ const searchProduct = asyncHandler(async (req, res) => {
         throw new APIError(400, "Search query is required")
     }
 
+    // aggregation pipeline to get products by search with average rating
     const aggregation = Product.aggregate([
         {
             $match: {
                 $or: [
+                    // get all products which name or description contains search query
                     { name: { $regex: search, $options: "i" } },
                     { description: { $regex: search, $options: "i" } }
                 ]
             }
         },
         {
+            // lookup to get all ratings of product
             $lookup: {
                 from: "ratings",
                 localField: "_id",
@@ -450,12 +472,14 @@ const searchProduct = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
+                // get average rating of product
                 averageRating: {
                     $avg: "$productRating.rating"
                 }
             }
         },
         {
+            // project to get only required fields
             $project: {
                 name: 1,
                 price: 1,
@@ -465,6 +489,7 @@ const searchProduct = asyncHandler(async (req, res) => {
         }
     ])
 
+    // using aggregatePaginate to paginate the products
     const products = await Product.aggregatePaginate(aggregation, aggregatePaginateOption({
         page,
         limit,
@@ -472,8 +497,9 @@ const searchProduct = asyncHandler(async (req, res) => {
             totalDocs: "totalProducts",
             docs: "products"
         }
-    }))        
+    }))
 
+    // check if products exists or not
     if (!products.products.length) {
         throw new APIError(404, "Product does not exists")
     }
