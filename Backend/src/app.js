@@ -31,7 +31,7 @@ import ratingRouter from "./routes/rating.routes.js"
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/categories", categoryRouter)
-app.use("/api/v2/products", productRoutes)
+app.use("/api/v1/products", productRoutes)
 app.use("/api/v1/rating", ratingRouter)
 
 

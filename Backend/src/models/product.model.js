@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
+import aggregatePaginate from "mongoose-aggregate-paginate-v2"
+
 const productSchema = new Schema({
     category: {
         ref: "Category",
@@ -32,14 +34,12 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    subImage: {
-        type: [
-            {
-                type: String
-            }
-        ],
+    subImages: {
+        type: [String],
         default: []
     }
 }, { timestamps: true })
+
+productSchema.plugin(aggregatePaginate)
 
 export const Product = mongoose.model("Product", productSchema)

@@ -58,7 +58,7 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     const user = await User.findById(createUser?._id)
-        .select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry - forgotPasswordToken -forgotPasswordExpiry")
+        .select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry")
 
     if (!user) {
         throw new APIError(500, "Internal server error while creating user")
@@ -101,8 +101,6 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const validPassword = await user.isPasswordCurrect(password)
-    console.log(validPassword);
-
 
     if (!validPassword) {
         throw new APIError(400, "Invalid password")

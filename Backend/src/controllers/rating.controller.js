@@ -6,9 +6,9 @@ import { Rating } from "../models/rating.modle.js";
 
 const createRating = asyncHandler(async (req, res) => {
     const { comment, rating } = req.body;
-    const { productId } = req.params;
+    const { productId } = req.params;    
 
-    if (!comment || rating) {
+    if (!comment || !rating) {
         throw new APIError(400, "All fields are required")
     }
 
