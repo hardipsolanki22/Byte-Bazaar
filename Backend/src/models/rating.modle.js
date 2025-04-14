@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2"
+
 
 const ratingSchema = new Schema({
     comment: {
@@ -22,5 +24,7 @@ const ratingSchema = new Schema({
         required: true
     }
 }, { timestamps: true })
+
+ratingSchema.plugin(aggregatePaginate)
 
 export const Rating = mongoose.model("Rating", ratingSchema)

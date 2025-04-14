@@ -3,10 +3,12 @@ import { APIError } from "../utils/APIError.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import { Product } from "../models/product.model.js";
 import { Rating } from "../models/rating.modle.js";
+import { aggregatePaginateOption } from "../utils/helpers.js"
+import mongoose from "mongoose";
 
 const createRating = asyncHandler(async (req, res) => {
     const { comment, rating } = req.body;
-    const { productId } = req.params;    
+    const { productId } = req.params;
 
     if (!comment || !rating) {
         throw new APIError(400, "All fields are required")
@@ -27,7 +29,7 @@ const createRating = asyncHandler(async (req, res) => {
     const isRatingExists = await Rating.findOne({
         user: req.user._id,
         product: productId
-    })  
+    })
 
     if (isRatingExists) {
         throw new APIError(409, "You have already rated this product")
@@ -60,14 +62,17 @@ const createRating = asyncHandler(async (req, res) => {
 
 })
 
-// TODO:: handle proper
 const getAllRating = asyncHandler(async (req, res) => {
     // get product id
     // find product
     // use aggrigation pipeline to lookup user
     // and find average of raring
     // paginate query
+    // return response
+
+
     const { productId } = req.params;
+    const { page = 1, limit = 8 } = req.query;
 
     if (!productId) {
         throw new APIError(400, "Product id is required")
@@ -79,10 +84,11 @@ const getAllRating = asyncHandler(async (req, res) => {
         throw new APIError(404, "Product does not exist")
     }
 
-    const ratings = await Rating.aggregate([
+    
+    const aggrigation = Rating.aggregate([
         {
             $match: {
-                product: productId
+                product: new mongoose.Types.ObjectId(productId)
             }
         },
         {
@@ -102,14 +108,34 @@ const getAllRating = asyncHandler(async (req, res) => {
             }
         },
         {
-            $group: {
-                _id: null,
+            $addFields: {
                 averageRating: {
                     $avg: "$rating"
+                },
+                user: {
+                    $arrayElemAt: ["$user", 0]
                 }
             }
         },
+        {
+            $project: {
+                product: 0,
+                __v: 0,
+            }
+        }
     ])
+
+    const ratings = await Rating.aggregatePaginate(aggrigation,
+        aggregatePaginateOption({
+            page,
+            limit,
+            customLabels: {
+                docs: "ratings",
+                totalDocs: "totalRatings",
+            }
+        })
+    )
+
 
     return res
         .status(200)
