@@ -122,7 +122,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
             $match: {}
         },
         {
-        // lookup to get all ratings of product
+            // lookup to get all ratings of product
             $lookup: {
                 from: "ratings",
                 localField: "_id",
@@ -145,6 +145,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
             $addFields: {
                 averageRating: {
                     $avg: "$productRating.rating"
+                },
+                ratingCount: {
+                    $size: "$productRating"
                 }
             }
         },
@@ -155,6 +158,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
                 price: 1,
                 mainImage: 1,
                 averageRating: 1,
+                ratingCount: 1,
             }
         }
     ])
@@ -305,6 +309,9 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
                 // get average rating of product
                 averageRating: {
                     $avg: "$productRating.rating"
+                },
+                ratingCount: {
+                    $size: "$productRating"
                 }
             }
         },
@@ -315,6 +322,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
                 price: 1,
                 mainImage: 1,
                 averageRating: 1,
+                ratingCount: 1,
             }
         }
     ])
@@ -456,8 +464,16 @@ const searchProduct = asyncHandler(async (req, res) => {
             $match: {
                 $or: [
                     // get all products which name or description contains search query
-                    { name: { $regex: search, $options: "i" } },
-                    { description: { $regex: search, $options: "i" } }
+                    {
+                        name: {
+                            $regex: search, $options: "i"
+                        }
+                    },
+                    {
+                        description: {
+                            $regex: search, $options: "i"
+                        }
+                    }
                 ]
             }
         },
@@ -475,6 +491,9 @@ const searchProduct = asyncHandler(async (req, res) => {
                 // get average rating of product
                 averageRating: {
                     $avg: "$productRating.rating"
+                },
+                ratingCount: {
+                    $size: "$productRating"
                 }
             }
         },
@@ -484,7 +503,8 @@ const searchProduct = asyncHandler(async (req, res) => {
                 name: 1,
                 price: 1,
                 mainImage: 1,
-                averageRating: 1
+                averageRating: 1,
+                ratingCount: 1,
             }
         }
     ])
