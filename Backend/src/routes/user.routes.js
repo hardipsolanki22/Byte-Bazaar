@@ -4,7 +4,7 @@ import {
     loginValidator,
     registerValidator,
     updateUserDetailsValidator,
-} from "../../validators/user/user.validators.js"
+} from "../validators/user/user.validators.js"
 import {
     changePassword,
     forgotPassword,
@@ -22,7 +22,7 @@ import {
 } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
-import { validate } from "../../validators/validate.js"
+import { validate } from "../validators/validate.js"
 
 
 const router = Router()

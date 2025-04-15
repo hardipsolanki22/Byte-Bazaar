@@ -1,10 +1,21 @@
 import { Router } from "express";
-import { createProduct, deleteProduct, getAllProducts, getProduct, getProductsByCategory, searchProduct, updateProduct } from "../controllers/product.controller.js";
+import {
+    createProduct,
+    deleteProduct,
+    getAllProducts,
+    getProduct,
+    getProductsByCategory,
+    searchProduct,
+    updateProduct
+} from "../controllers/product.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js";
 import { userRole } from "../constant.js";
-import { createProductValidator, updateProductValidator } from "../../validators/product/product.validators.js";
-import { validate } from "../../validators/validate.js";
+import {
+    createProductValidator,
+    updateProductValidator
+} from "../validators/product/product.validators.js";
+import { validate } from "../validators/validate.js";
 
 
 const router = Router()
