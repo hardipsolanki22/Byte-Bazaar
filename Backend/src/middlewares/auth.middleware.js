@@ -36,7 +36,7 @@ const verifyPermisson = (role) => {
         }
 
         if (role === req.user.role) {
-            next()
+          return  next()
         } else {
             throw new APIError(403, "You are not allowed to perform this action")
         }

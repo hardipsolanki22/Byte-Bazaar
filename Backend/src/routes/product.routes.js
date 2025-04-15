@@ -3,6 +3,8 @@ import { createProduct, deleteProduct, getAllProducts, getProduct, getProductsBy
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js";
 import { userRole } from "../constant.js";
+import { createProductValidator, updateProductValidator } from "../../validators/product/product.validators.js";
+import { validate } from "../../validators/validate.js";
 
 
 const router = Router()
@@ -21,6 +23,8 @@ router.route("/")
                 maxCount: 4
             }
         ]),
+        createProductValidator(),
+        validate,
         createProduct
     )
     .get(verifyJWT, getAllProducts)
@@ -43,6 +47,8 @@ router.route("/:productId")
                 maxCount: 4
             }
         ]),
+        updateProductValidator(),
+        validate,
         updateProduct
     )
     .delete(

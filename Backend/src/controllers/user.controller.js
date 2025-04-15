@@ -24,11 +24,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 // Todo:: using OAuth2 (Google, Facebook)
 const registerUser = asyncHandler(async (req, res) => {
-    const { fullName, email, password, phoneNumber } = req.body;
-
-    if ([fullName, email, password].some(field => field?.trim() === "" || field === undefined)) {
-        throw new APIError(400, "All fileds are required")
-    }
+    const { fullName, email, password, phoneNumber } = req.body;        
 
     const isUserExist = await User.findOne({ email })
 
@@ -87,12 +83,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
 })
 
+
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
-    if (!email || !password) {
-        throw new APIError(400, "All field are required")
-    }
 
     const user = await User.findOne({ email })
 
@@ -157,7 +150,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     const { verificationToken } = req.params
 
     if (!verificationToken) {
-        throw new APIError(400, "Verification token is missing")
+        throw new APIError(400, "Verification token is required")
     }
 
     // usually query parameters token is unhased token and the hashed token was
@@ -289,10 +282,6 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
 
     const { email } = req.body
 
-    if (!email) {
-        throw new APIError(400, "Email is required")
-    }
-
     const user = await User.findOne({ email })
 
     if (!user) {
@@ -377,14 +366,15 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword, confirmPassword } = req.body
-
-    if (!oldPassword || !newPassword || !confirmPassword) {
+    
+    if (!(oldPassword && newPassword && confirmPassword)) {
         throw new APIError(400, "All field are required")
     }
 
     if (newPassword !== confirmPassword) {
         throw new APIError(400, "Conform password do not match")
     }
+
 
     const user = await User.findById(req.user._id)
 
@@ -407,10 +397,6 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const updateUserDetails = asyncHandler(async (req, res) => {
     const { fullName, email, phoneNumber } = req.body
-
-    if (!fullName && !email && !phoneNumber) {
-        throw new APIError(400, "At least one field is required")
-    }
 
     const user = await User.findById(req.user._id)
         .select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry")

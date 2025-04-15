@@ -52,10 +52,6 @@ const destroySubImages = async (subImages) => {
 const createProduct = asyncHandler(async (req, res) => {
     const { name, description, price, stock, category } = req.body;
 
-    if ([name, description, price, stock, category].some(field => field?.trim() === "" || field === undefined)) {
-        throw new APIError(400, "All fileds are required")
-    }
-
     const categoryTobeAdd = await Category.findById(category)
 
     if (!categoryTobeAdd) {
@@ -275,7 +271,6 @@ const getProduct = asyncHandler(async (req, res) => {
 
 const getProductsByCategory = asyncHandler(async (req, res) => {
     const { categoryId } = req.params;
-
     const { limit = 8, page = 1 } = req.query;
 
     if (!categoryId) {
@@ -362,6 +357,12 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     if (!product) {
         throw new APIError(404, "Product does not exists")
+    }
+
+    const isCategotyExists = await Category.findById(category)
+
+    if (!isCategotyExists) {
+        throw new APIError(404, "Category does not exists")
     }
 
     // handle main image upload
