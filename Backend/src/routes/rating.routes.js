@@ -6,7 +6,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/products/:productId")
-    .get(verifyJWT, getAllRating)
+    .get(getAllRating)
     .post(verifyJWT, createRating)
 router.route("/:ratingId")
     .patch(verifyJWT, updateRating)

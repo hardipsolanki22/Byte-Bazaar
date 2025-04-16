@@ -38,13 +38,13 @@ router.route("/")
         validate,
         createProduct
     )
-    .get(verifyJWT, getAllProducts)
+    .get(getAllProducts)
 
 router.route("/search")
-    .get(verifyJWT, searchProduct)
+    .get(searchProduct)
 
 router.route("/:productId")
-    .get(verifyJWT, getProduct)
+    .get(getProduct)
     .patch(
         verifyJWT,
         verifyPermisson(userRole.ADMIN),
@@ -69,7 +69,7 @@ router.route("/:productId")
     )
 
 router.route("/category/:categoryId")
-    .get(verifyJWT, getProductsByCategory)
+    .get(getProductsByCategory)
 
 
 

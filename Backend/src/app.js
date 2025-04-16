@@ -27,12 +27,15 @@ import userRoutes from "./routes/user.routes.js"
 import categoryRouter from "./routes/category.routes.js"
 import productRoutes from "./routes/product.routes.js"
 import ratingRouter from "./routes/rating.routes.js"
+import addressRouter from "./routes/address.routes.js"
+
 // APIs
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/categories", categoryRouter)
 app.use("/api/v1/products", productRoutes)
 app.use("/api/v1/rating", ratingRouter)
+app.use("/api/v1/address", addressRouter)
 
 
 // error handler

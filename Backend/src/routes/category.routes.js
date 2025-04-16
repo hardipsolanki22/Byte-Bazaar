@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { verifyJWT } from "../middlewares/auth.middleware.js"
+import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js"
 import {
     createCategory,
     deleteCategory,
@@ -7,16 +7,17 @@ import {
     getCategory,
     updateCategory
 } from "../controllers/category.controller.js"
+import { userRole } from "../constant.js"
 
 const router = Router()
 
 router.route("/")
-    .get(verifyJWT, getAllCategories)
-    .post(verifyJWT, createCategory)
+    .get(getAllCategories)
+    .post(verifyJWT, verifyPermisson(userRole.ADMIN), createCategory)
 router.route("/:categoryId")
     .get(verifyJWT, getCategory)
-    .patch(verifyJWT, updateCategory)
-    .delete(verifyJWT, deleteCategory)
+    .patch(verifyJWT, verifyPermisson(userRole.ADMIN), updateCategory)
+    .delete(verifyJWT, verifyPermisson(userRole.ADMIN), deleteCategory)
 
 
 export default router
