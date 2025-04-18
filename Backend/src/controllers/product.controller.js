@@ -332,11 +332,6 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         }
     }))
 
-    // check if products exists or not
-    if (!products.products.length) {
-        throw new APIError(404, "No products found in this category")
-    }
-
     return res
         .status(200)
         .json(
@@ -361,7 +356,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     const isCategotyExists = await Category.findById(category)
 
-    if (!isCategotyExists) {
+    if (category && !isCategotyExists) {
         throw new APIError(404, "Category does not exists")
     }
 
@@ -372,9 +367,9 @@ const updateProduct = asyncHandler(async (req, res) => {
         mainImageLocalPath = req.files.mainImage[0].path
     }
 
-    const mainImage = mainImageLocalPath && await uploadCloudinary(mainImageLocalPath)
+    const mainImage = await uploadCloudinary(mainImageLocalPath)
 
-    if (mainImageLocalPath !== undefined && !mainImage) {
+    if (mainImageLocalPath && !mainImage) {
         throw new APIError(500, "Internal server error while upload main image")
     }
 
@@ -393,8 +388,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     // upload subImages 
     const subImages = await uploadSubImages(subImagesLocalPath)
 
-    // detroy previous subImages 
-    await destroySubImages(productSubImages)
+    // destroy previous subImages 
+    subImages.length && await destroySubImages(productSubImages)
 
     const updateProduct = await Product.findByIdAndUpdate(productId,
         {
@@ -404,7 +399,7 @@ const updateProduct = asyncHandler(async (req, res) => {
                 description,
                 stock,
                 price,
-                ...(mainImage && { mainImage }), // if mainImage is not undefined then update mainImage
+                mainImage, // if mainImage is not undefined then update mainImage
                 ...(subImages.length > 0 && { subImages }) // if subImages is not empty then update subImages
 
             }
