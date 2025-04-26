@@ -3,7 +3,7 @@ import { APIError } from "../utils/APIError.js"
 import { APIResponse } from "../utils/APIResponse.js"
 import { User } from "../models/user.model.js";
 import { destroyCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
-import { userRole } from "../constant.js";
+import { userLoginType, userRole } from "../constant.js";
 import { emailVerificationMailGenContent, forgotPasswordMailContent, sendEmail } from "../utils/mail.js";
 import crypto from "crypto"
 import jwt from 'jsonwebtoken'
@@ -22,9 +22,8 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
 }
 
-// Todo:: using OAuth2 (Google, Facebook)
 const registerUser = asyncHandler(async (req, res) => {
-    const { fullName, email, password, phoneNumber } = req.body;        
+    const { fullName, email, password, phoneNumber } = req.body;
 
     const isUserExist = await User.findOne({ email })
 
@@ -83,7 +82,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 })
 
-
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
@@ -91,6 +89,13 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (!user) {
         throw new APIError(404, "User not found")
+    }
+
+    if (user.loginType !== userLoginType.EMAIL_PASSWORD) {
+        throw new APIError(400,
+            "You are already registered with " + user.loginType.toLowerCase().replace("_", " ")
+             + " Use the " + user.loginType.toLowerCase() + " strategy to contineous with us"
+        )
     }
 
     const validPassword = await user.isPasswordCurrect(password)
@@ -366,7 +371,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword, confirmPassword } = req.body
-    
+
     if (!(oldPassword && newPassword && confirmPassword)) {
         throw new APIError(400, "All field are required")
     }
@@ -460,7 +465,7 @@ const userProfile = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findById(userId)
-    .select("-password -emailVerificationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry")    
+        .select("-password -emailVerificationToken -emailVerificationExpiry -forgotPasswordToken -forgotPasswordExpiry")
 
     if (!user) {
         throw new APIError(404, "User not found")
@@ -471,6 +476,33 @@ const userProfile = asyncHandler(async (req, res) => {
         .json(
             new APIResponse(200, user, "User Profile Fetched Successfully")
         )
+})
+
+const socialLogin = asyncHandler(async (req, res) => {
+    const userId = req.user?._id    
+
+    const user = await User.findById(userId)
+
+    if (!user) {
+        throw new APIError(404, "User not found")
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
+
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    }
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new APIResponse(200, { accessToken, refreshAccessToken }, "Login Successfully")
+        )
+
+
 })
 
 
@@ -487,7 +519,8 @@ export {
     changePassword,
     updateUserDetails,
     updateAvatar,
-    userProfile
+    userProfile,
+    socialLogin
 
 
 }

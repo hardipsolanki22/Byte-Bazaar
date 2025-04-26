@@ -19,6 +19,7 @@ const registerValidator = () => {
             .notEmpty()
             .withMessage("Password is required"),
         body("phoneNumber")
+            .optional()
             .notEmpty()
             .withMessage("Phone number is required")
             .isMobilePhone()

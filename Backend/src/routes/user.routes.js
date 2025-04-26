@@ -15,6 +15,7 @@ import {
     refreshAccessToken,
     registerUser,
     resentEmailVerification,
+    socialLogin,
     updateAvatar,
     updateUserDetails,
     userProfile,
@@ -23,6 +24,7 @@ import {
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 import { validate } from "../validators/validate.js"
+import passport from "passport"
 
 
 const router = Router()
@@ -34,6 +36,15 @@ router.route("/register").post(
     validate,
     registerUser
 )
+router.route("/google").get(
+    passport.authenticate("google", { scope: ["email"] }),
+)
+router.route("/facebook").get(
+    passport.authenticate("facebook", {scope: ["email"]})
+)
+router.route("/google/callback").get(passport.authenticate("google"), socialLogin)
+router.route("/facebook/callback").get(passport.authenticate("facebook", socialLogin))
+
 router.route("/login").post(loginValidator(), validate, loginUser)
 router.route("/refresh-access-token").patch(refreshAccessToken)
 router.route("/forgot-password").patch(

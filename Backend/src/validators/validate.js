@@ -13,7 +13,7 @@ const validate = (req, _, next) => {
                 [error.path]: error.msg
             }
         ))
-        throw new APIError(400, "Validation Error", customError)
+        next(new APIError(400, "Validation Error", customError));
     }
 }
 

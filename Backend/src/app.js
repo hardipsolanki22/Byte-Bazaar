@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import session from "express-session"
+import passport from "passport"
 import { errorHandler } from "./middlewares/error.middleware.js";
+import "./passport/index.js"
 
 const app = express();
 
@@ -16,6 +19,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+    }
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Byte Bazaar Backend");
