@@ -1,6 +1,6 @@
 import passport from "passport"
 import { Strategy as GoogleStrategy } from "passport-google-oauth20"
-import { Strategy as FacebookSrtategy } from "passport-facebook"
+import { Strategy as FacebookStrategy } from "passport-facebook"
 import { User } from "../models/user.model.js"
 import { APIError } from "../utils/APIError.js"
 import { userLoginType, userRole } from "../constant.js"
@@ -27,38 +27,45 @@ passport.use(
             callbackURL: "http://localhost:5000/api/v1/users/google/callback"
         },
         async function (accessToken, refreshToken, profile, cb) {
-            const user = await User.findOne({ email: profile._json.email })
+            try {
+                const user = await User.findOne({ email: profile._json.email })
+                if (user) {
+                    if (user.loginType !== userLoginType.GOOGLE) {
+                        cb(
+                            new APIError(400, "You are previosly registered using "
+                                + user.loginType.toLowerCase().replace("_", " ") + ". Use the "
+                                + user.loginType.toLowerCase().replace("_", " ") +
+                                " strategy to access your account."
 
-            if (user) {
-                if (user.loginType !== userLoginType.GOOGLE) {
-                    cb(
-                        new APIError(400, "You are previosly registered using "
-                            + user.loginType.toLowerCase().replace("_", " ") + ". Use the "
-                            + user.loginType.toLowerCase().replace("_", " ") +
-                            " strategy to access your account."
-
+                            )
+                            , null
                         )
-                        , null
-                    )
+                    } else {
+                        cb(null, user)
+                    }
                 } else {
-                    cb(null, user)
-                }
-            } else {
-                const { name, email, picture, sub } = profile._json
-                const user = await User.create({
-                    fullName: name,
-                    email,
-                    password: sub,
-                    avatar: picture,
-                    role: userRole.USER,
-                    loginType: userLoginType.GOOGLE,
-                    isEmailVerified: true
-                })
+                    const { name, email, picture, sub } = profile._json
+                    const user = await User.create({
+                        fullName: name,
+                        email,
+                        password: sub,
+                        avatar: picture,
+                        role: userRole.USER,
+                        loginType: userLoginType.GOOGLE,
+                        isEmailVerified: true
+                    })
 
-                user ?
-                    cb(null, user)
-                    :
-                    cb(new APIError(500, "Internal server error while login with google"), null)
+                    user ?
+                        cb(null, user)
+                        :
+                        cb(new APIError(500, "Internal server error while login with google"), null)
+
+                }
+            } catch (error) {
+                cb(
+                    new APIError(500, error.message || "An error occured during google login"),
+                    null
+                )
 
             }
         }
@@ -66,59 +73,68 @@ passport.use(
 )
 
 passport.use(
-    new FacebookSrtategy(
+    new FacebookStrategy(
         {
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
             callbackURL: "http://localhost:5000/api/v1/users/facebook/callback"
         },
         async function (accessToken, refreshToken, profile, cb) {
-            console.log("profile", profile);
-            if (!profile?.email) {
-                cb(
-                    new APIError(
-                        400, "Your Email is not regitered with facebook try another strategy to access your account"
-                    ),
-                    null
-                )
-            }
-
-            const user = await User.findOne({ email: profile.email })
-
-            if (user) {
-                if (user.loginType !== userLoginType.FACEBOOK) {
+            try {
+                console.log("profile", profile);
+                if (profile?.email == null) {
                     cb(
-                        new APIError(400, "You are previosly registered using "
-                            + user.loginType.toLowerCase().replace("_", " ") + ". Use the "
-                            + user.loginType.toLowerCase().replace("_", " ") +
-                            " strategy to access your account."
-
+                        new APIError(
+                            400, "Your Email is not regitered with facebook try another strategy to access your account"
                         ),
                         null
                     )
-                } else {
-                    cb(null, user)
                 }
 
-            } else {
+                const user = await User.findOne({ email: profile.email })
 
-                const { displayName, email, profileUrl, id } = profile
-                const user = await User.create({
-                    fullName: displayName,
-                    email,
-                    password: id,
-                    avatar: profileUrl,
-                    role: userRole.USER,
-                    isEmailVerified: true,
-                    loginType: userLoginType.FACEBOOK,
-                })
+                if (user) {
+                    if (user.loginType !== userLoginType.FACEBOOK) {
+                        cb(
+                            new APIError(400, "You are previosly registered using "
+                                + user.loginType.toLowerCase().replace("_", " ") + ". Use the "
+                                + user.loginType.toLowerCase().replace("_", " ") +
+                                " strategy to access your account."
 
-                user ?
-                    cb(null, user)
-                    :
-                    cb(new APIError(500, "Internal server error while login with facebook"), null)
+                            ),
+                            null
+                        )
+                    } else {
+                        cb(null, user)
+                    }
+
+                } else {
+
+                    const { displayName, email, profileUrl, id } = profile
+                    const user = await User.create({
+                        fullName: displayName,
+                        email,
+                        password: id,
+                        avatar: profileUrl,
+                        role: userRole.USER,
+                        isEmailVerified: true,
+                        loginType: userLoginType.FACEBOOK,
+                    })
+
+                    user ?
+                        cb(null, user)
+                        :
+                        cb(new APIError(500, "Internal server error while login with facebook"), null)
+                }
+            } catch (error) {
+                cb(
+                    new APIError(500, error.message || "An error occured during facebook login"),
+                    null
+                )
             }
 
         }
     )
 )
+
+
