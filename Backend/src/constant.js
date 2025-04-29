@@ -17,6 +17,7 @@ export const availableOrderStatus = Object.values(orderStatus)
 
 export const USER_TEMPORARY_TOKEN_EXPITY = 1000 * 20 * 60 // 20 minutes
 
+export const COUPON_EXPIRY = 1000 * 60 * 30 // 30 minutes
 
 export const userLoginType = {
     GOOGLE: "GOOGLE",

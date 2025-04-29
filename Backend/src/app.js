@@ -46,6 +46,7 @@ import ratingRouter from "./routes/rating.routes.js"
 import addressRouter from "./routes/address.routes.js"
 import heroBannerRouter from "./routes/heroBanner.routes.js"
 import cartRouter from "./routes/cart.routes.js"
+import couponRouter from "./routes/coupon.routes.js"
 
 // APIs
 app.use("/api/v1/healthcheck", healthcheckRouter);
@@ -55,7 +56,9 @@ app.use("/api/v1/products", productRouter)
 app.use("/api/v1/rating", ratingRouter)
 app.use("/api/v1/address", addressRouter)
 app.use("/api/v1/hero-banners", heroBannerRouter)
+app.use("/api/v1/coupon", couponRouter)
 app.use("/api/v1/cart", cartRouter)
+
 
 
 // error handler
