@@ -3,7 +3,8 @@ import {
     createCoupon,
     getCopuns,
     updateCoupon,
-    deleteCoupon
+    deleteCoupon,
+    applyCoupon
 } from "../controllers/coupon.controller.js"
 import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js"
 import {
@@ -33,5 +34,6 @@ router.route("/:couponId")
         updateCoupon
     )
     .delete(verifyJWT, verifyPermisson(userRole.ADMIN), deleteCoupon)
+router.route("/apply-coupon").get(verifyJWT, applyCoupon)
 
 export default router

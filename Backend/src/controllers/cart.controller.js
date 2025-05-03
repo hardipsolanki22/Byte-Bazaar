@@ -3,7 +3,153 @@ import { APIError } from "../utils/APIError.js"
 import { APIResponse } from "../utils/APIResponse.js"
 import { Product } from "../models/product.model.js"
 import { Cart } from "../models/cart.model.js"
+import mongoose from "mongoose"
 
+const getCart = async (userId) => {
+    const cart = await Cart.aggregate([
+        {
+            $match: {
+                user: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $unwind: "$items"
+        },
+        {
+            $lookup: {
+                from: "products",
+                localField: "items.product",
+                foreignField: "_id",
+                as: "productDetails",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "ratings",
+                            localField: "_id",
+                            foreignField: "product",
+                            as: "productRating",
+                        }
+                    },
+                    {
+                        $addFields: {
+                            countProductRating: {
+                                $size: {
+                                    $ifNull: ["$productRating", 0]
+                                }
+                            },
+                            averageRating: {
+                                $avg: "$productRating.rating"
+                            },
+                        },
+                    },
+                    {
+                        $project: {
+                            name: 1,
+                            price: 1,
+                            mainImage: 1,
+                            countProductRating: 1,
+                            averageRating: 1
+                        }
+                    },
+                ]
+            }
+        },
+        {
+            $addFields: {
+                "items.product": "$productDetails",
+            }
+        },
+        {
+            $project: {
+                product: { $first: "$items.product" },
+                quantity: "$items.quantity",
+                coupon: 1
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                items: {
+                    $push: "$$ROOT",
+                },
+                coupon: { $first: "$coupon" },
+                cartTotal: {
+                    $sum: {
+                        $multiply: ["$quantity", "$product.price"]
+                    }
+                }
+            }
+        },
+        {
+            $lookup: {
+                from: "coupons",
+                foreignField: "_id",
+                localField: "coupon",
+                as: "coupon",
+                pipeline: [
+                    {
+                        $project: {
+                            discountPercentage: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                discountPercentage: { $first: "$coupon.discountPercentage" },
+                discountValue: {
+                    $ifNull: [
+                        {
+                            $divide: [
+                                {
+                                    $multiply: [
+                                        { $arrayElemAt: ["$coupon.discountPercentage", 0] },
+                                        "$cartTotal"
+                                    ]
+                                },
+                                100
+                            ]
+                        },
+                        0
+                    ]
+                },
+                "cartTotal": {
+                    $ifNull: [
+                        {
+                            $subtract: [
+                                "$cartTotal",
+                                {
+                                    $divide: [
+                                        {
+                                            $multiply: [
+                                                { $arrayElemAt: ["$coupon.discountPercentage", 0] },
+                                                "$cartTotal"
+                                            ]
+                                        },
+                                        100
+                                    ]
+                                }
+                            ]
+                        },
+                        "$cartTotal"
+                    ]
+                },
+            }
+        },
+        {
+            $project: {
+                coupon: 0
+            }
+        }
+    ])
+
+    return cart[0] || {
+        items: [],
+        cartTotal: 0,
+        discountPercentage: 0
+    }
+}
 
 const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
     const { productId } = req.params
@@ -55,6 +201,11 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
 
     if (isItemExist) {
         isItemExist.quantity = quantity
+
+        if (cart.coupon) {
+            cart.coupon = null
+        }
+
     } else {
         cart.items.push({
             product: productId,
@@ -73,85 +224,12 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
 })
 
 const getUserCart = asyncHandler(async (req, res) => {
-
-    const cart = await Cart.aggregate([
-        {
-            $match: {
-                user: req.user._id
-            }
-        },
-        {
-            $unwind: "$items"
-        },
-        {
-            $lookup: {
-                from: "products",
-                localField: "items.product",
-                foreignField: "_id",
-                as: "productDetails",
-                pipeline: [
-                    {
-                        $lookup: {
-                            from: "ratings",
-                            localField: "_id",
-                            foreignField: "product",
-                            as: "productRating",
-                        }
-                    },
-                    {
-                        $addFields: {
-                            countProductRating: {
-                                $size: {
-                                    $ifNull: ["$productRating", 0]
-                                }
-                            },
-                            averageRating: {
-                                $avg: "$productRating.rating"
-                            },
-                        },
-                    },
-                    {
-                        $project: {
-                            name: 1,
-                            price: 1,
-                            mainImage: 1,
-                            countProductRating: 1,
-                            averageRating: 1
-                        }
-                    },
-                ]
-            }
-        },
-        {
-            $addFields: {
-                "items.product": "$productDetails"
-            }
-        },
-        {
-            $project: {
-                product: { $first: "$items.product" },
-                quantity: "$items.quantity",
-            }
-        },
-        {
-            $group: {
-                _id: "$_id",
-                items: {
-                    $push: "$$ROOT"
-                },
-                cartTotal: {
-                    $sum: {
-                        $multiply: ["$product.price", "$quantity"]
-                    }
-                }
-            }
-        }
-    ])
+    const cart = await getCart(req.user._id)
 
     return res
         .status(200)
         .json(
-            new APIResponse(200, cart[0] || [], "Cart Fetched Successfully")
+            new APIResponse(200, cart, "Cart Fetched Successfully")
         )
 })
 
@@ -178,6 +256,9 @@ const removeItem = asyncHandler(async (req, res) => {
                 items: {
                     product: productId
                 }
+            },
+            $set: {
+                coupon: null
             }
         }
     )
@@ -201,7 +282,9 @@ const clearCart = asyncHandler(async (req, res) => {
         },
         {
             $set: {
-                items: []
+                items: [],
+                coupon: null
+
             }
         }
     )
@@ -221,6 +304,7 @@ const clearCart = asyncHandler(async (req, res) => {
 
 
 export {
+    getCart,
     addItemOrUpdateItemQuantity,
     getUserCart,
     removeItem,

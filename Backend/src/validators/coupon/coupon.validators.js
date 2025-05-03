@@ -7,19 +7,24 @@ const createCouponValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Coupon name is required"),
-        body("discountValue")
+        body("discountPercentage")
             .notEmpty()
-            .withMessage("Discount is required")
-            .isNumeric()
-            .withMessage("Discount must be numerical"),
+            .withMessage("Discount percentage is required")
+            .isFloat({ min: 1, max: 100 })
+            .withMessage('Discount must be between 1% to 100%'),
         body("isActive")
             .notEmpty()
             .withMessage("Coupon status is required")
             .isBoolean()
             .withMessage("Coupon status must be boolean"),
-        body("BackCouponType")
+        body("backCouponType")
             .isIn(["number", "string"])
-            .withMessage("Back coupon type must be either number or string")
+            .withMessage("Back coupon type must be either number or string"),
+        body("minCartValue")
+            .notEmpty()
+            .withMessage("Minimum cart value is required")
+            .isNumeric()
+            .withMessage("Minimum cart value must be numerical")
     ]
 }
 
@@ -30,18 +35,28 @@ const updateCouponValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Coupon name is required"),
-        body("discountValue")
+        body("discountPercentage")
             .optional()
             .notEmpty()
-            .withMessage("Discount is required")
-            .isNumeric()
-            .withMessage("Discount must be numerical"),
+            .withMessage("Discount percentage is required")
+            .isFloat({ min: 1, max: 100 })
+            .withMessage('Discount must be between 1% to 100%'),
         body("isActive")
             .optional()
             .notEmpty()
             .withMessage("Coupon status is required")
             .isBoolean()
-            .withMessage("Coupon status must be boolean")
+            .withMessage("Coupon status must be boolean"),
+        body("backCouponType")
+            .optional()
+            .isIn(["number", "string"])
+            .withMessage("Back coupon type must be either number or string"),
+        body("minCartValue")
+            .optional()
+            .notEmpty()
+            .withMessage("Minimum cart value is required")
+            .isNumeric()
+            .withMessage("Minimum cart value must be numerical")
     ]
 }
 

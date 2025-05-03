@@ -38,6 +38,10 @@ const cartSchema = new Schema({
         ref: "User",
         type: Schema.Types.ObjectId,
         required: true
+    },
+    coupon: {
+        type: Schema.Types.ObjectId,
+        ref: "Coupon"
     }
 }, { timestamps: true })
 

@@ -10,7 +10,7 @@ const couponSchema = new Schema({
         ref: "User",
         required: true
     },
-    discountValue: {
+    discountPercentage: {
         type: Number,
         required: true,
         min: 1,
@@ -22,6 +22,10 @@ const couponSchema = new Schema({
     },
     expiryTime: {
         type: Date,
+    },
+    minCartValue: {
+        type: Number,
+        required: true
     }
 }, { timestamps: true })
 
