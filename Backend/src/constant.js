@@ -26,3 +26,10 @@ export const userLoginType = {
 }
 
 export const availableUserLogin = Object.values(userLoginType)
+
+export const userPaymentType = {
+    COD: "COD",
+    STRIPE: "STRIPE"
+}
+
+export const availableUserPaymentType = Object.values(userPaymentType)

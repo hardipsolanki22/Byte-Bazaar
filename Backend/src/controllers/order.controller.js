@@ -1,0 +1,106 @@
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { APIError } from "../utils/APIError.js";
+import { APIResponse } from "../utils/APIResponse.js";
+import { getCart } from "../controllers/cart.controller.js";
+import { Address } from "../models/address.model.js";
+import { Order } from "../models/order.model.js";
+import { userPaymentType } from "../constant.js";
+import { Cart } from "../models/cart.model.js";
+import { Product } from "../models/product.model.js";
+import { orderConfirmationMailgenContent, sendEmail } from "../utils/mail.js";
+
+const updateProductQuantityAndClearCartHalper = async (req) => {
+    // get user cart
+    // update product quantity by items inside quantity
+    // send mail
+    // clear cart
+
+    const userCart = await getCart(req.user._id)
+
+    const bulkStockUpdates = userCart.items.map((item) => {
+        return {
+            updateOne: {
+                filter: { _id: item.product._id },
+                update: {
+                    $inc: {
+                        stock: -item.quantity
+                    }
+                }
+            }
+        }
+    })
+
+    await Product.bulkWrite(bulkStockUpdates, { skipValidation: true })
+
+    await Cart.findOneAndUpdate({
+        user: req.user._id,
+        items: [],
+        coupon: null
+    })
+
+    await sendEmail({
+        email: req.user.email,
+        subject: "Order Confirmed",
+        mailGenContent: orderConfirmationMailgenContent(
+            req.user.fullName,
+            userCart.items,
+            userCart.discountedTotal
+        )
+    })
+}
+
+const createOrder = asyncHandler(async (req, res) => {
+    // -> get addressId and payment type (default is Cash on Delivery)
+    // -> find address
+    // -> check payment type
+    // -> if payment type is not STRIKE,
+    // -> create order with payment type is COS 
+    // -> update product quantity, send mail to the user and than clear cart
+    // -> once payment is done and product is delivered update order status 
+    //    and isPayment field in COD payment type
+    // -> if payment type is STRIPE 
+    // -> create STRIPE payment 
+    // -> on success create order 
+    //    update product qunatity, send mail and clear cart
+    // -> once product is delivered update order status
+
+    const { addressId } = req.params;
+    const { paymentType } = req.body
+
+    if (!addressId) {
+        throw new APIError(400, "Address id is required")
+    }
+
+    const address = await Address.findById(addressId)
+
+    if (!address) {
+        throw new APIError(404, "Address not found")
+    }
+
+    const cart = await getCart(req.user._id)
+
+    if (!cart.items.length) {
+        throw new APIError(400, "User cart is empty")
+    }
+
+    if (paymentType !== userPaymentType.STRIPE) {
+        const order = await Order.create({
+            orderPrice: cart.discountedTotal,
+            address: addressId,
+            cart: cart._id,
+            user: req.user._id,
+            paymentType
+        })
+        await updateProductQuantityAndClearCartHalper(req)
+        return res
+            .status(201)
+            .json(
+                new APIResponse(201, order, "Order Create Successfully")
+            )
+    }
+
+})
+
+export {
+    createOrder
+}

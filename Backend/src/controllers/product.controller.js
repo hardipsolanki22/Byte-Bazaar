@@ -367,7 +367,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         mainImageLocalPath = req.files.mainImage[0].path
     }
 
-    const mainImage = await uploadCloudinary(mainImageLocalPath)
+    const mainImage = mainImageLocalPath && await uploadCloudinary(mainImageLocalPath)
 
     if (mainImageLocalPath && !mainImage) {
         throw new APIError(500, "Internal server error while upload main image")

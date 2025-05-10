@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { availableOrderStatus, orderStatus } from "../constant";
+import { availableOrderStatus, availableUserPaymentType, orderStatus, userPaymentType,} from "../constant.js";
 
 const orderSchema = new Schema({
     orderPrice: {
@@ -21,6 +21,11 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    paymentType: {
+        type: String,
+        enun: availableUserPaymentType,
+        default: userPaymentType.COD
+    },
     status: {
         type: String,
         enum: availableOrderStatus,
@@ -35,4 +40,4 @@ const orderSchema = new Schema({
     }
 }, { timestamps: true })
 
-export const Oreder = mongoose.model("Order", orderSchema)
+export const Order = mongoose.model("Order", orderSchema)

@@ -114,7 +114,7 @@ const getCart = async (userId) => {
                         0
                     ]
                 },
-                "cartTotal": {
+                discountedTotal: {
                     $ifNull: [
                         {
                             $subtract: [
@@ -147,7 +147,8 @@ const getCart = async (userId) => {
     return cart[0] || {
         items: [],
         cartTotal: 0,
-        discountPercentage: 0
+        discountPercentage: 0,
+        discountedTotal: 0
     }
 }
 
