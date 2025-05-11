@@ -57,12 +57,52 @@ const createCoupon = asyncHandler(async (req, res) => {
         .json(
             new APIResponse(201, coupon, "Coupon Create Successfully")
         )
-
-
 })
 
 const getCopuns = asyncHandler(async (req, res) => {
-    const coupons = await Coupon.find({}).populate("user", "fullName avatar")
+    const coupons = await Coupon.aggregate([
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+                pipeline: [
+                    {
+                        $project: {
+                            fullName: 1,
+                            avatar: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                user: { $first: "$user" },
+                isExpire: {
+                    $cond: {
+                        if: {
+                            $gt: ["$expiryTime", new Date()]
+                        },
+                        then: false,
+                        else: true
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                couponCode: 1,
+                user: 1,
+                discountPercentage: 1,
+                isActive: 1,
+                minCartValue: 1,
+                expiryTime: 1,
+                isExpire: 1,
+            }
+        }
+    ])
 
     return res
         .status(200)

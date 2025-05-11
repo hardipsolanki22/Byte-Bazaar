@@ -27,21 +27,20 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
 })
 
 // This middleware check whether an user is ADMIN 
-
 const verifyPermisson = (role) => {
     // TODO::  return 
-    return asyncHandler(async (req, _, next) => {
+    return (req, _, next) => {
+
         if (!req.user?._id) {
-            throw new APIError(401, "Unauthorizes request")
+            next(new APIError(401, "Unauthorizes request"))
         }
-
         if (role === req.user.role) {
-          return  next()
+            return next()
         } else {
-            throw new APIError(403, "You are not allowed to perform this action")
+            next(new APIError(403, "You are not allowed to perform this action"))
         }
 
-    })
+    }
 }
 
 export {
