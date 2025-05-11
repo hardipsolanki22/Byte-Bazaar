@@ -48,6 +48,17 @@ const getAddress = asyncHandler(async (req, res) => {
 
 })
 
+const getUserAddresses = asyncHandler(async (req, res) => {
+
+    const addresses = await Address.find({ user: req.user._id })
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, addresses, "User Addresses Fetched Successfully")
+        )
+})
+
 const updateAddress = asyncHandler(async (req, res) => {
     const { addressId } = req.params;
     const { addressLine, country, state, city, pincode } = req.body;
@@ -109,6 +120,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
 export {
     createAddress,
     getAddress,
+    getUserAddresses,
     updateAddress,
     deleteAddress
 }

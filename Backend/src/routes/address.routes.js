@@ -3,6 +3,7 @@ import {
     createAddress,
     deleteAddress,
     getAddress,
+    getUserAddresses,
     updateAddress
 } from "../controllers/address.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js"
@@ -14,6 +15,8 @@ const router = Router()
 router.route("/")
     .post(verifyJWT, createAddressValidator(), validate, createAddress)
     .get(verifyJWT, getAddress)
+
+router.route("/user-addresses").get(verifyJWT, getUserAddresses)
 
 router.route("/:addressId")
     .get(verifyJWT, getAddress)
