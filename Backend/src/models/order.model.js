@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { availableOrderStatus, availableUserPaymentType, orderStatus, userPaymentType,} from "../constant.js";
+import { availableOrderStatus, availableUserPaymentType, orderStatus, userPaymentType, }
+    from "../constant.js";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const orderSchema = new Schema({
     orderPrice: {
@@ -11,10 +13,23 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    cart: {
-        ref: "Cart",
-        type: Schema.Types.ObjectId,
+    items: {
+        type: [
+            {
+                product: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Product"
+                },
+                quantity: {
+                    type: Number
+                }
+            }
+        ],
         required: true
+    },
+    coupon: {
+        type: Schema.Types.ObjectId,
+        ref: "Coupon"
     },
     user: {
         ref: "User",
@@ -39,5 +54,7 @@ const orderSchema = new Schema({
         default: false
     }
 }, { timestamps: true })
+
+orderSchema.plugin(mongooseAggregatePaginate)
 
 export const Order = mongoose.model("Order", orderSchema)

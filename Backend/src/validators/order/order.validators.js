@@ -1,5 +1,5 @@
-import { body } from 'express-validator'
-import { availableUserPaymentType } from '../../constant.js'
+import { body, param, query } from 'express-validator'
+import { availableOrderStatus, availableUserPaymentType } from '../../constant.js'
 
 const createOrderValidator = () => {
     return [
@@ -13,6 +13,30 @@ const createOrderValidator = () => {
     ]
 }
 
+const updateOrderStatusAndIsPaymentDoneValidator = () => {
+    return [
+        param("orderId")
+            .trim()
+            .notEmpty()
+            .withMessage("Order id is required"),
+        body("status")
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage("Order status is required")
+            .isIn(availableOrderStatus)
+            .withMessage("Order status must be either PENDING or CANCELLED or DELIVERED"),
+        body("isPaymentDone")
+            .optional()
+            .trim()
+            .notEmpty()
+            .withMessage("isPaymentDone is not empty")
+            .isBoolean()
+            .withMessage("isPaymentDone field must be boolean")
+    ]
+}
+
 export {
-    createOrderValidator
+    createOrderValidator,
+    updateOrderStatusAndIsPaymentDoneValidator
 }
