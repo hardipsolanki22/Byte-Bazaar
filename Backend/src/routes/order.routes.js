@@ -4,6 +4,7 @@ import {
     createOrder,
     getMyOrdres,
     getOrdersByAdmin,
+    getSingleOrderByAdmin,
     updateOrderStatusAndIsPaymentDone,
     verifyStripePayment,
 } from "../controllers/order.controller.js";
@@ -16,7 +17,17 @@ import { userRole } from "../constant.js";
 
 const router = Router()
 
-router.route("/").get(verifyJWT, verifyPermisson(userRole.ADMIN), getOrdersByAdmin)
+
+router.route("/")
+    .get(verifyJWT, verifyPermisson(userRole.ADMIN), getOrdersByAdmin)
+
+router.route("/my-orders").get(verifyJWT, getMyOrdres)
+
+router.route("/:addressId")
+    .post(verifyJWT, createOrderValidator(), validate, createOrder)
+    
+router.route("/stripe-payment-verify")
+    .get(verifyJWT, verifyStripePayment)
 
 router.route("/:orderId")
     .patch(
@@ -26,15 +37,10 @@ router.route("/:orderId")
         validate,
         updateOrderStatusAndIsPaymentDone
     )
-
-router.route("/my-orders").get(verifyJWT, getMyOrdres)
-
-router.route("/:addressId")
-    .post(verifyJWT, createOrderValidator(), validate, createOrder)
-
-router.route("/stripe-payment-verify").get(verifyJWT, verifyStripePayment)
-
-
-
+    .get(
+        verifyJWT,
+        verifyPermisson(userRole.ADMIN),
+        getSingleOrderByAdmin
+    )
 
 export default router

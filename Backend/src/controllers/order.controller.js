@@ -244,9 +244,9 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
                 user: {
                     $first: "$user"
                 },
-                // totalItems: {
-                //     $size: "$items"
-                // }
+                totalItems: {
+                    $size: "$items"
+                }
             }
         },
         {
@@ -280,17 +280,182 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
 
 })
 
+const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
+    const { orderId } = req.params
+
+    if (!orderId) {
+        throw new APIError(400, "Order id is required")
+    }
+
+
+    const order = await Order.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(orderId)
+            }
+        },
+        {
+            // Unwind the items array to process each item individually
+            $unwind: "$items"
+        },
+        {
+            // Lookup to join with products collection to get product details
+            $lookup: {
+                from: "products",
+                localField: "items.product",
+                foreignField: "_id",
+                as: "product",
+                pipeline: [
+                    {
+                        $project: {
+                            name: 1,
+                            mainImage: 1,
+                            price: 1,
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                // Add the first product from the lookup result to items.product
+                "items.product": {
+                    $first: "$product"
+                },
+            },
+        },
+        {
+            // Project the necessary fields for the final output
+            $project: {
+                "product": "$items.product",
+                "quantity": "$items.quantity",
+                orderPrice: 1,
+                paymentType: 1,
+                isPaymentDone: 1,
+                address: 1,
+                coupon: 1,
+                user: 1,
+                status: 1,
+            }
+        },
+        {
+            // Group by order id
+            $group: {
+                _id: "$_id",
+                // push all items into an order array
+                order: {
+                    $push: {
+                        product: "$product",
+                        quantity: "$quantity"
+                    }
+                },
+                // collect the first occurrence of each field
+                isPaymentDone: { $first: "$isPaymentDone" },
+                paymentType: { $first: "$paymentType" },
+                address: { $first: "$address" },
+                user: { $first: "$user" },
+                status: { $first: "$status" },
+                coupon: { $first: "$coupon" },
+                orderPrice: { $first: "$orderPrice" },
+                // calculate the total cart value
+                cartTotal: {
+                    $sum: {
+                        $multiply: ["$product.price", "$quantity"]
+                    }
+                }
+            },
+
+        },
+        {
+            // Lookup to join with addresses collection to get address details
+            $lookup: {
+                from: "addresses",
+                localField: "address",
+                foreignField: "_id",
+                as: "address"
+            }
+        },
+        {
+            // Lookup to join with users collection to get user details
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+                pipeline: [
+                    {
+                        $project: {
+                            fullName: 1,
+                            avatar: 1,
+                            email: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            // Lookup to join with coupons collection to get coupon details
+            $lookup: {
+                from: "coupons",
+                localField: "coupon",
+                foreignField: "_id",
+                as: "coupon",
+                pipeline: [
+                    {
+                        $project: {
+                            discountPercentage: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                // Add the first occurrence of each field
+                "address": { $first: "$address" },
+                "user": { $first: "$user" },
+                "coupon": { $first: "$coupon" },
+                discountPercentage: { $first: "$coupon.discountPercentage" },
+                // Calculate the discount value based on the cart total and discount percentage
+                discountValue: {
+                    $ifNull: [
+                        {
+                            $divide: [
+                                {
+                                    $multiply: [
+                                        { $arrayElemAt: ["$coupon.discountPercentage", 0] },
+                                        "$cartTotal"
+                                    ]
+                                },
+                                100
+                            ]
+                        }
+                        , 0
+                    ]
+                },
+            }
+        },
+    ])
+
+    if (!order.length) {
+        throw new APIError(404, "Order does not exist")
+    }
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, order, "Order Fatched Successfully")
+        )
+
+})
+
 const getMyOrdres = asyncHandler(async (req, res) => {
     const { page = 1, limit = 8 } = req.query
     const aggregate = Order.aggregate([
         {
             $match: {
-                // TODO: check mongoose object id syntax
                 user: new mongoose.Types.ObjectId(req.user._id)
             }
-        },
-        {
-            $unwind: "$items"
         },
         {
             $lookup: {
@@ -312,13 +477,15 @@ const getMyOrdres = asyncHandler(async (req, res) => {
             $addFields: {
                 "items.product": {
                     $first: "$product"
-                }
+                },
+                totalItems: { $size: "$items" }
             }
         },
         {
             $project: {
                 "product": "$items.product",
-                status: 1
+                status: 1,
+                totalItems: 1
             }
         }
     ])
@@ -344,5 +511,6 @@ export {
     verifyStripePayment,
     updateOrderStatusAndIsPaymentDone,
     getOrdersByAdmin,
-    getMyOrdres
+    getMyOrdres,
+    getSingleOrderByAdmin
 }
