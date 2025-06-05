@@ -1,15 +1,18 @@
 import { Router } from "express"
 import {
+    assignUserRoleValidator,
     forgotPasswordRequestValidator,
     loginValidator,
     registerValidator,
     updateUserDetailsValidator,
 } from "../validators/user/user.validators.js"
 import {
+    assignRole,
     changePassword,
     forgotPassword,
     forgotPasswordRequest,
     getCurrentUser,
+    getUsersListsByAdmin,
     loginUser,
     logoutUser,
     refreshAccessToken,
@@ -22,9 +25,10 @@ import {
     verifyEmail
 } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js"
-import { verifyJWT } from "../middlewares/auth.middleware.js"
+import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js"
 import { validate } from "../validators/validate.js"
 import passport from "passport"
+import { userRole } from "../constant.js"
 
 
 const router = Router()
@@ -40,7 +44,7 @@ router.route("/google").get(
     passport.authenticate("google", { scope: ["email"] }),
 )
 router.route("/facebook").get(
-    passport.authenticate("facebook", {scope: ["email"]})
+    passport.authenticate("facebook", { scope: ["email"] })
 )
 router.route("/google/callback").get(passport.authenticate("google"), socialLogin)
 router.route("/facebook/callback").get(passport.authenticate("facebook", socialLogin))
@@ -53,6 +57,20 @@ router.route("/forgot-password").patch(
     forgotPasswordRequest
 )
 router.route("/forgot-password/:forgotPasswordToken").patch(forgotPassword)
+
+// admin routes
+router.route("/list").get(
+    verifyJWT,
+    verifyPermisson(userRole.ADMIN),
+    getUsersListsByAdmin
+)
+router.route("/assign-role/:userId").patch(
+    verifyJWT,
+    verifyPermisson(userRole.ADMIN),
+    assignUserRoleValidator(),
+    validate,
+    assignRole
+)
 
 // secure routes
 router.route("/current-user").get(verifyJWT, getCurrentUser)
@@ -69,6 +87,8 @@ router.route("/update-avatar").patch(
     updateAvatar
 )
 router.route('/:userId').get(verifyJWT, validate, userProfile)
+
+
 
 
 export default router

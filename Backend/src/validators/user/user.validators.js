@@ -1,4 +1,5 @@
 import { body, param, query } from "express-validator"
+import { availableRole } from "../../constant.js"
 
 const registerValidator = () => {
     return [
@@ -78,10 +79,22 @@ const updateUserDetailsValidator = () => {
     ]
 }
 
+const assignUserRoleValidator = () => {
+    return [
+        body("role")
+            .trim()
+            .notEmpty()
+            .withMessage("User role is required")
+            .isIn(availableRole)
+            .withMessage("User role must be either USER or ADMIN"),
+    ]
+}
+
 
 export {
     registerValidator,
     loginValidator,
     forgotPasswordRequestValidator,
     updateUserDetailsValidator,
+    assignUserRoleValidator
 }

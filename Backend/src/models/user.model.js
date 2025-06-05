@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import crypto from "crypto"
 import { availableRole, availableUserLogin, USER_TEMPORARY_TOKEN_EXPITY, userLoginType, userRole } from "../constant.js"
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"
 
 const userSchema = new Schema({
     fullName: {
@@ -105,5 +106,7 @@ userSchema.methods.generateTemporaryToken = function () {
     return { unHashToken, hashedToken, tokenExpiry }
 
 }
+
+userSchema.plugin(mongooseAggregatePaginate)
 
 export const User = mongoose.model("User", userSchema)

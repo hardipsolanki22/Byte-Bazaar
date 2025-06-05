@@ -7,6 +7,7 @@ import { userLoginType, userRole } from "../constant.js";
 import { emailVerificationMailGenContent, forgotPasswordMailContent, sendEmail } from "../utils/mail.js";
 import crypto from "crypto"
 import jwt from 'jsonwebtoken'
+import { aggregatePaginateOption } from "../utils/helpers.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -94,7 +95,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (user.loginType !== userLoginType.EMAIL_PASSWORD) {
         throw new APIError(400,
             "You are already registered with " + user.loginType.toLowerCase().replace("_", " ")
-             + " Use the " + user.loginType.toLowerCase() + " strategy to contineous with us"
+            + " Use the " + user.loginType.toLowerCase() + " strategy to contineous with us"
         )
     }
 
@@ -479,7 +480,7 @@ const userProfile = asyncHandler(async (req, res) => {
 })
 
 const socialLogin = asyncHandler(async (req, res) => {
-    const userId = req.user?._id    
+    const userId = req.user?._id
 
     const user = await User.findById(userId)
 
@@ -505,6 +506,68 @@ const socialLogin = asyncHandler(async (req, res) => {
 
 })
 
+const assignRole = asyncHandler(async (req, res) => {
+    const { userId } = req.params
+    const { role } = req.body
+
+    if (!userId) {
+        throw new APIError(400, "User id is required")
+    }
+
+    const user = await User.findByIdAndUpdate(userId,
+        {
+            $set: {
+                role
+            }
+        },
+        { new: true }
+    )
+
+    if (!user) {
+        throw new APIError(404, "User not found")
+    }
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, user, "User Role Assigned Successfully")
+        )
+})
+
+const getUsersListsByAdmin = asyncHandler(async (req, res) => {
+    const { fullname, page = 1, limit = 8 } = req.query
+    let query = {}
+    fullname ? query.fullName = { $regex: fullname, $options: "i" } : query
+    const aggregate = User.aggregate([
+        {
+            $match: { ...query }
+        },
+        {
+            $project: {
+                fullName: 1,
+                email: 1,
+                role: 1
+            }
+        }
+    ])
+
+    const users = await User.aggregatePaginate(aggregate,
+        aggregatePaginateOption({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: "totalUsres",
+                docs: "users"
+            }
+        }))
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, users, "Users Fetached Successfully")
+        )
+
+})
 
 export {
     registerUser,
@@ -520,7 +583,8 @@ export {
     updateUserDetails,
     updateAvatar,
     userProfile,
-    socialLogin
-
+    socialLogin,
+    assignRole,
+    getUsersListsByAdmin
 
 }
