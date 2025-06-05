@@ -10,7 +10,7 @@ import { Product } from "../models/product.model.js";
 import { orderConfirmationMailgenContent, sendEmail } from "../utils/mail.js";
 import Stripe from "stripe"
 import { aggregatePaginateOption } from "../utils/helpers.js";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -403,7 +403,8 @@ const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $project: {
-                            discountPercentage: 1
+                            discountPercentage: 1,
+                            couponCode: 1
                         }
                     }
                 ]
@@ -415,7 +416,6 @@ const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
                 "address": { $first: "$address" },
                 "user": { $first: "$user" },
                 "coupon": { $first: "$coupon" },
-                discountPercentage: { $first: "$coupon.discountPercentage" },
                 // Calculate the discount value based on the cart total and discount percentage
                 discountValue: {
                     $ifNull: [
@@ -449,7 +449,7 @@ const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
 
 })
 
-const getMyOrdres = asyncHandler(async (req, res) => {
+const getUserOrders = asyncHandler(async (req, res) => {
     const { page = 1, limit = 8 } = req.query
     const aggregate = Order.aggregate([
         {
@@ -483,7 +483,7 @@ const getMyOrdres = asyncHandler(async (req, res) => {
         },
         {
             $project: {
-                "product": "$items.product",
+                "products": "$items.product",
                 status: 1,
                 totalItems: 1
             }
@@ -506,11 +506,136 @@ const getMyOrdres = asyncHandler(async (req, res) => {
         )
 })
 
+const getUserSingleOrder = asyncHandler(async (req, res) => {
+    const { orderId } = req.params
+
+    if (!orderId) {
+        throw new APIError(400, "Order id is required")
+    }
+
+    const order = await Order.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(orderId)
+            }
+        },
+        {
+            $unwind: "$items"
+        },
+        {
+            $lookup: {
+                from: "products",
+                localField: "items.product",
+                foreignField: "_id",
+                as: "product",
+                pipeline: [
+                    {
+                        $project: {
+                            name: 1,
+                            mainImage: 1,
+                            price: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                "items.product": {
+                    $first: "$product"
+                }
+            }
+        },
+        {
+            $project: {
+                "product": "$items.product",
+                "quantity": "$items.quantity",
+                orderPrice: 1,
+                paymentType: 1,
+                isPaymentDone: 1,
+                address: 1,
+                coupon: 1,
+                status: 1
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                order: {
+                    $push: {
+                        product: "$product",
+                        quantity: "$quantity"
+                    }
+                },
+                isPaymentDone: { $first: "$isPaymentDone" },
+                paymentType: { $first: "$paymentType" },
+                status: { $first: "$status" },
+                orderPrice: { $first: "$orderPrice" },
+                cartTotal: {
+                    $sum: {
+                        $multiply: ["$product.price", "$quantity"]
+                    }
+                },
+                coupon: { $first: "$coupon" },
+            }
+        },
+        {
+            $lookup: {
+                from: "coupons",
+                localField: "coupon",
+                foreignField: "_id",
+                as: "coupon",
+                pipeline: [
+                    {
+                        $project: {
+                            discountPercentage: 1,
+                            couponCode: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                coupon: { $first: "$coupon" },
+                discountValue: {
+                    $ifNull: [
+                        {
+                            $divide: [
+                                {
+                                    $multiply: [
+                                        { $arrayElemAt: ["$coupon.discountPercentage", 0] },
+                                        "$cartTotal"
+                                    ]
+                                },
+                                100
+                            ]
+                        }
+                        , 0
+                    ]
+                },
+            }
+        }
+
+    ])
+
+    if (!order.length) {
+        throw new APIError(404, "Order does not exist")
+    }
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, order, "Order Fetched Successfully")
+        )
+})
+
 export {
     createOrder,
     verifyStripePayment,
     updateOrderStatusAndIsPaymentDone,
     getOrdersByAdmin,
-    getMyOrdres,
-    getSingleOrderByAdmin
+    getUserOrders,
+    getSingleOrderByAdmin,
+    getUserSingleOrder
 }

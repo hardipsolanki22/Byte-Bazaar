@@ -2,11 +2,12 @@ import { Router } from "express";
 import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js";
 import {
     createOrder,
-    getMyOrdres,
+    getUserOrders,
     getOrdersByAdmin,
     getSingleOrderByAdmin,
     updateOrderStatusAndIsPaymentDone,
     verifyStripePayment,
+    getUserSingleOrder,
 } from "../controllers/order.controller.js";
 import {
     createOrderValidator,
@@ -18,18 +19,22 @@ import { userRole } from "../constant.js";
 const router = Router()
 
 
-router.route("/")
-    .get(verifyJWT, verifyPermisson(userRole.ADMIN), getOrdersByAdmin)
-
-router.route("/my-orders").get(verifyJWT, getMyOrdres)
-
 router.route("/:addressId")
     .post(verifyJWT, createOrderValidator(), validate, createOrder)
-    
+
 router.route("/stripe-payment-verify")
     .get(verifyJWT, verifyStripePayment)
 
-router.route("/:orderId")
+router.route("/admin")
+    .get(verifyJWT, verifyPermisson(userRole.ADMIN), getOrdersByAdmin)
+
+router.route("/admin/:orderId")
+    .get(
+        verifyJWT,
+        verifyPermisson(userRole.ADMIN),
+        getSingleOrderByAdmin
+    )
+
     .patch(
         verifyJWT,
         verifyPermisson(userRole.ADMIN),
@@ -37,10 +42,10 @@ router.route("/:orderId")
         validate,
         updateOrderStatusAndIsPaymentDone
     )
-    .get(
-        verifyJWT,
-        verifyPermisson(userRole.ADMIN),
-        getSingleOrderByAdmin
-    )
+
+router.route("/user-orders").get(verifyJWT, getUserOrders)
+
+router.route("/user-orders/:orderId").get(verifyJWT, getUserSingleOrder)
+
 
 export default router
