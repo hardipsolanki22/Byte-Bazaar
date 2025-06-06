@@ -16,6 +16,7 @@ const getCart = async (userId) => {
             $unwind: "$items"
         },
         {
+        // lookup to get product details
             $lookup: {
                 from: "products",
                 localField: "items.product",
@@ -23,6 +24,7 @@ const getCart = async (userId) => {
                 as: "productDetails",
                 pipeline: [
                     {
+                        // lookup to get product ratings
                         $lookup: {
                             from: "ratings",
                             localField: "_id",
@@ -32,17 +34,20 @@ const getCart = async (userId) => {
                     },
                     {
                         $addFields: {
+                            // count of product ratings
                             countProductRating: {
                                 $size: {
                                     $ifNull: ["$productRating", 0]
                                 }
                             },
+                            // calculating average rating
                             averageRating: {
                                 $avg: "$productRating.rating"
                             },
                         },
                     },
                     {
+                        // project the required fields
                         $project: {
                             name: 1,
                             price: 1,
@@ -55,11 +60,13 @@ const getCart = async (userId) => {
             }
         },
         {
+            // overwrite items.product with productDetails
             $addFields: {
                 "items.product": "$productDetails",
             }
         },
         {
+            // project the required fields
             $project: {
                 product: { $first: "$items.product" },
                 quantity: "$items.quantity",
@@ -67,12 +74,14 @@ const getCart = async (userId) => {
             }
         },
         {
+            // group by _id to aggregate items
             $group: {
                 _id: "$_id",
                 items: {
                     $push: "$$ROOT",
                 },
                 coupon: { $first: "$coupon" },
+                // calculate total cart value
                 cartTotal: {
                     $sum: {
                         $multiply: ["$quantity", "$product.price"]
@@ -81,6 +90,7 @@ const getCart = async (userId) => {
             }
         },
         {
+            // lookup to get coupon details
             $lookup: {
                 from: "coupons",
                 foreignField: "_id",
@@ -98,6 +108,7 @@ const getCart = async (userId) => {
         {
             $addFields: {
                 discountPercentage: { $first: "$coupon.discountPercentage" },
+                // calculate discount value and discounted total
                 discountValue: {
                     $ifNull: [
                         {
@@ -153,6 +164,17 @@ const getCart = async (userId) => {
 }
 
 const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
+    // get productId and quantity
+    // check if product is exists or not
+    // if exists then check if product stock is greater than or equal to quantity
+    // if product stock is less than quantity then throw error
+    // if product stock is greater than or equal to quantity then check if cart exists or not
+    // if cart does not exists then create new cart and add item to it
+    // if cart exists then check if item already exists in cart or not
+    // if item exists then update the quantity of item
+    // if item does not exists then push item to cart
+
+
     const { productId } = req.params
     const { quantity } = req.body
 
@@ -253,6 +275,8 @@ const removeItem = asyncHandler(async (req, res) => {
 
         },
         {
+            // pull the item from items array
+            // and set coupon to null so that it will not be applied
             $pull: {
                 items: {
                     product: productId

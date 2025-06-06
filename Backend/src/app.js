@@ -8,13 +8,13 @@ import "./passport/index.js"
 
 const app = express();
 
+// middlewares
 app.use(cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
 
-// middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

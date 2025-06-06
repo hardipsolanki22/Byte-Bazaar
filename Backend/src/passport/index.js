@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js"
 import { APIError } from "../utils/APIError.js"
 import { userLoginType, userRole } from "../constant.js"
 
+// Serialize and deserialize user for passport
 passport.serializeUser(function (user, cb) {
     cb(null, user._id)
 })
@@ -19,6 +20,7 @@ passport.deserializeUser(async function (userId, cb) {
     }
 })
 
+// Configure passport strategies for Google and Facebook login
 passport.use(
     new GoogleStrategy(
         {
@@ -27,6 +29,11 @@ passport.use(
             callbackURL: "http://localhost:5000/api/v1/users/google/callback"
         },
         async function (accessToken, refreshToken, profile, cb) {
+            // check if user is exists
+            // if exists then check if user is registered with google or not
+            // if registered with google then return user
+            // if not registered with google then return error
+            // if user is not exists then create a new user with google profile            
             try {
                 const user = await User.findOne({ email: profile._json.email })
                 if (user) {

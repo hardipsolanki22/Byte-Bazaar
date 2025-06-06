@@ -160,7 +160,7 @@ const verifyStripePayment = asyncHandler(async (req, res) => {
             isPaymentDone: true
         })
 
-        // await updateProductQuantityAndClearCartHalper(req)
+         await updateProductQuantityAndClearCartHalper(req)
 
         return res
             .status(201)
@@ -220,10 +220,12 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
 
     const aggregation = Order.aggregate([
         {
+            // match stage to filter orders based on status and isPaymentDone
             $match: { ...matchStage }
 
         },
         {
+            // lookup to get user details
             $lookup: {
                 from: "users",
                 localField: "user",
@@ -241,15 +243,18 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
+                // overwrite user field to get first user object
                 user: {
                     $first: "$user"
                 },
+                // get total items in the order
                 totalItems: {
                     $size: "$items"
                 }
             }
         },
         {
+            // project stage to select required fields
             $project: {
                 user: 1,
                 orderPrice: 1,
@@ -261,6 +266,8 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
         }
     ])
 
+    // paginate the aggregation result
+    // using aggregatePaginateOption utility function
     const orders = await Order.aggregatePaginate(aggregation,
         aggregatePaginateOption({
             page,
@@ -458,6 +465,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
             }
         },
         {
+            // lookup to get product details
             $lookup: {
                 from: "products",
                 localField: "items.product",
@@ -474,14 +482,17 @@ const getUserOrders = asyncHandler(async (req, res) => {
             }
         },
         {
+            // ovwrite items.product with the first product from the lookup result
             $addFields: {
                 "items.product": {
                     $first: "$product"
                 },
+                // calculate total items in the order
                 totalItems: { $size: "$items" }
             }
         },
         {
+            // project stage to select required fields
             $project: {
                 "products": "$items.product",
                 status: 1,
@@ -490,6 +501,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
         }
     ])
 
+    // paginate the aggregation result
     const orders = await Order.aggregatePaginate(aggregate, aggregatePaginateOption({
         page,
         limit,
@@ -520,9 +532,11 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
             }
         },
         {
+            // Unwind the items array to process each item individually
             $unwind: "$items"
         },
         {
+            // Lookup to get product details with required field in inner pipeline
             $lookup: {
                 from: "products",
                 localField: "items.product",
@@ -547,6 +561,7 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
             }
         },
         {
+            // Project the necessary fields for the final output
             $project: {
                 "product": "$items.product",
                 "quantity": "$items.quantity",
@@ -559,18 +574,22 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
             }
         },
         {
+            // Group by order id to aggregate items into an order array
             $group: {
                 _id: "$_id",
+                // push all items into an order array
                 order: {
                     $push: {
                         product: "$product",
                         quantity: "$quantity"
                     }
                 },
+                // collect the first occurrence of each field
                 isPaymentDone: { $first: "$isPaymentDone" },
                 paymentType: { $first: "$paymentType" },
                 status: { $first: "$status" },
                 orderPrice: { $first: "$orderPrice" },
+                // calculate the total cart value
                 cartTotal: {
                     $sum: {
                         $multiply: ["$product.price", "$quantity"]
@@ -580,6 +599,7 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
             }
         },
         {
+            // lookup to get coupon details
             $lookup: {
                 from: "coupons",
                 localField: "coupon",
@@ -598,6 +618,7 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
         {
             $addFields: {
                 coupon: { $first: "$coupon" },
+                // calculate the discount value based on the cart total and discount percentage
                 discountValue: {
                     $ifNull: [
                         {
