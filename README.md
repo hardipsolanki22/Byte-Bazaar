@@ -65,27 +65,27 @@ ByteBazaar/
 │   │   ├── routes/         # API routes
 │   │   ├── middlewares/    # Custom middlewares
 │   │   ├── validators/     # Input validation
-│   │   ├── utils/         # Helper functions
-│   │   └── db/            # Database configuration
-│   └── public/            # Static files
+│   │   ├── utils/          # Helper functions
+│   │   └── db/             # Database configuration
+│   └── public/             # Static files
 └── Frontend/
     ├── src/
-    │   ├── assets/        # Static assets
-    │   ├── components/    # React components
-    │   └── pages/         # Application pages
-    └── public/            # Public assets
+    │   ├── assets/         # Static assets
+    │   ├── components/     # React components
+    │   └── pages/          # Application pages
+    └── public/             # Public assets
 ```
 
 ## Getting Started
 
 1. Clone the repository:
-\`\`\`bash
+```bash
 git clone https://github.com/hardipsolanki22/Byte-Bazaar.git
 cd Byte-Bazaar
-\`\`\`
+```
 
 2. Install dependencies:
-\`\`\`bash
+```bash
 # Install backend dependencies
 cd Backend
 npm install
@@ -93,11 +93,11 @@ npm install
 # Install frontend dependencies
 cd ../Frontend
 npm install
-\`\`\`
+```
 
 3. Set up environment variables:
 Create a .env file in the Backend directory with the following variables:
-\`\`\`env
+```env
 PORT=8000
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
@@ -105,10 +105,10 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-\`\`\`
+```
 
 4. Run the application:
-\`\`\`bash
+```bash
 # Start backend server
 cd Backend
 npm run dev
@@ -116,7 +116,7 @@ npm run dev
 # Start frontend development server
 cd Frontend
 npm run dev
-\`\`\`
+```
 
 ## API Documentation
 
