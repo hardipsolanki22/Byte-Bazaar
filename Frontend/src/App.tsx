@@ -1,9 +1,10 @@
 import React from 'react'
+import Navbar from './components/layout/Navbar'
 
 function App() {
 
   return (
-  <h1 className='text-pink-500 text-center'>Jai Ma Sarshavati</h1>
+  <Navbar/>
   )
 }
 
