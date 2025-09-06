@@ -1,10 +1,18 @@
-import React from 'react'
-import Navbar from './components/layout/Navbar'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Index from './pages/Index'
+import PageLayout from './components/layout/PageLayout'
 
-function App() {
+const App = () => {
 
   return (
-  <Navbar/>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={
+          <PageLayout childern={<Index />}>
+          </PageLayout>
+        } />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
