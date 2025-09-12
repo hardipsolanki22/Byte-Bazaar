@@ -72,7 +72,7 @@ const registerUser = asyncHandler(async (req, res) => {
         subject: "Please verify your email",
         mailGenContent: emailVerificationMailGenContent(
             fullName,
-            `http://localhost:5000/api/v1/users/verify-email/${unHashToken}`
+            `http://localhost:5000/api/v1/users/verify-email/?verificationToken=${unHashToken}`
         )
     })
     return res

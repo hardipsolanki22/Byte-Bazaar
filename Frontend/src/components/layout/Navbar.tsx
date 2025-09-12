@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className='backdrop-blur-lg bg-white/10 dark:bg-gray-900/60 
      h-14 fixed top-4 left-4 right-4 
-     text-slate-900 flex justify-between px-4 items-center rounded-full border border-slate-600'>
+     text-slate-900 flex justify-between px-4 items-center rounded-full border border-slate-300'>
       <div className='gap-10 flex items-center '>
         <Link to="/" className='flex items-center justify-center '>
           <img src="./byteBazaar.png" alt="logo"
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
           '
           >
             <NavLink className={
-              ({ isActive }) => `${isActive && "border-b-2 group-hover:border-white border-purple-950 px-2 "}`}
+              ({ isActive }) => `${isActive && "border-b-2 group-hover:border-white border-purple-800 px-2 "}`}
               to={item.slug}>
               {item.name}
             </NavLink>
