@@ -40,6 +40,10 @@ router.route("/register").post(
     validate,
     registerUser
 )
+
+router.route("/verify-email/:verificationToken").patch(verifyEmail)
+router.route("/resent-email-verification").patch(resentEmailVerification)
+
 router.route("/google").get(
     passport.authenticate("google", { scope: ["email"] }),
 )
@@ -48,6 +52,7 @@ router.route("/facebook").get(
 )
 router.route("/google/callback").get(passport.authenticate("google"), socialLogin)
 router.route("/facebook/callback").get(passport.authenticate("facebook", socialLogin))
+
 
 router.route("/login").post(loginValidator(), validate, loginUser)
 router.route("/refresh-access-token").patch(refreshAccessToken)
@@ -75,8 +80,7 @@ router.route("/assign-role/:userId").patch(
 // secure routes
 router.route("/current-user").get(verifyJWT, getCurrentUser)
 router.route("/logout").post(verifyJWT, logoutUser)
-router.route("/verify-email/:verificationToken").patch(verifyJWT, verifyEmail)
-router.route("/resent-email-verification").patch(verifyJWT, resentEmailVerification)
+
 router.route("/change-password").patch(verifyJWT, changePassword)
 router.route("/update-details").patch(
     verifyJWT, updateUserDetailsValidator(), validate, updateUserDetails

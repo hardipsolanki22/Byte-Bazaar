@@ -7,7 +7,7 @@ import { Order } from "../models/order.model.js";
 import { availableOrderStatus, userPaymentType } from "../constant.js";
 import { Cart } from "../models/cart.model.js";
 import { Product } from "../models/product.model.js";
-import { orderConfirmationMailgenContent, sendEmail } from "../utils/mail.js";
+import { orderConfirmationMailgenContent, orderStatusUpdateMailgenContent, sendEmail } from "../utils/mail.js";
 import Stripe from "stripe"
 import { aggregatePaginateOption } from "../utils/helpers.js";
 import mongoose, { mongo } from "mongoose";
@@ -160,7 +160,7 @@ const verifyStripePayment = asyncHandler(async (req, res) => {
             isPaymentDone: true
         })
 
-         await updateProductQuantityAndClearCartHalper(req)
+        await updateProductQuantityAndClearCartHalper(req)
 
         return res
             .status(201)
@@ -193,6 +193,16 @@ const updateOrderStatusAndIsPaymentDone = asyncHandler(async (req, res) => {
     if (!order) {
         throw new APIError(404, "Order does not exists")
     }
+
+    await sendEmail({
+        email: order.user.email,
+        subject: "Order Status Updated",
+        mailGenContent: orderStatusUpdateMailgenContent({
+            fullName: req.user.fullName,
+            orderId: order._id,
+            orderStatus: order.status
+        })
+    })
 
     return res
         .status(200)

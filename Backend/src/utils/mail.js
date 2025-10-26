@@ -120,9 +120,41 @@ const orderConfirmationMailgenContent = (fullName, items, totalCost) => {
       };
 };
 
+const orderStatusUpdateMailgenContent = (fullName, orderId, orderStatus) => {
+    return {
+        body: {
+            name: fullName,
+            intro: "Your order status has been updated.",
+            table: {
+                data: [
+                    {
+                        item: "Order ID",
+                        status: orderId,
+                    },
+                    {
+                        item: "Current Status",
+                        status: orderStatus,
+                    },
+                ],
+                columns: {
+                    customWidth: {
+                        item: "30%",
+                        status: "70%",
+                    },
+                },
+            },
+            outro: [
+                "You can check the status of your order and more in your order history",
+                "We thank you for your purchase."
+            ],
+        },
+    };
+};
+
 export {
     sendEmail,
     emailVerificationMailGenContent,
     forgotPasswordMailContent,
-    orderConfirmationMailgenContent
+    orderConfirmationMailgenContent,
+    orderStatusUpdateMailgenContent
 }
