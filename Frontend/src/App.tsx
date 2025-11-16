@@ -8,7 +8,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={
-          <PageLayout childern={<Index />}>
+          <PageLayout childern={<Index />} >
           </PageLayout>
         } />
       </Routes>

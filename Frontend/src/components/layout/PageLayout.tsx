@@ -16,14 +16,12 @@ const PageLayout:React.FC<PageLayoutProps> = ({
     noPadding = false
 }) =>  {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-white ">
         <Navbar/>
         <main 
-        className={`flex-auto w-full ${className && className} ${!noPadding && "pt-24 pb-16 md:pt-28 md:pb-20"}
+        className={`flex-auto w-full ${className} ${!noPadding && "p-12 md:p-2"}
         `}>
-            <div className=" p-4 w-full">
                 {childern}
-            </div>
         </main>
         {!noFooter && <Footer/>}
     </div>

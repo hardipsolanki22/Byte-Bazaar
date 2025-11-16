@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-4'>
         <div className='flex flex-col items-center justify-center space-y-1 '>
           <h2 className='text-xl sm:text-2xl text-center'>Byte Bazaar</h2>
-          <p className='text-slate-400 text-center mt-2'>
+          <p className='text-slate-500 text-center mt-2'>
             Empowering innovation through cutting-edge AI solutions.
             We make advanced technology accessible for developers and businesses worldwide.
           </p>
