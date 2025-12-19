@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {  Home, BaggageClaim, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
 import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
@@ -10,6 +10,7 @@ const Navbar: React.FC = () => {
     slug: string
     isActive: boolean
   }
+  const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
       name: "Home",
@@ -56,7 +57,7 @@ const Navbar: React.FC = () => {
           <li key={index} className='inline-block mx-2'>
             <Button variant='ghost'
               className='cursor-pointer hover:bg-gray-100 '
-              onClick={() => { }}>
+              onClick={() => {navigate(item.slug) }}>
               {item.name}
             </Button>
           </li>
@@ -70,7 +71,7 @@ const Navbar: React.FC = () => {
         
        </li>
        <li className='inline-block mx-4'>
-        <Button >
+        <Button className='cursor-pointer'>
           Sign Up
         </Button>
        </li>

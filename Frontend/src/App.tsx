@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Index from './pages/Index'
 import PageLayout from './components/layout/PageLayout'
+import Product from './pages/Product'
 
 const App = () => {
 
@@ -8,9 +9,16 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={
-          <PageLayout childern={<Index />} >
-          </PageLayout>
-        } />
+          <PageLayout />
+        } >
+          <Route element={
+            <Index />
+          } path='/' />
+          <Route element={
+            <Product />
+          } path='/products' />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   )

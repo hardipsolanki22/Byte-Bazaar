@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
   ]
 
   return (
-    <footer className='flex flex-col justify-center bg-white text-black mx-auto px-4 sm:px-6 md:px-8 py-8'>
+    <footer className='flex flex-col justify-center bg-slate-100 text-black mx-auto px-4 sm:px-6 md:px-8 py-8'>
       {/* Grid */}
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-4'>
         <div className='flex flex-col items-center justify-center space-y-1 '>
