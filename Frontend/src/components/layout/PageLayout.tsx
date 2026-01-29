@@ -4,25 +4,25 @@ import Footer from "./Footer"
 import { Outlet } from "react-router-dom"
 
 interface PageLayoutProps {
-className?: string
-noPadding?:boolean
-noFooter?:boolean
+  className?: string
+  noPadding?: boolean
+  noFooter?: boolean
 }
 
-const PageLayout:React.FC<PageLayoutProps> = ({
-    className,
-    noFooter = false,
-    noPadding = false
-}) =>  {
+const PageLayout: React.FC<PageLayoutProps> = ({
+  className = "",
+  noFooter = false,
+  noPadding = false
+}) => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 ">
-        <Navbar/>
-        <main 
+      <Navbar />
+      <main
         className={`flex-auto w-full ${className} ${!noPadding && "p-2"}
         `}>
-                <Outlet/>
-        </main>
-        {!noFooter && <Footer/>}
+        <Outlet />
+      </main>
+      {!noFooter && <Footer />}
     </div>
   )
 }

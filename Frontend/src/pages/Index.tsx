@@ -1,5 +1,5 @@
 import HeroSection from "../components/home/Hero"
-import ProductsSection from "../components/products/Products"
+import ProductsSection from "./Products"
 
 
 

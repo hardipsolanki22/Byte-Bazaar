@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Index from './pages/Index'
 import PageLayout from './components/layout/PageLayout'
-import Product from './pages/Product'
+import Product from './components/products/Product'
 
 const App = () => {
 
@@ -16,7 +16,7 @@ const App = () => {
           } path='/' />
           <Route element={
             <Product />
-          } path='/products' />
+          } path='/products/:slug' />
         </Route>
 
       </Routes>

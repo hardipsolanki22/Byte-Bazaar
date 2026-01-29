@@ -6,6 +6,10 @@ import { Rating } from "../models/rating.modle.js";
 import { aggregatePaginateOption } from "../utils/helpers.js"
 import mongoose from "mongoose";
 
+// upadte it only purcher user can rate the product
+// comment is optional
+// review means comment
+// rating means star
 const createRating = asyncHandler(async (req, res) => {
     const { comment, rating } = req.body;
     const { productId } = req.params;
@@ -84,7 +88,7 @@ const getAllRating = asyncHandler(async (req, res) => {
         throw new APIError(404, "Product does not exist")
     }
 
-    
+
     const aggrigation = Rating.aggregate([
         {
             $match: {

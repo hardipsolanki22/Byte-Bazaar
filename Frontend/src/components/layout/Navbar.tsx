@@ -41,6 +41,35 @@ const Navbar: React.FC = () => {
   { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
   { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
 ];
+
+
+  type CategoriesType = {
+    name: string;
+    slug: string;
+  }
+
+  const categories: CategoriesType[] = [
+    { name: "Electronics", slug: "electronics" },
+    { name: "Fashion", slug: "fashion" },
+    { name: "Home & Kitchen", slug: "home-kitchen" },
+    { name: "Books", slug: "books" },
+    { name: "Toys & Games", slug: "toys-games" },
+    { name: "Sports", slug: "sports" },
+    { name: "Beauty", slug: "beauty" },
+    { name: "Automotive", slug: "automotive" },
+    { name: "Grocery", slug: "grocery" },
+    { name: "Health", slug: "health" },
+    { name: "Garden", slug: "garden" },
+    { name: "Music", slug: "music" },
+    { name: "Office Supplies", slug: "office-supplies" },
+    { name: "Pet Supplies", slug: "pet-supplies" },
+    { name: "Baby Products", slug: "baby-products" },
+
+
+
+
+  ]
+
   return (
     <>
     <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
@@ -81,6 +110,19 @@ const Navbar: React.FC = () => {
     <HamburgerMenuOverlay 
     items={menuItems}
     className='md:hidden'  />
+
+       <div className="flex w-full text-center items-center justify-center
+       space-x-2 overflow-x-auto p-2  border-b border-gray-200 bg-white mt-1">
+        {categories.map((category, idx) => (
+          <Button
+            variant="link"
+            key={idx}
+            className="cursor-pointer"
+          >
+            {category.name}
+          </Button>
+        ))}
+      </div>
     </>
 
   )
