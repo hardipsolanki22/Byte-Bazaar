@@ -136,7 +136,7 @@ const Product: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className='mt-4 flex items-start flex-col'>
+            <div className='mt-4 flex items-start flex-col border-b border-slate-300 pb-4 w-full'>
               <div className='flex items-center gap-4 '>
                 <img src="" alt="user avatar" className="w-10 h-10 rounded-full" />
                 <h3 className='text-slate-400 text-sm'>

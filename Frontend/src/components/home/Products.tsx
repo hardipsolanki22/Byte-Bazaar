@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/lightswind/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../lightswind/select"
 import { Star } from "lucide-react"
 import { Link } from 'react-router-dom'
 

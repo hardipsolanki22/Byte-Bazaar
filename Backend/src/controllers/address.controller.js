@@ -3,6 +3,8 @@ import { APIError } from "../utils/APIError.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+
+// set primary or default address later
 const createAddress = asyncHandler(async (req, res) => {
     const { addressLine, country, state, city, pincode } = req.body;
 

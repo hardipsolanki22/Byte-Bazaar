@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
   }
 
   const location = useLocation()
-
+  const ignoreCategory = ["/signup", "/signin", "/account"]
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
         items={menuItems}
         className='md:hidden' />
 
-      {location.pathname !== "/signin" && location.pathname !== "/signup" &&
+      {!ignoreCategory.includes(location.pathname) &&
         <div className="flex w-full text-center items-center justify-center
        space-x-2 overflow-x-auto p-2  border-b border-gray-200 bg-white mt-1">
           {categories.map((category, idx) => (
