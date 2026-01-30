@@ -2,7 +2,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import type {HTMLMotionProps} from "motion/react";
 import { cn } from "../../lib/utils"; // Assuming you have this utility function
 

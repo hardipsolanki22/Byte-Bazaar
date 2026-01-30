@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link, useNavigate } from "react-router-dom"
-import {  Home, BaggageClaim, User, Contact } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Home, BaggageClaim, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
 import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
 
@@ -10,6 +10,9 @@ const Navbar: React.FC = () => {
     slug: string
     isActive: boolean
   }
+
+  const location = useLocation()
+
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
@@ -32,15 +35,16 @@ const Navbar: React.FC = () => {
       slug: "/contact",
       isActive: true
     },
-   
-    
+
+
   ]
+
   const menuItems = [
-  { label: "Home", icon: <Home size={20} />, href: "/" },
-  { label: "Products", icon: <BaggageClaim size={20} />, href: "/search" },
-  { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
-  { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
-];
+    { label: "Home", icon: <Home size={20} />, href: "/" },
+    { label: "Products", icon: <BaggageClaim size={20} />, href: "/search" },
+    { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
+    { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
+  ];
 
 
   type CategoriesType = {
@@ -72,57 +76,62 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-    <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
-      <div className='gap-10 flex items-center justify-center '>
-        <Link to="/" className='flex items-center justify-center '>
-          <img src="./byteBazaar.png" alt="logo"
-            className='w-24 h-24 cursor-pointer' />
+      <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
+        <div className='gap-10 flex items-center justify-center '>
+          <Link to="/" className='flex items-center justify-center '>
+            <img src="./byteBazaar.png" alt="logo"
+              className='w-24 h-24 cursor-pointer' />
 
-        </Link>
-      </div>
+          </Link>
+        </div>
 
-      <ul>
-        {navItems.map((item, index) => (
-          <li key={index} className='inline-block mx-2'>
-            <Button variant='ghost'
-              className='cursor-pointer hover:bg-gray-100 '
-              onClick={() => {navigate(item.slug) }}>
-              {item.name}
+        <ul>
+          {navItems.map((item, index) => (
+            <li key={index} className='inline-block mx-2'>
+              <Button variant='ghost'
+                className='cursor-pointer hover:bg-gray-100 '
+                onClick={() => { navigate(item.slug) }}>
+                {item.name}
+              </Button>
+            </li>
+          ))}
+          <li className='inline-block'>
+            <Button
+              onClick={() => navigate("/signin")}
+              variant='github'
+              className='cursor-pointer'>
+              Login
+            </Button>
+
+          </li>
+          <li className='inline-block mx-4'>
+            <Button
+              onClick={() => navigate("/signup")}
+              className='cursor-pointer'>
+              Sign Up
             </Button>
           </li>
-        ))}
-       <li className='inline-block'>
-         <Button 
-        variant='github'
-        className='cursor-pointer'>
-          Login
-        </Button>
-        
-       </li>
-       <li className='inline-block mx-4'>
-        <Button className='cursor-pointer'>
-          Sign Up
-        </Button>
-       </li>
-      </ul>
-    </nav>
+        </ul>
+      </nav>
 
-    <HamburgerMenuOverlay 
-    items={menuItems}
-    className='md:hidden'  />
+      <HamburgerMenuOverlay
+        items={menuItems}
+        className='md:hidden' />
 
-       <div className="flex w-full text-center items-center justify-center
+      {location.pathname !== "/signin" && location.pathname !== "/signup" &&
+        <div className="flex w-full text-center items-center justify-center
        space-x-2 overflow-x-auto p-2  border-b border-gray-200 bg-white mt-1">
-        {categories.map((category, idx) => (
-          <Button
-            variant="link"
-            key={idx}
-            className="cursor-pointer"
-          >
-            {category.name}
-          </Button>
-        ))}
-      </div>
+          {categories.map((category, idx) => (
+            <Button
+              variant="link"
+              key={idx}
+              className="cursor-pointer"
+            >
+              {category.name}
+            </Button>
+          ))}
+        </div>
+      }
     </>
 
   )

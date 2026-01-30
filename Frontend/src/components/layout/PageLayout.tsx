@@ -1,7 +1,7 @@
 import type React from "react"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 
 interface PageLayoutProps {
   className?: string
@@ -14,6 +14,13 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   noFooter = false,
   noPadding = false
 }) => {
+
+  const location = useLocation()
+  const hideFooterPaths = ["/signin", "/signup"]
+  if (hideFooterPaths.includes(location.pathname)) {
+    noFooter = true
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 ">
       <Navbar />
