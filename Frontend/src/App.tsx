@@ -6,6 +6,8 @@ import SignIn from './components/auth/Signin'
 import SignUp from './components/auth/Signup'
 import Account from './pages/Account'
 import Cart from './pages/Cart'
+import Address from './components/checkout/Address'
+import Payment from './components/checkout/Payment'
 
 const App = () => {
 
@@ -32,9 +34,17 @@ const App = () => {
           <Route element={
             <Product />
           } path='/products/:slug' />
-          <Route path='/cart' element={
+          <Route element={
             <Cart />
-          } />
+          } path='/checkout/cart' />
+
+          <Route element={
+            <Address />
+          } path='/checkout/address' />
+          <Route element={
+            <Payment />
+          } path='/checkout/payment' />
+
         </Route>
 
       </Routes>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { Home, BaggageClaim, User, Contact } from "lucide-react";
+import { Home, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
 import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
 
@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
 
 
   const location = useLocation()
-  const ignoreCategory = ["/signup", "/signin", "/account", "/cart"]
+  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart", "/checkout/address", "/checkout/payment"]
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
@@ -22,27 +22,14 @@ const Navbar: React.FC = () => {
       isActive: true
     },
     {
-      name: "Products",
-      slug: "/products",
-      isActive: true
-    },
-    {
       name: "About",
       slug: "/about",
       isActive: true
-    },
-    {
-      name: "Contact",
-      slug: "/contact",
-      isActive: true
-    },
-
-
+    }
   ]
 
   const menuItems = [
     { label: "Home", icon: <Home size={20} />, href: "/" },
-    { label: "Products", icon: <BaggageClaim size={20} />, href: "/search" },
     { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
     { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
   ];
@@ -112,11 +99,11 @@ const Navbar: React.FC = () => {
           </li>
           <li className='inline-block relative'>
             <Button
-              onClick={() => navigate("/cart")}
+              onClick={() => navigate("/checkout/cart")}
               variant='link'
               className='cursor-pointer'>
               <img src="./shopping-cart.png" alt="cart"
-              className="w-6 h-6 " />
+                className="w-6 h-6 " />
             </Button>
             <span className="absolute top-0 right-0 bg-red-500 text-white
              rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>

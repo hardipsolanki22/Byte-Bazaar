@@ -61,7 +61,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                     />
                 </div>
                 <Button className="cursor-pointer">
-                    Update
+                    {isUpdate ? "Update Address" : "Add Address"}
                 </Button>
 
             </form>

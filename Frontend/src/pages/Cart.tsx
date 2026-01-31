@@ -3,6 +3,7 @@ import { Button } from '../components/lightswind/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../components/lightswind/popover'
 import UpdateCartItemQty from '../components/cart/Cart'
 import { Input } from '../components/lightswind/input'
+import { useNavigate } from 'react-router-dom'
 
 const Cart: React.FC = () => {
 
@@ -24,8 +25,10 @@ const Cart: React.FC = () => {
         },
     ]
 
+    const navigate = useNavigate();
+
     return (
-        <div className='flex flex-col md:flex-row  items-center justify-center'>
+        <div className='flex flex-col md:flex-row items-center justify-center'>
             <div className='grid md:grid-cols-12 gap-4 w-full'>
                 <div className='md:col-span-8 p-4 flex flex-col gap-4'>
                     <h2 className='sm:text-xl font-semibold text-start'>Products Details</h2>
@@ -102,7 +105,9 @@ const Cart: React.FC = () => {
                             Apply
                         </Button>
                     </div>
-                    <Button className='w-full mt-6 cursor-pointer'>
+                    <Button
+                        onClick={() => navigate("/checkout/address")}
+                        className='w-full mt-6 cursor-pointer'>
                         Proceed to Checkout
                     </Button>
                 </div>
