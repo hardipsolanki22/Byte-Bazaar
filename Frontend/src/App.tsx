@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Index from './pages/Index'
 import PageLayout from './components/layout/PageLayout'
-import Product from './components/products/Product'
+import Product from './pages/Product'
 import SignIn from './components/auth/Signin'
 import SignUp from './components/auth/Signup'
 import Account from './pages/Account'

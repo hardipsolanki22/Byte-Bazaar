@@ -1,7 +1,7 @@
 import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../lightswind/select"
-import { Star } from "lucide-react"
 import { Link } from 'react-router-dom'
+import Product from '../products/Product'
 
 const Products: React.FC = () => {
 
@@ -68,21 +68,7 @@ const Products: React.FC = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4'>
             {products?.map((product, index) => (
               <Link key={index} to={`/products/${product.slug}`}>
-                <div className='border border-slate-400 rounded-md p-4'>
-                  <img src={product.mainImage} alt={product.name}
-                    className='w-full h-48 object-cover mb-4 rounded-md' />
-                  <h3 className='text-lg font-semibold text-slate-600'>{product.name}</h3>
-                  <p className='text-slate-800 font-bold mt-2'>${product.price}</p>
-                  <div className='flex items-center mt-2'>
-                    <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-1'>
-                      <span className='text-white'>
-                        {product.averageRating}
-                      </span>
-                      <Star size={16} color='white'/>
-                    </div>
-                    <span className='text-slate-600'>{product.ratingCount} reviews</span>
-                  </div>
-                </div>
+                <Product {...product} />
 
               </Link>
             ))}
