@@ -186,7 +186,7 @@ const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentProps>(
         >
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-3 right-3 z-50 p-1.5 bg-zinc-100/80 dark:bg-zinc-800/80 backdrop-blur-md rounded-full border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
+            className="cursor-pointer absolute top-3 right-3 z-50 p-1.5 bg-zinc-100/80 dark:bg-zinc-800/80 backdrop-blur-md rounded-full border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all"
           >
             <CircleXIcon className="w-5 h-5 text-zinc-600 dark:text-zinc-400" />
           </button>

@@ -5,6 +5,7 @@ import Product from './components/products/Product'
 import SignIn from './components/auth/Signin'
 import SignUp from './components/auth/Signup'
 import Account from './pages/Account'
+import Cart from './pages/Cart'
 
 const App = () => {
 
@@ -31,6 +32,9 @@ const App = () => {
           <Route element={
             <Product />
           } path='/products/:slug' />
+          <Route path='/cart' element={
+            <Cart />
+          } />
         </Route>
 
       </Routes>

@@ -11,8 +11,9 @@ const Navbar: React.FC = () => {
     isActive: boolean
   }
 
+
   const location = useLocation()
-  const ignoreCategory = ["/signup", "/signin", "/account"]
+  const ignoreCategory = ["/signup", "/signin", "/account", "/cart"]
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
@@ -81,7 +82,6 @@ const Navbar: React.FC = () => {
           <Link to="/" className='flex items-center justify-center '>
             <img src="./byteBazaar.png" alt="logo"
               className='w-24 h-24 cursor-pointer' />
-
           </Link>
         </div>
 
@@ -102,7 +102,6 @@ const Navbar: React.FC = () => {
               className='cursor-pointer'>
               Login
             </Button>
-
           </li>
           <li className='inline-block mx-4'>
             <Button
@@ -110,6 +109,17 @@ const Navbar: React.FC = () => {
               className='cursor-pointer'>
               Sign Up
             </Button>
+          </li>
+          <li className='inline-block relative'>
+            <Button
+              onClick={() => navigate("/cart")}
+              variant='link'
+              className='cursor-pointer'>
+              <img src="./shopping-cart.png" alt="cart"
+              className="w-6 h-6 " />
+            </Button>
+            <span className="absolute top-0 right-0 bg-red-500 text-white
+             rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
           </li>
         </ul>
       </nav>
