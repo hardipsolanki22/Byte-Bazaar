@@ -2,6 +2,7 @@ import React from "react";
 import { Input } from "../lightswind/input";
 import { Link } from "react-router-dom";
 import { Button } from "../lightswind/button";
+import { Label } from "../lightswind/label";
 
 const SignIn: React.FC = () => {
     return (
@@ -14,7 +15,7 @@ const SignIn: React.FC = () => {
                 <div>
                     <form className="flex flex-col mt-6 gap-4">
                         <div>
-                            <label htmlFor="email">Email</label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="text"
@@ -24,7 +25,7 @@ const SignIn: React.FC = () => {
                         </div>
                         <div>
                             <div className="flex justify-between items-center mt-4">
-                                <label htmlFor="password">Password</label>
+                                <Label htmlFor="password">Password</Label>
                                 <Link to={"/forgot-password"}
                                     className="text-sm"
                                 >

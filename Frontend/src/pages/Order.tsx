@@ -1,8 +1,11 @@
 import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/lightswind/select'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button } from '../components/lightswind/button'
 
 const Order: React.FC = () => {
+
+  const navigate = useNavigate()
 
   const orders = [
     {
@@ -85,31 +88,41 @@ const Order: React.FC = () => {
       </div>
       <div className='w-full p-4 flex flex-col gap-4'>
         {orders.map((order) => (
-          <Link key={order._id} to={`/my-orders/${order._id}`}
-            className='border border-slate-300 rounded-md p-4'>
-            <div className='flex justify-between items-center'>
-              <p className='font-semibold'>Status: <span className={`
+          <div className='border border-slate-300 rounded-md p-4'>
+            <Link key={order._id} to={`/my-orders/${order._id}`}
+              className=''>
+              <div className='flex justify-between items-center'>
+                <p className='font-semibold mb-3'>Status: <span className={`
                 ${order.status === 'PENDING' ? 'text-yellow-600' :
-                  order.status === 'SHIPPED' ? 'text-blue-600' :
-                    order.status === 'DELIVERED' ? 'text-green-600' : 'text-gray-600'}
+                    order.status === 'SHIPPED' ? 'text-blue-600' :
+                      order.status === 'DELIVERED' ? 'text-green-600' : 'text-gray-600'}
                   `}>
-                {order.status}
-              </span></p>
-              <p className='text-slate-600'>Total Items: {order.totalItems}</p>
-            </div>
-            <div className='mt-2'>
-              {order.products.map((product) => (
-                <div key={product._id} className='flex items-center gap-4 mb-2'>
-                  <img src={product.mainImage} alt={product.name}
-                    className='w-24 h-24 object-cover rounded-md' />
-                  <div className='relative'>
-                    <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span>
-                    <span className='hidden sm:inline-block'>{product.name}</span>
+                  {order.status}
+                </span></p>
+                <p className='text-slate-600'>Total Items: {order.totalItems}</p>
+              </div>
+              <div className='mt-2'>
+                {order.products.map((product) => (
+                  <div key={product._id} className='flex gap-4 mb-2'>
+                    <img src={product.mainImage} alt={product.name}
+                      className='w-24 h-24 object-cover rounded-md' />
+                    <div className='mt-3'>
+                      <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span>
+                      <span className='hidden sm:inline-block'>{product.name}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </Link>
+                ))}
+              </div>
+            </Link>
+            {order.status === "DELIVERED" &&
+              <div className='flex items-end w-full justify-end'>
+                <Button className='cursor-pointer'
+                  onClick={() => navigate("/rating")}>
+                  Add Feedback
+                </Button>
+              </div>
+            }
+          </div>
         ))}
       </div>
 

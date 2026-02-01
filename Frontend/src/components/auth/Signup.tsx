@@ -2,6 +2,7 @@ import React from "react";
 import { Input } from "../lightswind/input";
 import { Link } from "react-router-dom";
 import { Button } from "../lightswind/button";
+import { Label } from "../lightswind/label";
 
 const SignUp: React.FC = () => {
     return (
@@ -14,7 +15,7 @@ const SignUp: React.FC = () => {
                 <div>
                     <form className="flex flex-col mt-6 gap-4">
                         <div>
-                            <label htmlFor="full_name">Full Name</label>
+                            <Label htmlFor="full_name">Full Name</Label>
                             <Input
                                 id="full_name"
                                 type="text"
@@ -23,7 +24,7 @@ const SignUp: React.FC = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="phone_no">Phone No.</label>
+                            <Label htmlFor="phone_no">Phone No.</Label>
                             <Input
                                 id="phone_no"
                                 type="number"
@@ -32,7 +33,7 @@ const SignUp: React.FC = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="email">Email</label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="text"
@@ -41,7 +42,7 @@ const SignUp: React.FC = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="password">Password</label>
+                            <Label htmlFor="password">Password</Label>
                             <Input
                                 id="password"
                                 type="password"
@@ -50,7 +51,7 @@ const SignUp: React.FC = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="avatar">Avatar</label>
+                            <Label htmlFor="avatar">Avatar</Label>
                             <Input
                                 id="avatar"
                                 type="file"

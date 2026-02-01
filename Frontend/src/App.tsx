@@ -10,6 +10,7 @@ import Address from './components/checkout/Address'
 import Payment from './components/checkout/Payment'
 import Order from './pages/Order'
 import SingleOrder from './components/order/SingleOrder'
+import Rating from './pages/Rating'
 
 const App = () => {
 
@@ -53,6 +54,9 @@ const App = () => {
           <Route element={
             <SingleOrder />
           } path='/my-orders/:orderId' />
+          <Route element={
+            <Rating />
+          } path='/rating' />
 
         </Route>
 

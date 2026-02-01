@@ -1,8 +1,11 @@
 import React from 'react'
 import { TruckElectricIcon, Package, GiftIcon, LocationEdit } from "lucide-react"
+import { Button } from '../lightswind/button'
+import { useNavigate } from 'react-router-dom'
 
 const SingleOrder: React.FC = () => {
 
+    const navigate = useNavigate()
     const data = [
         {
             "_id": "683adc2e529fba3315a452a7",
@@ -77,8 +80,6 @@ const SingleOrder: React.FC = () => {
                                 </div>
                             </div>
                         ))}
-
-
                     </div>
                 </div>
                 <div className='md:col-span-4 p-4 border-l border-slate-200 '>
@@ -148,6 +149,17 @@ const SingleOrder: React.FC = () => {
                         </div>
                     )}
                 </div>
+                {data[0].status === "DELIVERED" &&
+                    <div className='flex items-end w-full justify-end'>
+                        <Button
+                            onClick={() => navigate("/rating")}
+                            className='cursor-pointer'>
+                            Add Feedback
+                        </Button>
+                    </div>
+
+                }
+
             </div>
 
             <div className='p-4 mt-4 border border-slate-200 rounded-md w-full'>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '../lightswind/button'
 import { Input } from '../lightswind/input'
+import { Label } from '../lightswind/label'
 
 const Profile: React.FC = () => {
     return (
@@ -14,8 +15,8 @@ const Profile: React.FC = () => {
                         className='w-30 h-30 rounded-full' />
                 </div>
                 <form className="flex flex-col gap-4">
-                    <div>
-                        <label htmlFor="full_name">Full Name</label>
+                    <div className='text-start'>
+                        <Label htmlFor="full_name">Full Name</Label>
                         <Input
                             id="full_name"
                             type="text"
@@ -23,8 +24,8 @@ const Profile: React.FC = () => {
                             className="focus:outline-none mt-2"
                         />
                     </div>
-                    <div>
-                        <label htmlFor="phone_no">Phone No.</label>
+                    <div className='text-start'>
+                        <Label htmlFor="phone_no">Phone No.</Label>
                         <Input
                             id="phone_no"
                             type="number"
@@ -32,8 +33,8 @@ const Profile: React.FC = () => {
                             className="focus:outline-none mt-2"
                         />
                     </div>
-                    <div>
-                        <label htmlFor="email">Email</label>
+                    <div className='text-start'>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                             id="email"
                             type="text"
@@ -41,8 +42,8 @@ const Profile: React.FC = () => {
                             className="focus:outline-none mt-2"
                         />
                     </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
+                    <div className='text-start'>
+                        <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
                             type="password"
@@ -50,7 +51,7 @@ const Profile: React.FC = () => {
                             className="focus:outline-none mt-2"
                         />
                     </div>
-                  
+
                     <Button className="cursor-pointer">
                         Update
                     </Button>

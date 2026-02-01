@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '../lightswind/button'
 import { Input } from '../lightswind/input'
+import { Label } from '../lightswind/label'
 
 
 
@@ -16,7 +17,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
             </div>
             <form className="flex flex-col gap-4">
                 <div>
-                    <label htmlFor="address_line">Address Line</label>
+                    <Label htmlFor="address_line">Address Line</Label>
                     <Input
                         id="address_line"
                         type="text"
@@ -25,7 +26,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                     />
                 </div>
                 <div>
-                    <label htmlFor="country">Country</label>
+                    <Label htmlFor="country">Country</Label>
                     <Input
                         id="country"
                         type="text"
@@ -34,7 +35,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                     />
                 </div>
                 <div>
-                    <label htmlFor="state">State</label>
+                    <Label htmlFor="state">State</Label>
                     <Input
                         id="state"
                         type="text"
@@ -43,7 +44,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                     />
                 </div>
                 <div>
-                    <label htmlFor="city">City</label>
+                    <Label htmlFor="city">City</Label>
                     <Input
                         id="city"
                         type="text"
@@ -52,7 +53,7 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                     />
                 </div>
                 <div>
-                    <label htmlFor="pincode">Pincode</label>
+                    <Label htmlFor="pincode">Pincode</Label>
                     <Input
                         id="pincode"
                         type="text"

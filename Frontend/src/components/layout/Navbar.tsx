@@ -8,6 +8,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../lightswind/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from '../lightswind/avatar';
 
 const Navbar: React.FC = () => {
   type NavItemsType = {
@@ -18,7 +19,7 @@ const Navbar: React.FC = () => {
 
 
   const location = useLocation()
-  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart", 
+  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart",
     "/checkout/address", "/checkout/payment", "/my-orders"]
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
@@ -107,9 +108,9 @@ const Navbar: React.FC = () => {
             <HoverCard openDelay={200}>
               <HoverCardTrigger asChild>
                 <Button variant='link' className='cursor-pointer'>
-                  <img src="./hardip.jpg"
-                    alt="avatar"
-                    className="rounded-full w-8 h-8" />
+                  <Avatar>
+                    <AvatarImage src="./hardip.jpg" alt="@shadcn" />
+                  </Avatar>
                 </Button>
               </HoverCardTrigger>
               <HoverCardContent>

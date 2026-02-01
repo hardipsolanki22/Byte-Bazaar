@@ -3,6 +3,7 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '../components/lightswind/button';
 import RelatedProduct from '../components/products/Product';
+import { Badge } from '../components/lightswind/badge';
 
 const Product: React.FC = () => {
 
@@ -92,10 +93,8 @@ const Product: React.FC = () => {
               <p className='text-slate-600 mb-2'>{product.description}</p>
               <p className='text-xl font-semibold mb-2 text-slate-700'>${product.price}</p>
               <div className='flex items-center mb-2'>
-                <span className='text-slate-700 mr-2'>Stock:</span>
-                <span className={`font-medium ${product.stock > 5 ? 'text-green-600' : 'text-red-600'}`}>
-                  {product.stock > 5 ? 'In Stock' : 'Low Stock'}
-                </span>
+                {product.stock > 5 ? <Badge variant={'success'}>In Stock</Badge>
+                  : <Badge variant={'destructive'}>Low Stock</Badge>}
               </div>
               <div className='flex items-center'>
                 <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-2'>
