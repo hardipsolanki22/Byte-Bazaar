@@ -542,6 +542,15 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
             }
         },
         {
+            // Lookup to get address details
+            $lookup: {
+                from: "addresses",
+                localField: "address",
+                foreignField: "_id",
+                as: "address"
+            }
+        },
+        {
             // Unwind the items array to process each item individually
             $unwind: "$items"
         },
@@ -578,9 +587,9 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
                 orderPrice: 1,
                 paymentType: 1,
                 isPaymentDone: 1,
-                address: 1,
+                address: { $first: "$address" },
                 coupon: 1,
-                status: 1
+                status: 1,
             }
         },
         {
@@ -606,6 +615,7 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
                     }
                 },
                 coupon: { $first: "$coupon" },
+                address: { $first: "$address" }
             }
         },
         {

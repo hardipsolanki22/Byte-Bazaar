@@ -8,6 +8,8 @@ import Account from './pages/Account'
 import Cart from './pages/Cart'
 import Address from './components/checkout/Address'
 import Payment from './components/checkout/Payment'
+import Order from './pages/Order'
+import SingleOrder from './components/order/SingleOrder'
 
 const App = () => {
 
@@ -44,6 +46,13 @@ const App = () => {
           <Route element={
             <Payment />
           } path='/checkout/payment' />
+          <Route element={
+            <Order />
+          } path='/my-orders' />
+
+          <Route element={
+            <SingleOrder />
+          } path='/my-orders/:orderId' />
 
         </Route>
 

@@ -3,6 +3,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Home, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
 import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../lightswind/hover-card";
 
 const Navbar: React.FC = () => {
   type NavItemsType = {
@@ -13,7 +18,8 @@ const Navbar: React.FC = () => {
 
 
   const location = useLocation()
-  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart", "/checkout/address", "/checkout/payment"]
+  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart", 
+    "/checkout/address", "/checkout/payment", "/my-orders"]
   const navigate = useNavigate()
   const navItems: NavItemsType[] = [
     {
@@ -65,7 +71,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
-        <div className='gap-10 flex items-center justify-center '>
+        <div className='gap-10 flex items-center justify-center'>
           <Link to="/" className='flex items-center justify-center '>
             <img src="./byteBazaar.png" alt="logo"
               className='w-24 h-24 cursor-pointer' />
@@ -82,7 +88,7 @@ const Navbar: React.FC = () => {
               </Button>
             </li>
           ))}
-          <li className='inline-block'>
+          {/* <li className='inline-block'>
             <Button
               onClick={() => navigate("/signin")}
               variant='github'
@@ -96,6 +102,34 @@ const Navbar: React.FC = () => {
               className='cursor-pointer'>
               Sign Up
             </Button>
+          </li> */}
+          <li className='inline-block mx-4'>
+            <HoverCard openDelay={200}>
+              <HoverCardTrigger asChild>
+                <Button variant='link' className='cursor-pointer'>
+                  <img src="./hardip.jpg"
+                    alt="avatar"
+                    className="rounded-full w-8 h-8" />
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <div className="p-2">
+                  <Link to="/account">
+                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                      My Account
+                    </Button>
+                  </Link>
+                  <Link to="/my-orders">
+                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                      My Orders
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" className="w-full text-left cursor-pointer">
+                    Logout
+                  </Button>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
           </li>
           <li className='inline-block relative'>
             <Button
@@ -108,6 +142,7 @@ const Navbar: React.FC = () => {
             <span className="absolute top-0 right-0 bg-red-500 text-white
              rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
           </li>
+
         </ul>
       </nav>
 

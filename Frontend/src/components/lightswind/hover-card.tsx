@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils"; // Ensure this utility is present or replace with className logic
-import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion"; // Import HTMLMotionProps
+import { motion, AnimatePresence } from "motion/react"; // Import HTMLMotionProps
+import type { HTMLMotionProps } from "motion/react";
 
 interface HoverCardContextType {
   open: boolean;
@@ -148,9 +149,9 @@ const HoverCardContent = React.forwardRef<HTMLDivElement, HoverCardContentProps>
             )}
             style={{
               top: `calc(100% + ${sideOffset}px)`, // Position below the trigger
-              left: align === "center" ? "50%" : align === "start" ? "0" : "auto",
-              right: align === "end" ? "0" : "auto",
-              transform: align === "center" ? "translateX(-50%)" : "none", // Center horizontally if align="center"
+              right: align === "center" ? "50%" : align === "end" ? "0" : "auto",
+              left: align === "start" ? "0" : "auto",
+              transform: align === "center" ? "translateX(50%)" : "none", // Center horizontally if align="center"
               // No need for transform here directly, framer-motion handles it
             }}
             {...props} // Pass through Framer Motion props
