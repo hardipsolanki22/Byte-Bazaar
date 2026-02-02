@@ -63,8 +63,7 @@ const Rating: React.FC = () => {
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             placeholder='Share your feedback and experience...'
-                            className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none 
-                            focus:ring-2 focus:ring-blue-500 resize-none mt-2'
+                            className='mt-2'
                             rows={5}
                             id="message" />
                         <p className='text-xs text-gray-500 mt-2'>

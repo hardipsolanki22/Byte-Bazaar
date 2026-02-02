@@ -1,0 +1,652 @@
+import * as React from "react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { motion, useInView } from "motion/react";
+import type { HTMLMotionProps } from "motion/react";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
+
+// Re-implementing the 'cn' utility function directly for self-containment
+function cn(...inputs: clsx.ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
+
+// --- Context and Provider ---
+
+interface SidebarContextType {
+    expanded: boolean;
+    onChange: (expanded: boolean) => void;
+    activeMenuItem: string | null;
+    setActiveMenuItem: (id: string | null) => void;
+    menuItemPosition: React.MutableRefObject<{
+        left: number;
+        width: number;
+        top: number;
+        height: number;
+    }>;
+    menuItemRefs: React.MutableRefObject<Map<string, HTMLDivElement | null>>;
+    menuRef: React.RefObject<HTMLDivElement>;
+    updateIndicatorPosition: (id: string | null) => void;
+    notifyMenuItemRefChange: () => void;
+}
+
+const SidebarContext = React.createContext<SidebarContextType | undefined>(
+    undefined
+);
+
+interface SidebarProviderProps {
+    defaultExpanded?: boolean;
+    expanded?: boolean;
+    onExpandedChange?: (expanded: boolean) => void;
+    children: React.ReactNode;
+}
+
+export function SidebarProvider({
+    defaultExpanded = true,
+    expanded: controlledExpanded,
+    onExpandedChange,
+    children,
+}: SidebarProviderProps) {
+    const [expanded, setExpanded] = React.useState(defaultExpanded);
+    const [activeMenuItem, setActiveMenuItem] = React.useState<string | null>(
+        null
+    );
+    const menuItemPosition = React.useRef({
+        left: 0,
+        width: 0,
+        top: 0,
+        height: 0,
+    });
+    const menuItemRefs = React.useRef<Map<string, HTMLDivElement | null>>(
+        new Map()
+    );
+    const menuRef = React.useRef<HTMLDivElement>(null);
+
+    const [menuRefsVersion, setMenuRefsVersion] = React.useState(0);
+
+    const isControlled = controlledExpanded !== undefined;
+    const actualExpanded = isControlled ? controlledExpanded : expanded;
+
+    const onExpandedChangeRef = React.useRef(onExpandedChange);
+
+    React.useEffect(() => {
+        onExpandedChangeRef.current = onExpandedChange;
+    }, [onExpandedChange]);
+
+    const handleExpandedChange = React.useCallback(
+        (value: boolean) => {
+            if (!isControlled) {
+                setExpanded(value);
+            }
+            onExpandedChangeRef.current?.(value);
+        },
+        [isControlled]
+    );
+
+    const notifyMenuItemRefChange = React.useCallback(() => {
+        setMenuRefsVersion((prev) => prev + 1);
+    }, []);
+
+    const updateIndicatorPosition = React.useCallback(
+        (id: string | null) => {
+            const indicator = menuRef.current?.querySelector(
+                ".sidebar-menu-indicator"
+            ) as HTMLElement | null;
+
+            if (id && menuRef.current) {
+                const selectedItem = menuItemRefs.current.get(id);
+                if (selectedItem) {
+                    const menuRect = menuRef.current.getBoundingClientRect();
+                    const rect = selectedItem.getBoundingClientRect();
+
+                    menuItemPosition.current = {
+                        left: rect.left - menuRect.left,
+                        width: rect.width,
+                        top: rect.top - menuRect.top,
+                        height: rect.height,
+                    };
+
+                    if (indicator) {
+                        indicator.style.left = `${menuItemPosition.current.left}px`;
+                        indicator.style.width = `${menuItemPosition.current.width}px`;
+                        indicator.style.top = `${menuItemPosition.current.top}px`;
+                        indicator.style.height = `${menuItemPosition.current.height}px`;
+                        indicator.style.opacity = "1";
+                    }
+                } else {
+                    if (indicator) {
+                        indicator.style.opacity = "0";
+                    }
+                }
+            } else {
+                if (indicator) {
+                    indicator.style.opacity = "0";
+                }
+            }
+        },
+        [menuItemRefs, menuRef, menuItemPosition]
+    );
+
+    // Effect to set active menu item from URL
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const url = new URL(window.location.href);
+        const searchParams = url.searchParams;
+        const path = url.pathname;
+
+        let potentialMenuItemValue: string | null = null;
+
+        if (searchParams.has("component")) {
+            potentialMenuItemValue = searchParams.get("component");
+        } else {
+            const pathSegments = path.split("/").filter((segment) => segment);
+            if (pathSegments.length > 0) {
+                potentialMenuItemValue = pathSegments[pathSegments.length - 1];
+            }
+        }
+        setActiveMenuItem(potentialMenuItemValue);
+    }, []);
+
+    // Primary useLayoutEffect for synchronous indicator updates
+    React.useLayoutEffect(() => {
+        updateIndicatorPosition(activeMenuItem);
+    }, [activeMenuItem, menuRefsVersion, menuRef, updateIndicatorPosition]);
+
+    // Effect to re-adjust on window resize/layout changes
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (activeMenuItem) {
+                updateIndicatorPosition(activeMenuItem);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [activeMenuItem, updateIndicatorPosition]);
+
+    return (
+        <SidebarContext.Provider
+            value={{
+                expanded: actualExpanded,
+                onChange: handleExpandedChange,
+                activeMenuItem,
+                setActiveMenuItem,
+                menuItemPosition,
+                menuItemRefs,
+                menuRef,
+                updateIndicatorPosition,
+                notifyMenuItemRefChange,
+            }}
+        >
+            {children}
+        </SidebarContext.Provider>
+    );
+}
+
+export function useSidebar() {
+    const context = React.useContext(SidebarContext);
+
+    if (!context) {
+        throw new Error("useSidebar must be used within a SidebarProvider");
+    }
+
+    return context;
+}
+
+// --- Main Sidebar Components ---
+
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function Sidebar({ className, children, ...props }: SidebarProps) {
+    const { expanded } = useSidebar();
+
+    return (
+        <div
+            className={cn(
+                "h-full min-h-screen z-40 w-56 relative",
+                "bg-background border-r   shadow-sm",
+                "fixed lg:sticky top-0 md:top-0",
+                expanded ? "left-0" : "md:left-0 -left-full",
+                className
+            )}
+            role="complementary"
+            data-collapsed={!expanded}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+}
+
+interface SidebarTriggerProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement> { }
+
+export function SidebarTrigger({ className, ...props }: SidebarTriggerProps) {
+    const { expanded, onChange } = useSidebar();
+
+    return (
+        <button
+            type="button"
+            className={cn(
+                "inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "fixed md:static z-50 left-4 top-20",
+                className
+            )}
+            onClick={() => onChange(!expanded)}
+            aria-label={expanded ? "Close sidebar" : "Open sidebar"}
+            {...props}
+        >
+            <span className="sr-only">
+                {expanded ? "Close sidebar" : "Open sidebar"}
+            </span>
+            {expanded ? (
+                <ChevronLeft className="h-4 w-4" />
+            ) : (
+                <ChevronRight className="h-4 w-4" />
+            )}
+        </button>
+    );
+}
+
+interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarHeader({
+    className,
+    children,
+    ...props
+}: SidebarHeaderProps) {
+    const { expanded } = useSidebar();
+
+    return (
+        <div
+            className={cn(
+                "flex h-16 items-center border-b   px-4",
+                expanded ? "justify-between" : "justify-center",
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+}
+
+// --- UPDATED SidebarContent Component for Scroll Persistence ---
+
+interface SidebarContentProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+// Key for localStorage
+const SCROLL_STORAGE_KEY = "sidebarScrollTop";
+
+export function SidebarContent({
+    className,
+    children,
+    ...props
+}: SidebarContentProps) {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    // 1. Load scroll position on mount
+    React.useLayoutEffect(() => {
+        const scrollElement = scrollRef.current;
+        if (scrollElement) {
+            // Get the saved scroll position from localStorage
+            const savedScrollTop = localStorage.getItem(SCROLL_STORAGE_KEY);
+
+            if (savedScrollTop) {
+                // Convert to number and set the scroll position
+                const scrollTop = parseInt(savedScrollTop, 10);
+                if (!isNaN(scrollTop)) {
+                    scrollElement.scrollTop = scrollTop;
+                }
+            }
+        }
+    }, []); // Empty dependency array ensures it runs once after mount
+
+    // 2. Save scroll position on scroll event
+    const handleScroll = React.useCallback(() => {
+        const scrollElement = scrollRef.current;
+        if (scrollElement) {
+            // Save the current scrollTop value to localStorage
+            localStorage.setItem(
+                SCROLL_STORAGE_KEY,
+                scrollElement.scrollTop.toString()
+            );
+        }
+    }, []);
+
+    // Attach and clean up the scroll listener
+    React.useEffect(() => {
+        const scrollElement = scrollRef.current;
+        if (scrollElement) {
+            // Use passive true if possible, but standard addEventListener is fine here
+            scrollElement.addEventListener("scroll", handleScroll);
+
+            return () => {
+                // Clean up the event listener when the component unmounts
+                scrollElement.removeEventListener("scroll", handleScroll);
+            };
+        }
+    }, [handleScroll]);
+
+    return (
+        <div
+            className={cn(
+                "flex-1 overflow-hidden h-[calc(100vh-4rem)] space-y-4 ",
+                className
+            )}
+            {...props}
+        >
+            {/* The inner div is the scrollable element */}
+            <div
+                ref={scrollRef}
+                className="h-full pb-12 overflow-auto scrollbar-hide "
+            >
+                {children}
+            </div>
+        </div>
+    );
+}
+
+// --- Grouping Components ---
+
+interface SidebarGroupProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarGroup({
+    className,
+    children,
+    ...props
+}: SidebarGroupProps) {
+    return (
+        <div className={cn("px-2 py-4", className)} {...props}>
+            {children}
+        </div>
+    );
+}
+
+interface SidebarGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarGroupLabel({
+    className,
+    children,
+    ...props
+}: SidebarGroupLabelProps) {
+    const { expanded } = useSidebar();
+
+    if (!expanded) {
+        return null;
+    }
+
+    return (
+        <div
+            className={cn(
+                "mb-2 px-2 text-md md:text-sm font-semibold md:font-bold tracking-tight",
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+}
+
+interface SidebarGroupContentProps
+    extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarGroupContent({
+    className,
+    children,
+    ...props
+}: SidebarGroupContentProps) {
+    return (
+        <div className={cn("space-y-1", className)} {...props}>
+            {children}
+        </div>
+    );
+}
+
+interface SidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarFooter({
+    className,
+    children,
+    ...props
+}: SidebarFooterProps) {
+    const { expanded } = useSidebar();
+
+    return (
+        <div
+            className={cn(
+                "flex border-t   p-4",
+                expanded
+                    ? "flex-row items-center justify-between"
+                    : "flex-col justify-center",
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+}
+
+// --- Menu Item Components (with Framer Motion and Indicator) ---
+
+interface SidebarMenuProps extends React.HTMLAttributes<HTMLDivElement> { }
+
+export function SidebarMenu({
+    className,
+    children,
+    ...props
+}: SidebarMenuProps) {
+    const { menuRef } = useSidebar();
+
+    return (
+        <div ref={menuRef} className={cn("relative", className)} {...props}>
+            <div
+                className="sidebar-menu-indicator opacity-0 absolute ease-in-out 
+      rounded-md bg-primarylw/10 dark:bg-greedy/10 border border-primarylw dark:border-greedy"
+            />
+            <div
+                className="sidebar-menu-indicator/10 opacity-0 absolute 
+        ease-in-out 
+      rounded-md bg-primarylw/10 dark:bg-greedy/10"
+            />{" "}
+            {children}
+        </div>
+    );
+}
+
+interface SidebarMenuItemProps
+    extends Omit<
+        React.HTMLAttributes<HTMLDivElement>,
+        | "onDrag"
+        | "onDragStart"
+        | "onDragEnd"
+        | "onAnimationStart"
+        | "onAnimationEnd"
+    > {
+    value?: string;
+}
+
+export function SidebarMenuItem({
+    className,
+    children,
+    value,
+    ...props
+}: SidebarMenuItemProps) {
+    const itemRef = React.useRef<HTMLDivElement>(null);
+    const { activeMenuItem, menuItemRefs, notifyMenuItemRefChange } =
+        useSidebar();
+    const menuItemId = value || React.useId();
+    const isActive = activeMenuItem === menuItemId;
+
+    const isInView = useInView(itemRef, { once: false, amount: 0.5 });
+
+    // Register and notify
+    React.useEffect(() => {
+        if (itemRef.current) {
+            menuItemRefs.current.set(menuItemId, itemRef.current);
+            notifyMenuItemRefChange();
+        }
+        return () => {
+            menuItemRefs.current.delete(menuItemId);
+            notifyMenuItemRefChange();
+        };
+    }, [menuItemRefs, menuItemId, notifyMenuItemRefChange]);
+
+    return (
+        <motion.div
+            ref={itemRef}
+            className={cn("mb-1 scrollbar-hide", className)}
+            data-value={menuItemId}
+            data-state={isActive ? "active" : "inactive"}
+            animate={{
+                scale: isInView ? 1 : 0.6,
+                opacity: isInView ? 1 : 0.5,
+                x: isInView ? 0 : -60,
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            {...(props as HTMLMotionProps<"div">)}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
+interface SidebarMenuButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+    asChild?: boolean;
+    value?: string;
+}
+
+export function SidebarMenuButton({
+    className,
+    children,
+    asChild = false,
+    value,
+    ...props
+}: SidebarMenuButtonProps) {
+    const {
+        expanded,
+        activeMenuItem,
+        setActiveMenuItem,
+        updateIndicatorPosition,
+    } = useSidebar();
+    const menuItemId = value || React.useId();
+    const isActive = activeMenuItem === menuItemId;
+
+    const handleClick = React.useCallback(() => {
+        setActiveMenuItem(menuItemId);
+        // Explicitly call updateIndicatorPosition immediately on click.
+        updateIndicatorPosition(menuItemId);
+
+        if (props.onClick && typeof props.onClick === "function") {
+            const dummyEvent = {
+                currentTarget: {} as EventTarget & HTMLDivElement,
+                target: {} as EventTarget,
+                preventDefault: () => { },
+                stopPropagation: () => { },
+            } as React.MouseEvent<HTMLDivElement>;
+            props.onClick(dummyEvent);
+        }
+    }, [menuItemId, setActiveMenuItem, updateIndicatorPosition, props.onClick]);
+
+    const sharedClassName =
+        "flex cursor-pointer items-center rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ";
+
+    // Render logic for collapsed and expanded states remains the same...
+
+    if (!expanded) {
+        if (asChild) {
+            return (
+                <div
+                    className={className}
+                    data-active={isActive ? "true" : "false"}
+                    onClick={handleClick}
+                    {...props}
+                >
+                    {React.Children.map(children, (child) => {
+                        if (React.isValidElement(child)) {
+                            return React.cloneElement(child, {
+                                ...child.props,
+                                className: cn(
+                                    sharedClassName,
+                                    "justify-center p-2",
+                                    "hover:bg-primary/10 hover:scale-110",
+                                    isActive ? "text-primary font-medium" : "",
+                                    child.props?.className
+                                ),
+                            });
+                        }
+                        return child;
+                    })}
+                </div>
+            );
+        }
+
+        return (
+            <div
+                className={cn(
+                    sharedClassName,
+                    "justify-center p-2",
+                    "hover:bg-primary/10 hover:scale-110",
+                    isActive ? "text-primary font-medium" : "",
+                    className
+                )}
+                data-active={isActive ? "true" : "false"}
+                onClick={handleClick}
+                {...props}
+            >
+                {React.Children.toArray(children).filter(
+                    (child) =>
+                        React.isValidElement(child) && typeof child.type !== "string"
+                )}
+            </div>
+        );
+    }
+
+    if (asChild) {
+        return (
+            <div
+                className={className}
+                data-active={isActive ? "true" : "false"}
+                onClick={handleClick}
+                {...props}
+            >
+                {React.Children.map(children, (child) => {
+                    if (React.isValidElement(child)) {
+                        return React.cloneElement(child, {
+                            ...child.props,
+                            className: cn(
+                                sharedClassName,
+                                "justify-start gap-2",
+                                "hover:bg-primary/10 hover:translate-x-1",
+                                isActive ? "text-primary font-medium" : "",
+                                child.props?.className
+                            ),
+                        });
+                    }
+                    return child;
+                })}
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className={cn(
+                sharedClassName,
+                "justify-start gap-2",
+                "hover:bg-primary/10 hover:translate-x-1",
+                isActive ? "text-primary font-medium" : "",
+                className
+            )}
+            data-active={isActive ? "true" : "false"}
+            onClick={handleClick}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+}
+
+export { Sidebar as SidebarRoot };

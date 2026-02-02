@@ -128,6 +128,11 @@ const Navbar: React.FC = () => {
                   <Button variant="ghost" className="w-full text-left cursor-pointer">
                     Logout
                   </Button>
+                  <Link to="/admin">
+                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                      Admin
+                    </Button>
+                  </Link>
                 </div>
               </HoverCardContent>
             </HoverCard>
