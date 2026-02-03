@@ -1,10 +1,10 @@
 import React from 'react'
-import { Button } from '../../components/lightswind/button'
+import { Button } from '../../../components/lightswind/button'
 import { DivideCircle, Star, MoreVertical } from 'lucide-react'
-import { Badge } from '../../components/lightswind/badge'
+import { Badge } from '../../../components/lightswind/badge'
 import { Link } from 'react-router-dom'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../components/lightswind/hover-card'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../components/lightswind/dialog'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../../components/lightswind/hover-card'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/lightswind/dialog'
 
 const SingleProduct: React.FC = () => {
 
@@ -24,45 +24,49 @@ const SingleProduct: React.FC = () => {
     }
 
     return (
-        <div className='pt-4 flex flex-col  items-end mx-2'>
-            <HoverCard openDelay={200}>
-                <HoverCardTrigger asChild>
-                    <Button variant='link' className='cursor-pointer'>
-                        <MoreVertical className='w-4 h-4'  />
-                    </Button>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                    <Link to="/account">
-                        <Button variant="ghost"
-                            className="w-full text-left mb-3 cursor-pointer">
-                            Update
+        <div className='pt-4 flex flex-col mx-2'>
+            <div className='flex justify-between mx-2 border-b pb-3 border-slate-200'>
+                <h2 className='text-2xl font-semibold'>Product Management</h2>
+                <HoverCard openDelay={200}>
+                    <HoverCardTrigger asChild>
+                        <Button variant='link' className='cursor-pointer'>
+                            <MoreVertical className='w-4 h-4' />
                         </Button>
-                    </Link>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="destructive"
-                                className="w-full text-left cursor-pointer">
-                                Delete
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                        <Link to="/account">
+                            <Button variant="ghost"
+                                className="w-full text-left mb-3 cursor-pointer">
+                                Update
                             </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Delete Product</DialogTitle>
-                                <DialogDescription>
-                                    This action cannot be undone. Are you sure you want to delete this product
-                                </DialogDescription>
-                                <div className='flex justify-end items-center m-2'>
-                                    <Button variant='destructive' className='cursor-pointer'>
-                                        Delete
-                                    </Button>
-                                </div>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+                        </Link>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="destructive"
+                                    className="w-full text-left cursor-pointer">
+                                    Delete
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Delete Product</DialogTitle>
+                                    <DialogDescription>
+                                        This action cannot be undone. Are you sure you want to delete this product
+                                    </DialogDescription>
+                                    <div className='flex justify-end items-center m-2'>
+                                        <Button variant='destructive' className='cursor-pointer'>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
 
-                </HoverCardContent>
-            </HoverCard>
+                    </HoverCardContent>
+                </HoverCard>
+            </div>
+
 
             <div className='rounded-md p-4 m-4 grid grid-cols-1 lg:grid-cols-12 gap-4'>
                 <div className='lg:col-span-6'>

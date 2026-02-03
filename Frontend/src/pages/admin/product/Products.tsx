@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/lightswind/select'
-import Product from '../../components/products/Product'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/lightswind/select'
+import Product from '../../../components/products/Product'
 
 const Products: React.FC = () => {
     const products = [

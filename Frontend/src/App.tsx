@@ -13,9 +13,11 @@ import SingleOrder from './components/order/SingleOrder'
 import Rating from './pages/Rating'
 import Deshboard from './pages/admin/Deshboard'
 import AdminPageLayout from './components/layout/admin/AdminPageLayout'
-import AddProduct from './pages/admin/AddProduct'
-import AdminProdutsList from './pages/admin/Products'
-import SingleProduct from './pages/admin/SingleProduct'
+import AddProduct from './pages/admin/product/AddProduct'
+import AdminProdutsList from './pages/admin/product/Products'
+import SingleProduct from './pages/admin/product/SingleProduct'
+import Coupon from './pages/admin/coupon/Coupon'
+import AddCoupon from './pages/admin/coupon/AddCoupon'
 
 const App = () => {
 
@@ -81,6 +83,12 @@ const App = () => {
           <Route element={
             <SingleProduct />
           } path='/admin/products/:slug' />
+          <Route element={
+            <Coupon />
+          } path='/admin/coupon' />
+          <Route element={
+            <AddCoupon />
+          } path='/admin/add-coupon' />
 
         </Route>
 

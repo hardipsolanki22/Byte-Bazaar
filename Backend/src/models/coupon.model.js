@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 
+// add new field limit number and used from
 const couponSchema = new Schema({
     couponCode: {
         type: String,
