@@ -43,14 +43,13 @@ const Products: React.FC = () => {
 
   return (
     <section className=''>
-      {/* <h1 className='text-3xl sm:text-4xl lg:text-5xl'>Products </h1> */}
       <div className='grid m-2 gap-4 grid-cols-span-1 lg:grid-cols-12'>
         <div className='lg:col-span-3 bg-white p-4 border border-slate-400 rounded-md'>
           <div className='border-b border-slate-400 pb-3 text-left'>
             <h3 className='text-xl'>Filters</h3>
             <p className='text-slate-400'>1000+ Products</p>
           </div>
-          <div className='border-b border-slate-400 py-3 text-left'>
+          <div className='py-3 text-left'>
             <h2 className='text-xl'>Category</h2>
             <Select>
               <SelectTrigger className="w-full mt-4">
@@ -69,14 +68,9 @@ const Products: React.FC = () => {
             {products?.map((product, index) => (
               <Link key={index} to={`/products/${product.slug}`}>
                 <Product {...product} />
-
               </Link>
             ))}
-
-
-
           </div>
-
         </div>
       </div>
     </section>

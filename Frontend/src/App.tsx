@@ -11,12 +11,18 @@ import Payment from './components/checkout/Payment'
 import Order from './pages/Order'
 import SingleOrder from './components/order/SingleOrder'
 import Rating from './pages/Rating'
+import Deshboard from './pages/admin/Deshboard'
+import AdminPageLayout from './components/layout/admin/AdminPageLayout'
+import AddProduct from './pages/admin/AddProduct'
+import AdminProdutsList from './pages/admin/Products'
+import SingleProduct from './pages/admin/SingleProduct'
 
 const App = () => {
 
   return (
     <BrowserRouter>
       <Routes>
+        {/* Normal user routes */}
         <Route path='/' element={
           <PageLayout />
         } >
@@ -57,6 +63,24 @@ const App = () => {
           <Route element={
             <Rating />
           } path='/rating' />
+        </Route>
+        {/* Admin routes */}
+        <Route element={
+          <AdminPageLayout />
+        } path='/admin'
+        >
+          <Route element={
+            <Deshboard />
+          } path='/admin' />
+          <Route element={
+            <AddProduct />
+          } path='/admin/add-product' />
+          <Route element={
+            <AdminProdutsList />
+          } path='/admin/products' />
+          <Route element={
+            <SingleProduct />
+          } path='/admin/products/:slug' />
 
         </Route>
 

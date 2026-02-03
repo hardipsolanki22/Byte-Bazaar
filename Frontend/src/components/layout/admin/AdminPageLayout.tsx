@@ -34,8 +34,8 @@ const AdminPageLayout: React.FC<PageLayoutProps> = ({
             <main
                 className={`flex w-full ${className} ${!noPadding && "p-2"}
         `}>
-                <SidebarProvider  defaultExpanded>
-                    <Sidebar>
+                <SidebarProvider defaultExpanded>
+                    <Sidebar className='md:min-w-1/5 hidden lg:inline-block'>
                         <SidebarHeader className=''>
                             <span className="font-bold">My App</span>
                             <SidebarTrigger />
