@@ -62,7 +62,6 @@ const SingleProduct: React.FC = () => {
                                 </DialogHeader>
                             </DialogContent>
                         </Dialog>
-
                     </HoverCardContent>
                 </HoverCard>
             </div>

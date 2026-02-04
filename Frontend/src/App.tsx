@@ -18,6 +18,7 @@ import AdminProdutsList from './pages/admin/product/Products'
 import SingleProduct from './pages/admin/product/SingleProduct'
 import Coupon from './pages/admin/coupon/Coupon'
 import AddCoupon from './pages/admin/coupon/AddCoupon'
+import Users from './pages/admin/user/Users'
 
 const App = () => {
 
@@ -89,6 +90,9 @@ const App = () => {
           <Route element={
             <AddCoupon />
           } path='/admin/add-coupon' />
+          <Route element={
+            <Users />
+          } path='/admin/users' />
 
         </Route>
 
