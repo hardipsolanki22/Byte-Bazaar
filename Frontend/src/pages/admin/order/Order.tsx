@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Avatar, AvatarFallback, AvatarImage } from '../../../components/lightswind/avatar'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../../../components/lightswind/table'
 import { Badge } from '../../../components/lightswind/badge'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Order: React.FC = () => {
     const navigate = useNavigate()

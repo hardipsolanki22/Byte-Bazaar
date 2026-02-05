@@ -16,7 +16,7 @@ const Coupon: React.FC = () => {
     const navigate = useNavigate()
 
     return (
-        <div className='flex flex-col w-full'>
+        <div className='flex flex-col w-full p-4'>
             <div className='flex justify-between mx-2 my-4'>
                 <h2 className='text-2xl font-semibold'>Coupon Management</h2>
                 <Button

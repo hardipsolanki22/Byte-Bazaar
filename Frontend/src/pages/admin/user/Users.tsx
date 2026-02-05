@@ -7,7 +7,7 @@ import { Button } from '../../../components/lightswind/button'
 const Users: React.FC = () => {
     const [role, setRole] = useState("")
     return (
-        <div className='w-full'>
+        <div className='w-full p-4'>
             <Table className='m-4'>
                 <TableCaption>A list of your recent users.</TableCaption>
                 <TableHeader>

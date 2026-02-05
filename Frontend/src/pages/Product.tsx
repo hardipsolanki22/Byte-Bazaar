@@ -1,11 +1,12 @@
 import { DivideCircle, Star } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { Button } from '../components/lightswind/button';
 import RelatedProduct from '../components/products/Product';
 import { Badge } from '../components/lightswind/badge';
 
 const Product: React.FC = () => {
+
 
   const { slug } = useParams();
 
@@ -19,7 +20,7 @@ const Product: React.FC = () => {
     description: 'The iPhone 13 features a sleek design, powerful A15 Bionic chip, and an advanced dual-camera system for stunning photos and videos.',
     subImages: [
       'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-      'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
+      '/facebook-logo.png',
       'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D'
     ]
   }
@@ -36,7 +37,7 @@ const Product: React.FC = () => {
     {
       name: 'Samsung Galaxy S21',
       price: 899,
-      mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
+      mainImage: '/facebook-logo.png',
       averageRating: 4.3,
       ratingCount: 95,
       slug: 'samsung-galaxy-s21'
@@ -58,6 +59,7 @@ const Product: React.FC = () => {
       slug: 'sony-alpha-a7-iii'
     }
   ]
+  const [productMainImageUrl, setProductMainImageUrl] = useState(product.mainImage)
 
   console.log(slug)
   return (
@@ -69,6 +71,7 @@ const Product: React.FC = () => {
             <div className='flex sm:flex-col items-center flex-wrap justify-center sm:justify-normal gap-4 sm:mt-4'>
               {product.subImages.map((imgUrl, idx) => (
                 <img
+                  onClick={() => setProductMainImageUrl(imgUrl)}
                   key={idx}
                   src={imgUrl}
                   alt={`Product ${idx + 1}`}
@@ -79,7 +82,7 @@ const Product: React.FC = () => {
             </div>
             <div className='px-4 sm:px-10 border rounded-sm border-slate-400'>
               <img
-                src={product.mainImage}
+                src={productMainImageUrl}
                 alt={product.name}
                 className="w-[30rem] h-[30rem] object-cover"
               />

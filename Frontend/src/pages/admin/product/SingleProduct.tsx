@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '../../../components/lightswind/button'
 import { DivideCircle, Star, MoreVertical } from 'lucide-react'
 import { Badge } from '../../../components/lightswind/badge'
@@ -18,10 +18,11 @@ const SingleProduct: React.FC = () => {
         description: 'The iPhone 13 features a sleek design, powerful A15 Bionic chip, and an advanced dual-camera system for stunning photos and videos.',
         subImages: [
             'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-            'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
+            '/facebook-logo.png',
             'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D'
         ]
     }
+    const [productMainImageUrl, setProductMainImageUrl] = useState(product.mainImage)
 
     return (
         <div className='pt-4 flex flex-col mx-2'>
@@ -34,7 +35,7 @@ const SingleProduct: React.FC = () => {
                         </Button>
                     </HoverCardTrigger>
                     <HoverCardContent>
-                        <Link to="/account">
+                        <Link to="/admin/add-product">
                             <Button variant="ghost"
                                 className="w-full text-left mb-3 cursor-pointer">
                                 Update
@@ -73,6 +74,7 @@ const SingleProduct: React.FC = () => {
                         <div className='flex sm:flex-col items-center flex-wrap justify-center sm:justify-normal gap-4 sm:mt-4'>
                             {product.subImages.map((imgUrl, idx) => (
                                 <img
+                                    onClick={() => setProductMainImageUrl(imgUrl)}
                                     key={idx}
                                     src={imgUrl}
                                     alt={`Product ${idx + 1}`}
@@ -83,7 +85,7 @@ const SingleProduct: React.FC = () => {
                         </div>
                         <div className='px-4 sm:px-10 border rounded-sm border-slate-400'>
                             <img
-                                src={product.mainImage}
+                                src={productMainImageUrl}
                                 alt={product.name}
                                 className="w-[30rem] h-[30rem] object-cover"
                             />

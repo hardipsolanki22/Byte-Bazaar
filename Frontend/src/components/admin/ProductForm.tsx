@@ -64,7 +64,11 @@ const ProductForm: React.FC = () => {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div>
+                    <div className='mt-4'>
+                        <div className='p-2 border w-fit mb-2 border-slate-200 rounded-md'>
+                            <img src="/facebook-logo.png" alt=""
+                                className='w-16 h-16 rounded-b-sm' />
+                        </div>
                         <Label htmlFor="mainImage">main Image</Label>
                         <Input
                             id="mainImage"
@@ -72,14 +76,39 @@ const ProductForm: React.FC = () => {
                             className="my-2"
                             accept="image/png, image.gpeg image/jpg image/gif"
                         />
-                        <Label htmlFor="subImages">Sub Images</Label>
-                        <Input
-                            id="subImages"
-                            type="file"
-                            multiple
-                            className="mt-2"
-                            accept="image/png, image.gpeg image/jpg image/gif"
-                        />
+                        <div className='mb-4'>
+                            <div className='flex w-full gap-4 mb-2'>
+                                <div className='p-2 border border-slate-200 rounded-md'>
+                                    <img src="/facebook-logo.png" alt=""
+                                        className='w-16 h-16 rounded-b-sm' />
+                                </div>
+                                <div className='p-2 border border-slate-200 rounded-md'>
+                                    <img src="/facebook-logo.png" alt=""
+                                        className='w-16 h-16 rounded-b-sm' />
+                                </div>
+                                <div className='p-2 border border-slate-200 rounded-md'>
+                                    <img src="/facebook-logo.png" alt=""
+                                        className='w-16 h-16 rounded-b-sm' />
+                                </div>
+                                <div className='p-2 border border-slate-200 rounded-md'>
+                                    <img src="/facebook-logo.png" alt=""
+                                        className='w-16 h-16 rounded-b-sm' />
+                                </div>
+                                <div className='p-2 border border-slate-200 rounded-md'>
+                                    <img src="/facebook-logo.png" alt=""
+                                        className='w-16 h-16 rounded-b-sm' />
+                                </div>
+                            </div>
+                            <Label htmlFor="subImages">Sub Images</Label>
+                            <Input
+                                id="subImages"
+                                type="file"
+                                multiple
+                                className="mt-2"
+                                max={4}
+                                accept="image/png, image.gpeg image/jpg image/gif"
+                            />
+                        </div>
                     </div>
                     <Button className="cursor-pointer">
                         Submit

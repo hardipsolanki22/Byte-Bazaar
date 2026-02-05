@@ -109,7 +109,7 @@ const Navbar: React.FC = () => {
               <HoverCardTrigger asChild>
                 <Button variant='link' className='cursor-pointer'>
                   <Avatar>
-                    <AvatarImage src="./hardip.jpg" alt="@shadcn" />
+                    <AvatarImage src="/hardip.jpg" alt="@shadcn" />
                   </Avatar>
                 </Button>
               </HoverCardTrigger>

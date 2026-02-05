@@ -1,20 +1,8 @@
 import React from 'react'
 import AdminNavbar from './AdminNavbar'
-import { Outlet, useNavigate } from 'react-router-dom'
-import {
-    SidebarProvider,
-    Sidebar,
-    SidebarTrigger,
-    SidebarHeader,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarGroupContent,
-    SidebarFooter,
-    SidebarMenu,
-    SidebarMenuItem,
-    SidebarMenuButton,
-} from "../../lightswind/sidebar";
+import { Outlet } from 'react-router-dom'
+import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar"
+import { AppSidebar } from "./aside/AppSidebar"
 
 interface PageLayoutProps {
     className?: string
@@ -26,44 +14,16 @@ const AdminPageLayout: React.FC<PageLayoutProps> = ({
     noPadding = false
 }) => {
 
-    const navigate = useNavigate()
-
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 ">
             <AdminNavbar />
-            <main
-                className={`flex w-full ${className} ${!noPadding && "p-2"}
-        `}>
-                <SidebarProvider defaultExpanded>
-                    <Sidebar className='md:min-w-1/5 hidden lg:inline-block'>
-                        <SidebarHeader className=''>
-                            <span className="font-bold">My App</span>
-                            <SidebarTrigger />
-                        </SidebarHeader>
-
-                        <SidebarContent>
-                            <SidebarGroup>
-                                <SidebarGroupLabel>Main</SidebarGroupLabel>
-                                <SidebarGroupContent>
-                                    <SidebarMenu>
-                                        <SidebarMenuItem value="dashboard">
-                                            <SidebarMenuButton>Dashboard</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem value="settings" >
-                                            <SidebarMenuButton>Settings</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </SidebarMenu>
-                                </SidebarGroupContent>
-                            </SidebarGroup>
-                        </SidebarContent>
-
-                        <SidebarFooter>
-                            <span>Footer content</span>
-                        </SidebarFooter>
-                    </Sidebar>
-                </SidebarProvider>
-                <Outlet />
-            </main>
+            <SidebarProvider>
+                <AppSidebar />
+                <main className={`flex w-full ${className} ${!noPadding && "p-2"}`}>
+                    <SidebarTrigger className='cursor-pointer' />
+                    <Outlet />
+                </main>
+            </SidebarProvider>
         </div>
     )
 }
