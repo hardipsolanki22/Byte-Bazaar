@@ -271,7 +271,9 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
                 paymentType: 1,
                 status: 1,
                 isPaymentDone: 1,
-                totalItems: 1
+                totalItems: 1,
+                createdAt: 1,
+                updatedAt: 1
             }
         }
     ])
@@ -404,7 +406,8 @@ const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
                         $project: {
                             fullName: 1,
                             avatar: 1,
-                            email: 1
+                            email: 1,
+                            phoneNumber: 1
                         }
                     }
                 ]

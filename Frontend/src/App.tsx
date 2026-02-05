@@ -19,6 +19,8 @@ import SingleProduct from './pages/admin/product/SingleProduct'
 import Coupon from './pages/admin/coupon/Coupon'
 import AddCoupon from './pages/admin/coupon/AddCoupon'
 import Users from './pages/admin/user/Users'
+import OrdersByAdmin from "./pages/admin/order/Order"
+import SingleOrderByAdmin from "./pages/admin/order/SingleOrder"
 
 const App = () => {
 
@@ -93,6 +95,12 @@ const App = () => {
           <Route element={
             <Users />
           } path='/admin/users' />
+          <Route element={
+            <OrdersByAdmin />
+          } path='/admin/order' />
+          <Route element={
+            <SingleOrderByAdmin />
+          } path='/admin/order/:orderId' />
 
         </Route>
 
