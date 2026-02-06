@@ -2,13 +2,16 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Home, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
+import { Input } from "../lightswind/input"
 import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../lightswind/hover-card";
-import { Avatar, AvatarFallback, AvatarImage } from '../lightswind/avatar';
+import { Avatar, AvatarImage } from '../lightswind/avatar';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem }
+  from '../lightswind/command';
 
 const Navbar: React.FC = () => {
   type NavItemsType = {
@@ -72,11 +75,36 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
-        <div className='gap-10 flex items-center justify-center'>
-          <Link to="/" className='flex items-center justify-center '>
+        <div className='gap-10 flex items-center justify-center w-[50%] lg:w-[60%] relative'>
+          <Link to="/" className='flex items-center  '>
             <img src="./byteBazaar.png" alt="logo"
               className='w-24 h-24 cursor-pointer' />
           </Link>
+          <Command className="rounded-lg border shadow-md w-full">
+            <CommandInput placeholder="Type a product name or search..." />
+            {/* <CommandList className='absolute top-16 bg-white p-4 z-50 w-[74%] lg:w-[88%]'>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Suggestions" >
+                <CommandItem>
+                  <span>Calendar</span>
+                </CommandItem>
+                <CommandItem>
+                  <span>Search Emoji</span>
+                </CommandItem>
+                <CommandItem>
+                  <span>Launch Email</span>
+                </CommandItem>
+              </CommandGroup>
+              <CommandGroup heading="Settings">
+                <CommandItem>
+                  <span>Profile</span>
+                </CommandItem>
+                <CommandItem>
+                  <span>Settings</span>
+                </CommandItem>
+              </CommandGroup>
+            </CommandList> */}
+          </Command>
         </div>
 
         <ul>
@@ -89,6 +117,7 @@ const Navbar: React.FC = () => {
               </Button>
             </li>
           ))}
+
           {/* <li className='inline-block'>
             <Button
               onClick={() => navigate("/signin")}
