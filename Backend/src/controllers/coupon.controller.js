@@ -5,6 +5,7 @@ import { Coupon } from "../models/coupon.model.js"
 import { COUPON_EXPIRY } from "../constant.js"
 import { Cart } from "../models/cart.model.js"
 import { getCart } from "./cart.controller.js"
+import mongoose from "mongoose"
 
 const generateRandomCode = (length, type) => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -26,7 +27,8 @@ const generateRandomCode = (length, type) => {
 }
 
 const createCoupon = asyncHandler(async (req, res) => {
-    const { name, backCouponType = "number", discountPercentage, isActive, minCartValue } = req.body
+    const { name, backCouponType = "number", discountPercentage, isActive, minCartValue, usedFrom, limit }
+        = req.body
 
     // generate randome code
     const randomCode = generateRandomCode(3, backCouponType)
@@ -45,6 +47,7 @@ const createCoupon = asyncHandler(async (req, res) => {
         isActive,
         expiryTime: Date.now() + COUPON_EXPIRY,
         minCartValue,
+        limit,
         user: req.user._id
     })
 
@@ -100,6 +103,8 @@ const getCopuns = asyncHandler(async (req, res) => {
                 minCartValue: 1,
                 expiryTime: 1,
                 isExpire: 1,
+                limit: 1,
+                usedFrom: 1
             }
         }
     ])
@@ -125,7 +130,8 @@ const updateCoupon = asyncHandler(async (req, res) => {
     // -> update coupon document
 
     const couponId = req.params.couponId
-    const { couponCode, backCouponType, discountPercentage, isActive, minCartValue } = req.body
+    const { couponCode, backCouponType, discountPercentage, isActive, minCartValue, usedFrom, limit }
+        = req.body
 
     if (!couponId) {
         throw new APIError(400, "Coupon id is required")
@@ -160,7 +166,8 @@ const updateCoupon = asyncHandler(async (req, res) => {
                 couponCode: coupon,
                 discountPercentage,
                 isActive,
-                minCartValue
+                minCartValue,
+                limit
             }
         },
         {
@@ -215,11 +222,15 @@ const applyCoupon = asyncHandler(async (req, res) => {
         }
     })
 
-    if (!coupon) {
+    if (!coupon || coupon.usedFrom === coupon.limit) {
         throw new APIError(400, "Coupon code is invalid or expired")
     }
 
     const cart = await getCart(req.user._id)
+
+    if (cart.couponCode) {
+        throw new APIError(409, "You have already used this coupon")
+    }
 
     if (cart.cartTotal < coupon.minCartValue) {
         throw new APIError(
@@ -228,15 +239,38 @@ const applyCoupon = asyncHandler(async (req, res) => {
         )
     }
 
-    await Cart.findOneAndUpdate(
-        { user: req.user._id },
-        {
-            $set: {
-                coupon: coupon._id
-            }
-        },
-        { new: true }
-    )
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    try {
+        await Coupon.findByIdAndUpdate(coupon._id,
+            {
+                $inc: {
+                    usedFrom: 1
+                }
+            },
+            { session }
+        )
+
+        await Cart.findOneAndUpdate(
+            { user: req.user._id },
+            {
+                $set: {
+                    coupon: coupon._id,
+                },
+            },
+            { new: true, session }
+        )
+
+        await session.commitTransaction();
+
+    } catch (error) {
+        await session.abortTransaction()
+        throw new APIError(500, error.message || "Failed to update coupon and cart")
+    } finally {
+        session.endSession()
+    }
+
 
     return res
         .status(200)

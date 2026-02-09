@@ -13,15 +13,19 @@ const createAddressValidator = () => {
         body("state")
             .trim()
             .notEmpty()
-            .withMessage("Address line is required"),
+            .withMessage("State line is required"),
         body("city")
             .trim()
             .notEmpty()
-            .withMessage("Country is required"),
+            .withMessage("City is required"),
+        body("isPrimary")
+            .optional()
+            .isBoolean()
+            .withMessage("isPrimary must be a boolean value"),
         body("pincode")
             .trim()
             .notEmpty()
-            .withMessage("Address line is required")
+            .withMessage("Pincode line is required")
             .isNumeric()
             .withMessage("Invalid pincode")
     ]
@@ -43,17 +47,21 @@ const UpdateAddressValidator = () => {
             .optional()
             .trim()
             .notEmpty()
-            .withMessage("Address line is required"),
+            .withMessage("State line is required"),
         body("city")
             .optional()
             .trim()
             .notEmpty()
-            .withMessage("Country is required"),
+            .withMessage("City is required"),
+        body("isPrimary")
+            .optional()
+            .isBoolean()
+            .withMessage("isPrimary must be a boolean value"),
         body("pincode")
             .optional()
             .trim()
             .notEmpty()
-            .withMessage("Address line is required")
+            .withMessage("Pincode line is required")
             .isNumeric()
             .withMessage("Invalid pincode")
     ]

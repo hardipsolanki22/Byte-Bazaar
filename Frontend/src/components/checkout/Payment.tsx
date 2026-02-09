@@ -2,6 +2,7 @@ import React from 'react'
 import { Checkbox } from '../lightswind/checkbox'
 import { Button } from '../lightswind/button'
 import { useNavigate } from 'react-router-dom';
+import { Label } from '../lightswind/label';
 
 const Payment: React.FC = () => {
 
@@ -30,12 +31,10 @@ const Payment: React.FC = () => {
                             <div key={payment.id} className="border border-slate-200 p-4 rounded-lg">
                                 <div className="flex items-center space-x-2 my-2">
                                     <Checkbox id={`primary-${payment.id}`} />
-                                    <label
+                                    <Label
                                         htmlFor={`primary-${payment.id}`}
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
-                                            peer-disabled:opacity-70 ml-2"
                                     >{payment.method}
-                                    </label>
+                                    </Label>
                                 </div>
                                 {/* <h3 className="font-medium">{payment.method}</h3> */}
                                 <p className="text-slate-700 text-sm">{payment.description}</p>

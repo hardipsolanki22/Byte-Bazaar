@@ -2,6 +2,7 @@ import React from 'react'
 import { Button } from '../lightswind/button'
 import { Input } from '../lightswind/input'
 import { Label } from '../lightswind/label'
+import { Checkbox } from '../lightswind/checkbox'
 
 
 
@@ -52,14 +53,23 @@ const Address: React.FC<{ isUpdate?: boolean }> = ({
                         className="focus:outline-none mt-2"
                     />
                 </div>
-                <div>
-                    <Label htmlFor="pincode">Pincode</Label>
-                    <Input
-                        id="pincode"
-                        type="text"
-                        placeholder="Pincode"
-                        className="focus:outline-none mt-2"
-                    />
+                <div className='flex gap-4 items-end'>
+                    <div className='w-[50%]'>
+                        <Label htmlFor="pincode">Pincode</Label>
+                        <Input
+                            id="pincode"
+                            type="text"
+                            placeholder="Pincode"
+                            className="focus:outline-none mt-2"
+                        />
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <Checkbox id={"primary-check"} />
+                        <Label
+                            htmlFor="primary-check"
+                        >Set as Primary
+                        </Label>
+                    </div>
                 </div>
                 <Button className="cursor-pointer">
                     {isUpdate ? "Update Address" : "Add Address"}

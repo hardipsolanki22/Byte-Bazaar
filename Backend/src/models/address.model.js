@@ -21,6 +21,10 @@ const addressSchema = new Schema({
         type: String,
         required: true
     },
+    isPrimary: {
+        type: Boolean,
+        default: true
+    },
     user: {
         ref: "User",
         type: Schema.Types.ObjectId

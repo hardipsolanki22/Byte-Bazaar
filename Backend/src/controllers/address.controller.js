@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 // set primary or default address later
 const createAddress = asyncHandler(async (req, res) => {
-    const { addressLine, country, state, city, pincode } = req.body;
+    const { addressLine, country, state, city, pincode, isPrimary } = req.body;
 
     const address = await Address.create({
         addressLine,
@@ -14,6 +14,7 @@ const createAddress = asyncHandler(async (req, res) => {
         state,
         city,
         pincode,
+        isPrimary,
         user: req.user._id
     })
 
@@ -63,7 +64,7 @@ const getUserAddresses = asyncHandler(async (req, res) => {
 
 const updateAddress = asyncHandler(async (req, res) => {
     const { addressId } = req.params;
-    const { addressLine, country, state, city, pincode } = req.body;
+    const { addressLine, country, state, city, isPrimary, pincode } = req.body;
 
     if (!addressId) {
         throw new APIError(400, "Address id is required")
@@ -76,6 +77,7 @@ const updateAddress = asyncHandler(async (req, res) => {
                 country,
                 state,
                 city,
+                isPrimary,
                 pincode
             }
         },

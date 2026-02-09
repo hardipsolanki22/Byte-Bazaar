@@ -27,6 +27,14 @@ const couponSchema = new Schema({
     minCartValue: {
         type: Number,
         required: true
+    },
+    limit: {
+        type: Number,
+        required: true
+    },
+    usedFrom: {
+        type: Number,
+        // default: 0
     }
 }, { timestamps: true })
 

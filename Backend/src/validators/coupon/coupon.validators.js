@@ -24,7 +24,22 @@ const createCouponValidator = () => {
             .notEmpty()
             .withMessage("Minimum cart value is required")
             .isNumeric()
-            .withMessage("Minimum cart value must be numerical")
+            .withMessage("Minimum cart value must be numerical"),
+        body("limit")
+            .notEmpty()
+            .withMessage("Limit is required")
+            .isNumeric()
+            .withMessage("Limit must be numerical")
+            .isInt({ min: 1 })
+            .withMessage("Limit must be at least 1")
+        ,
+        body("usedFrom")
+            .optional()
+            .notEmpty()
+            .withMessage("usedFrom is required")
+            .isNumeric()
+            .withMessage("usedFrom must be numerical")
+
     ]
 }
 
@@ -56,7 +71,22 @@ const updateCouponValidator = () => {
             .notEmpty()
             .withMessage("Minimum cart value is required")
             .isNumeric()
-            .withMessage("Minimum cart value must be numerical")
+            .withMessage("Minimum cart value must be numerical"),
+        body("limit")
+            .optional()
+            .notEmpty()
+            .withMessage("Limit is required")
+            .isNumeric()
+            .withMessage("Limit must be numerical")
+            .isInt({ min: 1 })
+            .withMessage("Limit must be at least 1"),
+        body("usedFrom")
+            .optional()
+            .notEmpty()
+            .withMessage("usedFrom is required")
+            .isNumeric()
+            .withMessage("usedFrom must be numerical")
+
     ]
 }
 

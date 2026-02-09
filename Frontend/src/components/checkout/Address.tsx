@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../lightswind/popover'
 import { Button } from '../lightswind/button'
 import CreatedAddress from "../address/Address"
 import { useNavigate } from 'react-router-dom'
+import { Label } from '../lightswind/label'
 
 const Address: React.FC = () => {
 
@@ -53,12 +54,10 @@ const Address: React.FC = () => {
                             <div key={address.id} className="border border-slate-200 p-4 rounded-lg">
                                 <div className="flex items-center space-x-2 my-2">
                                     <Checkbox id={`primary-${address.id}`} />
-                                    <label
+                                    <Label
                                         htmlFor={`primary-${address.id}`}
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
-                                            peer-disabled:opacity-70 ml-2"
                                     >Primary Address
-                                    </label>
+                                    </Label>
                                 </div>
                                 <p className="font-medium">{address.addresLine}</p>
                                 <p className="text-slate-700">{address.city}, {address.state}, {address.country} - {address.pin}</p>

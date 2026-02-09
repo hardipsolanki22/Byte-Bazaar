@@ -16,7 +16,7 @@ const getCart = async (userId) => {
             $unwind: "$items"
         },
         {
-        // lookup to get product details
+            // lookup to get product details
             $lookup: {
                 from: "products",
                 localField: "items.product",
@@ -99,7 +99,8 @@ const getCart = async (userId) => {
                 pipeline: [
                     {
                         $project: {
-                            discountPercentage: 1
+                            discountPercentage: 1,
+                            couponCode: 1
                         }
                     }
                 ]
@@ -108,6 +109,7 @@ const getCart = async (userId) => {
         {
             $addFields: {
                 discountPercentage: { $first: "$coupon.discountPercentage" },
+                couponCode: { $first: "$coupon.couponCode" },
                 // calculate discount value and discounted total
                 discountValue: {
                     $ifNull: [
@@ -148,11 +150,6 @@ const getCart = async (userId) => {
                 },
             }
         },
-        {
-            $project: {
-                coupon: 0
-            }
-        }
     ])
 
     return cart[0] || {
