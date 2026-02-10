@@ -201,44 +201,71 @@ const getProduct = asyncHandler(async (req, res) => {
                 foreignField: "product",
                 as: "productRating",
                 pipeline: [
+                    // {
+                    //     $project: {
+                    //         product: 0
+                    //     }
+                    // },
+                    // {
+                    //     // lookup to get user details
+                    //     $lookup: {
+                    //         from: "users",
+                    //         localField: "user",
+                    //         foreignField: "_id",
+                    //         as: "user",
+                    //         pipeline: [
+                    //             {
+                    //                 // project to get only required fields
+                    //                 $project: {
+                    //                     fullName: 1,
+                    //                     avatar: 1
+                    //                 }
+                    //             }
+                    //         ]
+                    //     }
+                    // },
+                    // {
+                    //     $addFields: {
+                    //         // get first user details from user array
+                    //         user: { $arrayElemAt: ["$user", 0] }
+                    //     }
+                    // },
                     {
-                        $project: {
-                            product: 0
-                        }
-                    },
-                    {
-                        // lookup to get user details
-                        $lookup: {
-                            from: "users",
-                            localField: "user",
-                            foreignField: "_id",
-                            as: "user",
-                            pipeline: [
-                                {
-                                    // project to get only required fields
-                                    $project: {
-                                        fullName: 1,
-                                        avatar: 1
-                                    }
+                        $group: {
+                            _id: null,
+                            totalRatings: { $sum: 1 },
+                            averageRating: { $avg: "$rating" },
+                            totalReviews: {
+                                // if comment is !not or ! null then count to review by 1 ($sum opt)
+                                $sum: {
+                                    $cond: [
+                                        { $ifNull: ["$comment", false] },
+                                        1,
+                                        0
+                                    ]
                                 }
-                            ]
+                            },
+                            // if need users details 
+                            // user: {
+                            //     $push: "$$ROOT"
+                            // }
                         }
+
                     },
-                    {
-                        $addFields: {
-                            // get first user details from user array
-                            user: { $arrayElemAt: ["$user", 0] }
-                        }
-                    }
+
                 ]
             }
         },
         {
             $addFields: {
                 // get average rating of product
-                averageRating: {
-                    $avg: "$productRating.rating"
-                }
+                // averageRating: {
+                //     $avg: "$productRating.rating"
+                // }
+
+                productRating: {
+                    $arrayElemAt: ["$productRating", 0]
+                },
             }
         },
         {
@@ -250,7 +277,7 @@ const getProduct = asyncHandler(async (req, res) => {
                 stock: 1,
                 mainImage: 1,
                 subImages: 1,
-                averageRating: 1,
+                // averageRating: 1,
                 productRating: 1
             }
         }
@@ -264,7 +291,7 @@ const getProduct = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new APIResponse(200, product, "Product Fatched Successfully")
+            new APIResponse(200, product[0], "Product Fatched Successfully")
         )
 
 })

@@ -5,7 +5,6 @@ import aggregatePaginate from "mongoose-aggregate-paginate-v2"
 const ratingSchema = new Schema({
     comment: {
         type: String,
-        required: true,
     },
     user: {
         ref: "User",

@@ -99,6 +99,10 @@ const loginUser = asyncHandler(async (req, res) => {
         )
     }
 
+    if (!user.isEmailVerified) {
+        throw new APIError(403, "Please verify your email first")
+    }
+
     const validPassword = await user.isPasswordCurrect(password)
 
     if (!validPassword) {

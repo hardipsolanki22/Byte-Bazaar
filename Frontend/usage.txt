@@ -1,1 +1,27 @@
-Add AI based new feature where user can ask ai to get advice to buy that perticular product or not.
+ * Add AI based new feature where user can ask ai to get advice to buy 
+    that perticular product or not.
+
+*  Rating and Review 
+    -> Percentage = (Category Count / Total Ratings) × 100
+    -> this formula is used to find percentage based on excellent, good etc number.
+
+    e.g,,
+        Excellent (5★): 2
+        Good (4★): 1
+        Average (3★): 0
+        Poor (2★): 1
+        Terrible (1★): 0
+
+        Percentage = (Excellent Count / Total Ratings) × 100
+           = (2 / 4) × 100
+           = 0.5 × 100
+           = 50%
+         Percentage = (Poor Count / Total Ratings) × 100
+           = (1 / 4) × 100
+           = 0.25 × 100
+           = 25%
+        Percentage = (Good Count / Total Ratings) × 100
+           = (1 / 4) × 100
+           = 0.25 × 100
+           = 25%
+        50% + 25% + 0% + 25% + 0% = 100% ✓

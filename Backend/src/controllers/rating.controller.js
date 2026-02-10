@@ -14,9 +14,9 @@ const createRating = asyncHandler(async (req, res) => {
     const { comment, rating } = req.body;
     const { productId } = req.params;
 
-    if (!comment || !rating) {
-        throw new APIError(400, "All fields are required")
-    }
+    // if (!comment || !rating) {
+    //     throw new APIError(400, "All fields are required")
+    // }
 
     if (!productId) {
         throw new APIError(400, "Product id is required")
@@ -96,12 +96,14 @@ const getAllRating = asyncHandler(async (req, res) => {
             }
         },
         {
+            // lookup user to ge user details first pipeline
             $lookup: {
                 from: "users",
                 localField: "user",
                 foreignField: "_id",
                 as: "user",
                 pipeline: [
+                    // inner pipeline to get need only details
                     {
                         $project: {
                             fullName: 1,
@@ -113,9 +115,6 @@ const getAllRating = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                averageRating: {
-                    $avg: "$rating"
-                },
                 user: {
                     $arrayElemAt: ["$user", 0]
                 }
@@ -126,7 +125,77 @@ const getAllRating = asyncHandler(async (req, res) => {
                 product: 0,
                 __v: 0,
             }
-        }
+        },
+        {
+            $group: {
+                // group whole document to cal reviews, rating etc
+                _id: null,
+                totalRatings: { $sum: 1 },
+                totalReviews: {
+                    // if comment is !null or ! undefined then add by 1 ... count total reviews
+                    $sum: {
+                        $cond: [
+                            { $ifNull: ["$comment", false] },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                averageRating: { $avg: "$rating" },
+                // get user details name,avatar etc
+                users: {
+                    $push: "$$ROOT",
+                },
+                // 1 to 5 categorized each rate (star 1 - 5) 
+                // count it  
+                excellent: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$rating", 5] },
+                            1,
+                            0
+                        ],
+                    }
+                },
+                Good: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$rating", 4] },
+                            1,
+                            0
+                        ],
+                    }
+                },
+                Average: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$rating", 3] },
+                            1,
+                            0
+                        ],
+                    }
+                },
+                Poor: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$rating", 2] },
+                            1,
+                            0
+                        ],
+                    }
+                },
+                Terrible: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$rating", 1] },
+                            1,
+                            0
+                        ],
+                    }
+                },
+            }
+        },
+
     ])
 
     const ratings = await Rating.aggregatePaginate(aggrigation,
@@ -153,9 +222,9 @@ const updateRating = asyncHandler(async (req, res) => {
     const { ratingId } = req.params;
     const { comment, rating } = req.body;
 
-    if (!comment || !rating) {
-        throw new APIError(400, "All fileds are required")
-    }
+    // if (!comment || !rating) {
+    //     throw new APIError(400, "All fileds are required")
+    // }
 
     if (!ratingId) {
         throw new APIError(400, "Rating id is required")
@@ -205,9 +274,10 @@ const deleteRating = asyncHandler(async (req, res) => {
 
 })
 
+
 export {
     createRating,
     getAllRating,
     updateRating,
-    deleteRating
+    deleteRating,
 }
