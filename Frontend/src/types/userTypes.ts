@@ -1,0 +1,27 @@
+export interface UserData {
+    // id: string;
+    fullName: string;
+    email: string;
+    avatar: string;
+    isEmailVerified: boolean;
+    phoneNumber: number;
+    role: "ADMIN" | "USER";
+}
+
+export interface UserRegisterRequest {
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: number
+    avatar: string
+}
+
+export interface UserResponse {
+    id: string;
+    fullName: string;
+    email: string;
+    role: "USER" | "ADMIN";
+    avatar: string;
+    phoneNumber: number;
+    isEmailVerified: boolean;
+}
