@@ -7,7 +7,7 @@ import { Label } from "../lightswind/label";
 const SignIn: React.FC = () => {
     return (
         <div className="flex flex-col min-h-screen items-center justify-center ">
-            <div className="p-4 mt-4 bg-white rounded-md lg:w-1/3 w-auto">
+            <div className="p-4 mt-4 bg-white rounded-md w-auto xl:w-1/3">
                 <div className="text-center">
                     <h2 className="text-3xl font-semibold">Welcome to ByteBazaar</h2>
                     <p className="mt-2 text-slate-500">Sign in to access your account</p>

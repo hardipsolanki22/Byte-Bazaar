@@ -13,7 +13,7 @@ export interface UserRegisterRequest {
     email: string;
     password: string;
     phoneNumber: number
-    avatar: string
+    avatar: File
 }
 
 export interface UserResponse {

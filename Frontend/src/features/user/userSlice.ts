@@ -14,12 +14,20 @@ interface UserState {
 }
 
 // create the thunk
-const registerUser = createAsyncThunk(
+export const registerUser = createAsyncThunk(
     'users/register',
     async (userData: UserRegisterRequest, { rejectWithValue }) => {
         try {
-            const response = await postReq<UserRegisterRequest, UserResponse>("/api/user", userData)
-            return response.data
+            const response = await postReq<UserRegisterRequest, UserResponse>(
+                "/api/v1/users/register",
+                userData,
+                {
+                    "headers": {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            )
+            return response
         } catch (error: any) {
             console.log("error: ", error)
             return rejectWithValue({
@@ -35,7 +43,7 @@ const registerUser = createAsyncThunk(
 const initialState: UserState = {
     isAuth: false,
     userData: null,
-    loading: 'idle'
+    loading: 'pending'
 }
 
 export const counterSlice = createSlice({
@@ -51,8 +59,8 @@ export const counterSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state, { payload }) => {
                 state.loading = 'pending'
-                state.isAuth = payload.isEmailVerified
-                state.userData = payload
+                state.isAuth = payload.data.isEmailVerified
+                state.userData = payload.data
             })
             .addCase(registerUser.rejected, (state) => {
                 state.loading = 'failed'

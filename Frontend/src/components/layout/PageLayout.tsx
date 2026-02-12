@@ -2,6 +2,7 @@ import type React from "react"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
 import { Outlet, useLocation } from "react-router-dom"
+import { Toaster } from "../ui/sonner"
 
 interface PageLayoutProps {
   className?: string
@@ -27,6 +28,7 @@ const PageLayout = ({
       <main
         className={`flex-auto w-full ${className} ${!noPadding && "p-2"}
         `}>
+        <Toaster />
         <Outlet />
       </main>
       {!noFooter && <Footer />}
