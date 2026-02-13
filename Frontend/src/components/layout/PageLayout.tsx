@@ -1,19 +1,22 @@
 import type React from "react"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Toaster } from "../ui/sonner"
+import { useEffect } from "react"
+import { useAppSelector } from "../../app/hooks"
 
 interface PageLayoutProps {
   className?: string
   noPadding?: boolean
   noFooter?: boolean
+  authentication?: boolean
 }
 
 const PageLayout = ({
   className = "",
   noFooter = false,
-  noPadding = false
+  noPadding = false,
 }: PageLayoutProps) => {
 
   const location = useLocation()

@@ -5,6 +5,8 @@ import {
     type AxiosResponse,
     AxiosError,
 } from "axios"
+import { useAppDispatch } from "../app/hooks";
+import { logOutUser } from "../features/user/userSlice";
 
 // Define types for Axios responses
 export interface ApiResponse<T> {
@@ -21,6 +23,7 @@ export interface ApiError {
 }
 
 
+
 // Create an Axios instance with base configurations
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: "http://localhost:5000",
@@ -35,14 +38,16 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
         // set custome haders if nees
-
         return response
     },
 
     (error: AxiosError) => {
-        return Promise.reject(error)
-
         // handle some error if user is not logged in then redirect to login page
+        if (error.status === 401) {
+            // window.location.href = '/';
+        }
+        return Promise.reject(error);
+
     }
 )
 
@@ -82,7 +87,7 @@ const getReq = async<ResponseT>(
 // Helper function for POST request
 const postReq = async<RequestT, ResponseT>(
     url: string,
-    data: RequestT,
+    data?: RequestT,
     config?: AxiosRequestConfig
 ): Promise<ApiResponse<ResponseT>> => {
     try {
@@ -103,7 +108,7 @@ const postReq = async<RequestT, ResponseT>(
 // Helper function for PATCH request
 const patchReq = async<RequestT, ResponseT>(
     url: string,
-    data: RequestT,
+    data?: RequestT,
     config?: AxiosRequestConfig
 ): Promise<ApiResponse<ResponseT>> => {
     try {

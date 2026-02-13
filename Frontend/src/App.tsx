@@ -21,8 +21,17 @@ import AddCoupon from './pages/admin/coupon/AddCoupon'
 import Users from './pages/admin/user/Users'
 import OrdersByAdmin from "./pages/admin/order/Order"
 import SingleOrderByAdmin from "./pages/admin/order/SingleOrder"
+import VerifyEmail from './components/auth/VerifyEmail'
+import { useEffect } from 'react'
+import { useAppDispatch } from './app/hooks'
+import { currentUser } from './features/user/userSlice'
+import AuthLayout from './components/layout/AuthLayout'
 
 const App = () => {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(currentUser())
+  }, [dispatch])
 
   return (
     <BrowserRouter>
@@ -35,40 +44,65 @@ const App = () => {
             <Index />
           } path='/' />
           <Route element={
-            <SignIn />
+            <AuthLayout>
+              <SignIn />
+            </AuthLayout>
           } path='/signin'
           />
           <Route element={
-            <SignUp />
+            <AuthLayout>
+              <SignUp />
+            </AuthLayout>
           } path='/signup'
           />
           <Route element={
-            <Account />
+            <AuthLayout>
+              <VerifyEmail />
+            </AuthLayout>
+          } path='/verify-email/:verificationToken'
+          />
+          <Route element={
+            <AuthLayout authentication>
+              <Account />
+            </AuthLayout>
           } path='/account' />
           <Route element={
             <Product />
           } path='/products/:slug' />
           <Route element={
-            <Cart />
+            <AuthLayout authentication>
+              <Cart />
+            </AuthLayout>
           } path='/checkout/cart' />
 
           <Route element={
-            <Address />
+            <AuthLayout authentication>
+              <Address />
+            </AuthLayout>
           } path='/checkout/address' />
           <Route element={
-            <Payment />
+            <AuthLayout authentication>
+              <Payment />
+            </AuthLayout>
           } path='/checkout/payment' />
           <Route element={
-            <Order />
+            <AuthLayout authentication>
+              <Order />
+            </AuthLayout>
           } path='/my-orders' />
 
           <Route element={
-            <SingleOrder />
+            <AuthLayout authentication>
+              <SingleOrder />
+            </AuthLayout>
           } path='/my-orders/:orderId' />
           <Route element={
-            <Rating />
+            <AuthLayout authentication>
+              <Rating />
+            </AuthLayout>
           } path='/rating' />
         </Route>
+
         {/* Admin routes */}
         <Route element={
           <AdminPageLayout />

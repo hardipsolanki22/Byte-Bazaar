@@ -12,19 +12,33 @@ import {
 import { Avatar, AvatarImage } from '../lightswind/avatar';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem }
   from '../lightswind/command';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { toast } from 'sonner';
+import { logOutUser } from '../../features/user/userSlice';
 
+
+type CategoriesType = {
+  name: string;
+  slug: string;
+}
+
+type NavItemsType = {
+  name: string
+  slug: string
+  isActive: boolean
+}
 const Navbar: React.FC = () => {
-  type NavItemsType = {
-    name: string
-    slug: string
-    isActive: boolean
-  }
-
+  const isAuthenticated = useAppSelector(({ users }) => users.isAuthenticated)
+  const user = useAppSelector(({ users }) => users.userData)
+  const loading = useAppSelector(({ users }) => users.loading)
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const location = useLocation()
-  const ignoreCategory = ["/signup", "/signin", "/account", "/checkout/cart",
-    "/checkout/address", "/checkout/payment", "/my-orders"]
-  const navigate = useNavigate()
+  const ignoreCategory = [
+    "/signup", "/signin", "/account", "/checkout/cart",
+    "/checkout/address", "/checkout/payment", "/my-orders"
+  ]
   const navItems: NavItemsType[] = [
     {
       name: "Home",
@@ -43,12 +57,6 @@ const Navbar: React.FC = () => {
     { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
     { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
   ];
-
-
-  type CategoriesType = {
-    name: string;
-    slug: string;
-  }
 
   const categories: CategoriesType[] = [
     { name: "Electronics", slug: "electronics" },
@@ -72,7 +80,18 @@ const Navbar: React.FC = () => {
 
   ]
 
+  const logoutHandler = () => {
+    dispatch(logOutUser())
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message)
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      })
+  }
   return (
+
     <>
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
         <div className='gap-10 flex items-center justify-center w-[50%] lg:w-[60%] relative'>
@@ -118,54 +137,62 @@ const Navbar: React.FC = () => {
             </li>
           ))}
 
-          {/* <li className='inline-block'>
-            <Button
-              onClick={() => navigate("/signin")}
-              variant='github'
-              className='cursor-pointer'>
-              Login
-            </Button>
-          </li>
-          <li className='inline-block mx-4'>
-            <Button
-              onClick={() => navigate("/signup")}
-              className='cursor-pointer'>
-              Sign Up
-            </Button>
-          </li> */}
-          <li className='inline-block mx-4'>
-            <HoverCard openDelay={200}>
-              <HoverCardTrigger asChild>
-                <Button variant='link' className='cursor-pointer'>
-                  <Avatar>
-                    <AvatarImage src="/hardip.jpg" alt="@shadcn" />
-                  </Avatar>
+          {!!!isAuthenticated &&
+            <>
+              <li className='inline-block'>
+                <Button
+                  onClick={() => navigate("/signin")}
+                  variant='github'
+                  className='cursor-pointer'>
+                  Login
                 </Button>
-              </HoverCardTrigger>
-              <HoverCardContent>
-                <div className="p-2">
-                  <Link to="/account">
-                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
-                      My Account
-                    </Button>
-                  </Link>
-                  <Link to="/my-orders">
-                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
-                      My Orders
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="w-full text-left cursor-pointer">
-                    Logout
+              </li>
+              <li className='inline-block mx-4'>
+                <Button
+                  onClick={() => navigate("/signup")}
+                  className='cursor-pointer'>
+                  Sign Up
+                </Button>
+              </li>
+            </>
+          }
+          {!!isAuthenticated &&
+            <li className='inline-block mx-4'>
+              <HoverCard openDelay={200}>
+                <HoverCardTrigger asChild>
+                  <Button variant='link' className='cursor-pointer'>
+                    <Avatar>
+                      <AvatarImage src={user?.avatar} alt="@shadcn" />
+                    </Avatar>
                   </Button>
-                  <Link to="/admin">
-                    <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
-                      Admin
+                </HoverCardTrigger>
+                <HoverCardContent>
+                  <div className="p-2">
+                    <Link to="/account">
+                      <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                        My Account
+                      </Button>
+                    </Link>
+                    <Link to="/my-orders">
+                      <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                        My Orders
+                      </Button>
+                    </Link>
+                    <Button
+                      onClick={logoutHandler}
+                      disabled={loading === "pending"}
+                      variant="ghost" className="w-full text-left cursor-pointer">
+                      Logout
                     </Button>
-                  </Link>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-          </li>
+                    <Link to="/admin">
+                      <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
+                        Admin
+                      </Button>
+                    </Link>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </li>}
           <li className='inline-block relative'>
             <Button
               onClick={() => navigate("/checkout/cart")}

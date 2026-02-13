@@ -7,7 +7,6 @@ export interface UserData {
     phoneNumber: number;
     role: "ADMIN" | "USER";
 }
-
 export interface UserRegisterRequest {
     fullName: string;
     email: string;
@@ -15,13 +14,43 @@ export interface UserRegisterRequest {
     phoneNumber: number
     avatar: File
 }
-
-export interface UserResponse {
-    id: string;
-    fullName: string;
+export interface UserLoginRequest {
     email: string;
-    role: "USER" | "ADMIN";
-    avatar: string;
-    phoneNumber: number;
-    isEmailVerified: boolean;
+    password: string
+}
+export interface UserRegisterResponse {
+    data: {
+        id: string;
+        fullName: string;
+        email: string;
+        role: "USER" | "ADMIN";
+        avatar: string;
+        phoneNumber: number;
+        isEmailVerified: boolean;
+    }
+    status: number;
+    message: string;
+    success: boolean
+}
+export interface UserLoginResponse {
+    data: {
+        accessToken: string;
+        refreshToken: string;
+    }
+    status: number;
+    message: string;
+    success: boolean
+}
+export interface VerifyEanilResponse {
+    data: {
+        isEmailVerified: boolean
+    }
+    status: number;
+    message: string;
+    success: boolean
+}
+export interface LogoutUserResponse {
+    status: number;
+    message: string;
+    success: boolean
 }

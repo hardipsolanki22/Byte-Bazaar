@@ -72,8 +72,12 @@ const registerUser = asyncHandler(async (req, res) => {
         subject: "Please verify your email",
         mailGenContent: emailVerificationMailGenContent(
             fullName,
-            `http://localhost:5000/api/v1/users/verify-email/verificationToken=${unHashToken}`
+            // `http://localhost:5000/api/v1/users/verify-email/verificationToken=${unHashToken}`
+            // `http://localhost:5173/verify-email/verificationToken=${unHashToken}`
+            `${process.env.CLIENT_URL}/verify-email/${unHashToken}`
+
         )
+
     })
     return res
         .status(201)
@@ -99,9 +103,9 @@ const loginUser = asyncHandler(async (req, res) => {
         )
     }
 
-    if (!user.isEmailVerified) {
-        throw new APIError(403, "Please verify your email first")
-    }
+    // if (!user.isEmailVerified) {
+    //     throw new APIError(403, "Please verify your email first")
+    // }
 
     const validPassword = await user.isPasswordCurrect(password)
 
@@ -114,6 +118,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: 'strict'
     }
 
     return res
@@ -138,6 +143,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: 'strict'
     }
     return res
         .status(200)
@@ -162,7 +168,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
     if (!verificationToken) {
         throw new APIError(400, "Verification token is required")
     }
-
     // usually query parameters token is unhased token and the hashed token was
     //  save in the database (register controller)
     // so compare both token, first we need to convert unhashed token into hashed token

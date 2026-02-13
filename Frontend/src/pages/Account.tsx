@@ -13,8 +13,17 @@ import Address from "../components/address/Address";
 import { Input } from "../components/lightswind/input";
 import ForgotPassword from "../components/auth/ForgotPassword";
 import ChangePassword from "../components/auth/ChangePassword";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useNavigate } from "react-router-dom";
+import { logOutUser } from "../features/user/userSlice";
+import { toast } from "sonner";
+import { Spinner } from "../components/ui/spinner";
 
 const Account: React.FC = () => {
+    const loading = useAppSelector(({ users }) => users.loading)
+    const userData = useAppSelector(({ users }) => users.userData)
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
 
     const addresses = [
         {
@@ -30,6 +39,17 @@ const Account: React.FC = () => {
             pincode: "90001"
         }
     ]
+
+    const logoutHandler = () => {
+        dispatch(logOutUser())
+            .unwrap()
+            .then((data) => {
+                toast.success(data.message)
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
+    }
 
     return (
 
@@ -52,7 +72,7 @@ const Account: React.FC = () => {
                                 <div className="flex flex-col gap-4 justify-center my-4 w-fit items-center 
                              p-4 ">
                                     <div className="flex items-center justify-center">
-                                        <img src="./hardip.jpg" alt="avatar"
+                                        <img src={userData?.avatar} alt={userData?.fullName}
                                             className="w-30 h-30 rounded-full"
                                         />
                                     </div>
@@ -60,17 +80,17 @@ const Account: React.FC = () => {
 
                                         <p className="mt-2 text-lg">
                                             <span className=" mr-2">Full Name: </span>
-                                            Hardip Solanki
+                                            {userData?.fullName}
                                         </p>
 
                                         <p className="text-lg">
                                             <span className=" mr-2">Email: </span>
-                                            hardip.patel@example.com
+                                            {userData?.email}
                                         </p>
 
                                         <p className="text-lg">
                                             <span className="mr-2">Phone Number: </span>
-                                            94365 54637
+                                            {userData?.phoneNumber}
                                         </p>
                                     </div>
                                 </div>
@@ -181,9 +201,15 @@ const Account: React.FC = () => {
                                             <h2 className="text-2xl font-semibold my-1">Logout </h2>
                                             <p className="text-slate-600">Sign out of your account on this device.</p>
                                         </div>
-                                        <Button variant="destructive"
+                                        <Button
+
+                                            onClick={logoutHandler}
+                                            variant="destructive"
                                             className="cursor-pointer px-6 w-full">
-                                            Logout
+                                            {loading === "pending" ?
+                                                <Spinner data-icon="inline-start" />
+                                                : "Signup"
+                                            }
                                         </Button>
                                     </div>
                                 </div>

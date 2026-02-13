@@ -8,6 +8,8 @@ import { Label } from "../lightswind/label";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { registerUser } from "../../features/user/userSlice";
 import { toast } from "sonner"
+import { Spinner } from "../ui/spinner";
+
 type Inputs = {
     fullName: string;
     email: string;
@@ -21,7 +23,6 @@ const SignUp: React.FC = () => {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<Inputs>()
     const dispatch = useAppDispatch()
@@ -29,16 +30,16 @@ const SignUp: React.FC = () => {
     const loading = useAppSelector(({ users }) => users.loading)
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-
         dispatch(registerUser({ ...data, avatar: data.avatar[0] }))
             .unwrap()
             .then((userData) => {
                 navigate("/signin")
                 console.log("userdata: ", userData)
-                toast.success("Sucess")
+                toast.success(userData.message)
             })
             .catch((error) => {
-                toast.warning(error.message)
+                console.log("errpr: ", error)
+                toast.error(error.message)
             })
     }
 
@@ -147,9 +148,15 @@ const SignUp: React.FC = () => {
 
                         </div>
                         <Button
+                            disabled={loading === "pending"}
+
                             type="submit"
                             className="cursor-pointer">
-                            Submit
+                            {loading === "pending" ?
+                                <Spinner data-icon="inline-start" />
+                                : "Signup"
+                            }
+
                         </Button>
                         <div className="flex items-center">
                             <div className="flex-1 h-px bg-gray-300"></div>
