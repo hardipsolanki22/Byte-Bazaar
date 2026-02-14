@@ -33,8 +33,9 @@ const Navbar: React.FC = () => {
   const loading = useAppSelector(({ users }) => users.loading)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-
   const location = useLocation()
+
+
   const ignoreCategory = [
     "/signup", "/signin", "/account", "/checkout/cart",
     "/checkout/address", "/checkout/payment", "/my-orders"
@@ -85,6 +86,7 @@ const Navbar: React.FC = () => {
       .unwrap()
       .then((data) => {
         toast.success(data.message)
+        navigate("/signin")
       })
       .catch((error) => {
         toast.error(error.message)

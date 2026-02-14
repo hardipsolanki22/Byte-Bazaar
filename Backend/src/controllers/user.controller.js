@@ -314,7 +314,8 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
         subject: "Forgot password",
         mailGenContent: forgotPasswordMailContent(
             user.fullName,
-            `http://localhost:5000/api/v1/users/forgot-password/${unHashToken}`
+            // `http://localhost:5000/api/v1/users/forgot-password/${unHashToken}`
+            `${process.env.CLIENT_URL}/forgot-password/${unHashToken}`
         )
     })
 
@@ -418,9 +419,11 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
     if (fullName) {
         user.fullName = fullName
-    } else if (email) {
+    }
+    if (email) {
         user.email = email
-    } else if (phoneNumber) {
+    }
+    if (phoneNumber) {
         user.phoneNumber = phoneNumber
     }
 

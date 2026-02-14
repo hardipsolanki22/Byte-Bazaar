@@ -26,6 +26,7 @@ import { useEffect } from 'react'
 import { useAppDispatch } from './app/hooks'
 import { currentUser } from './features/user/userSlice'
 import AuthLayout from './components/layout/AuthLayout'
+import ForgotPassowrd from './components/auth/ForgotPassowrd'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -62,9 +63,13 @@ const App = () => {
           } path='/verify-email/:verificationToken'
           />
           <Route element={
-            <AuthLayout authentication>
-              <Account />
-            </AuthLayout>
+            <ForgotPassowrd />
+          } path='/forgot-password/:forgotPasswordToken'
+          />
+          <Route element={
+            // <AuthLayout authentication>
+            <Account />
+            // </AuthLayout>
           } path='/account' />
           <Route element={
             <Product />

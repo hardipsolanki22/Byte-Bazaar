@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../components/lightswind/button";
-import { Pencil } from "lucide-react";
+import { DeleteIcon, Pencil } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/lightswind/tabs"
 import {
     Popover,
@@ -10,49 +10,65 @@ import {
 import Profile from "../components/profile/Profile";
 import { Checkbox } from "../components/lightswind/checkbox";
 import Address from "../components/address/Address";
-import { Input } from "../components/lightswind/input";
-import ForgotPassword from "../components/auth/ForgotPassword";
+import ForgotPasswordReq from "../components/auth/ForgotPasswordReq";
 import ChangePassword from "../components/auth/ChangePassword";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { logOutUser } from "../features/user/userSlice";
 import { toast } from "sonner";
 import { Spinner } from "../components/ui/spinner";
+import { deleteAddress, getAddresses } from "../features/address/addressSlice";
 
 const Account: React.FC = () => {
     const loading = useAppSelector(({ users }) => users.loading)
     const userData = useAppSelector(({ users }) => users.userData)
+    const addresses = useAppSelector(({ address }) => address.addresses)
+    const addLoading = useAppSelector(({ address }) => address.loading)
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
 
-    const addresses = [
-        {
-            line1: "123 Main Street, Apt 4B",
-            city: "New York",
-            country: "United States",
-            pincode: "10001"
-        },
-        {
-            line1: "456 Elm Street, Suite 12",
-            city: "Los Angeles",
-            country: "United States",
-            pincode: "90001"
-        }
-    ]
+    // get addresses
+    useEffect(() => {
+        if (!addresses?.length) dispatch(getAddresses())
+    }, [])
+
+    // const addresses = [
+    //     {
+    //         line1: "123 Main Street, Apt 4B",
+    //         city: "New York",
+    //         country: "United States",
+    //         pincode: "10001"
+    //     },
+    //     {
+    //         line1: "456 Elm Street, Suite 12",
+    //         city: "Los Angeles",
+    //         country: "United States",
+    //         pincode: "90001"
+    //     }
+    // ]
 
     const logoutHandler = () => {
         dispatch(logOutUser())
             .unwrap()
             .then((data) => {
                 toast.success(data.message)
+                navigate('/signin')
             })
             .catch((error) => {
                 toast.error(error.message)
             })
     }
 
-    return (
+    const handleAddrsDelete = (addressId: string) => {
+        dispatch(deleteAddress(addressId))
+            .unwrap()
+            .then((data) => {
+                toast.success(data.message)
+            })
 
+    }
+
+    return (
         <div className="flex flex-col justify-center my-5">
             <div className="w-full flex items-center justify-center  rounded-md p-4">
                 <Tabs defaultValue="account" className="flex flex-col items-center justify-center gap-4" >
@@ -117,37 +133,45 @@ const Account: React.FC = () => {
                             </div>
                             <div className="flex flex-col gap-4 justify-center my-4 w-full items-start relative
                              p-4 ">
-                                {addresses.map((address, idx) => (
+                                {!!addresses?.length && addresses.map((address) => (
                                     <div
+                                        key={address._id}
                                         className="p-4 border border-slate-400 rounded-md w-full flex justify-between">
                                         <div
-                                            key={idx}
                                             className="flex flex-col ">
                                             <div className="flex items-center space-x-2 my-2">
-                                                <Checkbox id={`primary-${idx}`} />
+                                                <Checkbox id={`primary-${address._id}`} />
                                                 <label
-                                                    htmlFor={`primary-${idx}`}
+                                                    htmlFor={`primary-${address._id}`}
                                                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
                                             peer-disabled:opacity-70"
                                                 >Set as Primary
                                                 </label>
                                             </div>
-                                            <p className="mt-2 text-lg">{address.line1}</p>
+                                            <p className="mt-2 text-lg">{address.addressLine}</p>
                                             <p className="text-lg">{address.country} </p>
+                                            <p className="text-lg">{address.state} </p>
                                             <p className="text-lg">{address.city} </p>
                                             <p className="text-lg">{address.pincode}</p>
                                         </div>
                                         {/* Popup */}
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <Button variant="ghost" className="mt-4 cursor-pointer">
-                                                    <Pencil className="mr-2" size={16} />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent >
-                                                <Address isUpdate />
-                                            </PopoverContent>
-                                        </Popover>
+                                        <div className="flex flex-col h-full gap-4">
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button variant="ghost" className="mt-4 cursor-pointer">
+                                                        <Pencil className="mr-2" size={16} />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent >
+                                                    <Address address={address} />
+                                                </PopoverContent>
+                                            </Popover>
+                                            <Button
+                                                onClick={() => handleAddrsDelete(address._id)}
+                                                variant="ghost" className="mt-4 cursor-pointer">
+                                                <DeleteIcon className="mr-2" size={16} />
+                                            </Button>
+                                        </div>
                                     </div>
 
                                 ))}
@@ -189,7 +213,7 @@ const Account: React.FC = () => {
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent >
-                                                <ForgotPassword />
+                                                <ForgotPasswordReq />
                                             </PopoverContent>
                                         </Popover>
                                     </div>
@@ -208,7 +232,7 @@ const Account: React.FC = () => {
                                             className="cursor-pointer px-6 w-full">
                                             {loading === "pending" ?
                                                 <Spinner data-icon="inline-start" />
-                                                : "Signup"
+                                                : "Logout"
                                             }
                                         </Button>
                                     </div>
@@ -221,6 +245,8 @@ const Account: React.FC = () => {
             </div>
         </div>
     )
+
+
 }
 
 export default Account
