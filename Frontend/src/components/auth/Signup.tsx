@@ -6,7 +6,7 @@ import { Input } from "../lightswind/input";
 import { Button } from "../lightswind/button";
 import { Label } from "../lightswind/label";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { registerUser } from "../../features/user/userSlice";
+import { currentUser, googleAuth, registerUser } from "../../features/user/userSlice";
 import { toast } from "sonner"
 import { Spinner } from "../ui/spinner";
 
@@ -39,6 +39,24 @@ const SignUp: React.FC = () => {
             })
             .catch((error) => {
                 console.log("errpr: ", error)
+                toast.error(error.message)
+            })
+    }
+
+    const handleAuthGoogle = () => {
+        dispatch(googleAuth())
+            .unwrap()
+            .then((userData) => {
+                if (userData) {
+                    dispatch(currentUser())
+                        .unwrap()
+                        .then(() => {
+                            navigate("/")
+                            toast.success(userData.message)
+                        })
+                }
+            })
+            .catch((error) => {
                 toast.error(error.message)
             })
     }
@@ -78,7 +96,6 @@ const SignUp: React.FC = () => {
                                             || "Email address must be a valid address.",
                                     }
                                 })}
-
                             />
                             {errors.email && <span className="text-red-500 m-2">{errors.email.message}</span>}
 
@@ -108,7 +125,6 @@ const SignUp: React.FC = () => {
                                                 matchPattern: (value) => /^(\+91|0)?[6-9]\d{9}$/.test(String(value))
                                                     || "Please enter a valid 10-digit Indian mobile number",
                                             }
-
                                         })}
                                     />
                                 </div>
@@ -145,7 +161,6 @@ const SignUp: React.FC = () => {
                                 {...register("avatar", { required: "Full name is required" })}
                             />
                             {errors.avatar && <span className="text-red-500 m-2">{errors.avatar.message}</span>}
-
                         </div>
                         <Button
                             disabled={loading === "pending"}
@@ -164,12 +179,17 @@ const SignUp: React.FC = () => {
                             <div className="flex-1 h-px bg-gray-300"></div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Button variant="outline"
+                            <Button
+                                type="button"
+                                onClick={handleAuthGoogle}
+                                variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/google-logo.jpg" alt="Google Logo" className="w-5 h-5" />
                                 Sign in with Google
                             </Button>
-                            <Button variant="outline"
+                            <Button
+                                type="button"
+                                variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/facebook-logo.png" alt="Facebook Logo" className="w-5 h-5" />
                                 Sign in with Facebook

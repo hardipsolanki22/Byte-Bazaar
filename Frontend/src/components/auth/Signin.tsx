@@ -6,8 +6,10 @@ import { Label } from "../lightswind/label";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Spinner } from "../ui/spinner";
-import { currentUser, loginUser } from "../../features/user/userSlice";
+import { currentUser, googleAuth, loginUser } from "../../features/user/userSlice";
 import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "../lightswind/popover";
+import ForgotPasswordReq from "./ForgotPasswordReq";
 
 type Inputs = {
     email: string;
@@ -27,11 +29,29 @@ const SignIn: React.FC = () => {
         dispatch(loginUser(data))
             .unwrap()
             .then((userData) => {
-                navigate("/")
                 if (userData) {
                     dispatch(currentUser())
                         .unwrap()
                         .then(() => {
+                            navigate("/")
+                            toast.success(userData.message)
+                        })
+                }
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
+    }
+
+    const handleAuthGoogle = () => {
+        dispatch(googleAuth())
+            .unwrap()
+            .then((userData) => {
+                if (userData) {
+                    dispatch(currentUser())
+                        .unwrap()
+                        .then(() => {
+                            navigate("/")
                             toast.success(userData.message)
                         })
                 }
@@ -72,11 +92,18 @@ const SignIn: React.FC = () => {
                         <div>
                             <div className="flex justify-between items-center mt-4">
                                 <Label htmlFor="password">Password</Label>
-                                <Link to={"/forgot-password"}
-                                    className="text-sm"
-                                >
-                                    Forgot your password?
-                                </Link>
+                                <Popover closeOnOutsideClick={false}>
+                                    <PopoverTrigger asChild>
+                                        <span
+                                            className="text-sm cursor-pointer"
+                                        >
+                                            Forgot your password?
+                                        </span>
+                                    </PopoverTrigger>
+                                    <PopoverContent >
+                                        <ForgotPasswordReq />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <Input
                                 id="password"
@@ -107,12 +134,17 @@ const SignIn: React.FC = () => {
                             <div className="flex-1 h-px bg-gray-300"></div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <Button variant="outline"
+                            <Button
+                                type="button"
+                                onClick={handleAuthGoogle}
+                                variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/google-logo.jpg" alt="Google Logo" className="w-5 h-5" />
                                 Sign in with Google
                             </Button>
-                            <Button variant="outline"
+                            <Button
+                                type="button"
+                                variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/facebook-logo.png" alt="Facebook Logo" className="w-5 h-5" />
                                 Sign in with Facebook
