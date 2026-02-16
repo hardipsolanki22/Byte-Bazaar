@@ -3,10 +3,28 @@ import { Button } from '../../lightswind/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../lightswind/hover-card'
 import { Avatar, AvatarImage } from '../../lightswind/avatar'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { logOutUser } from '../../../features/user/userSlice'
+import { toast } from 'sonner'
 
 const AdminNavbar = () => {
-
+  const user = useAppSelector(({ users }) => users.userData)
+  const loading = useAppSelector(({ users }) => users.loading)
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+
+  const logoutHandler = () => {
+    dispatch(logOutUser())
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message)
+        navigate("/signin")
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      })
+  }
   return (
     <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
       <div className='gap-10 flex items-center justify-center'>
@@ -29,7 +47,7 @@ const AdminNavbar = () => {
             <HoverCardTrigger asChild>
               <Button variant='link' className='cursor-pointer'>
                 <Avatar>
-                  <AvatarImage src="./hardip.jpg" alt="@shadcn" />
+                  <AvatarImage src={user?.avatar} alt={user?.fullName} />
                 </Avatar>
               </Button>
             </HoverCardTrigger>
@@ -45,9 +63,13 @@ const AdminNavbar = () => {
                     My Orders
                   </Button>
                 </Link>
-                <Button variant="ghost" className="w-full text-left cursor-pointer">
+                <Button
+                  onClick={logoutHandler}
+                  disabled={loading === "pending"}
+                  variant="ghost" className="w-full text-left cursor-pointer">
                   Logout
                 </Button>
+
               </div>
             </HoverCardContent>
           </HoverCard>

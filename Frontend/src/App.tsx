@@ -27,6 +27,9 @@ import { useAppDispatch } from './app/hooks'
 import { currentUser } from './features/user/userSlice'
 import AuthLayout from './components/layout/AuthLayout'
 import ForgotPassowrd from './components/auth/ForgotPassowrd'
+import AddCategory from './pages/admin/category/AddCategory'
+import Category from './pages/admin/category/Category'
+import UpdateCategory from './pages/admin/category/UpdateCategory'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -128,6 +131,15 @@ const App = () => {
           <Route element={
             <Coupon />
           } path='/admin/coupon' />
+          <Route element={
+            <AddCategory />
+          } path='/admin/add-category' />
+          <Route element={
+            <UpdateCategory />
+          } path='/admin/category/:slug' />
+          <Route element={
+            <Category />
+          } path='/admin/category' />
           <Route element={
             <AddCoupon />
           } path='/admin/add-coupon' />

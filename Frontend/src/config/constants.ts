@@ -4,3 +4,5 @@ export const CONFIG = {
     BACKEND_URL: "http://localhost:5000",
     API_BASE_URL: "http://localhost:5000/api/v1"
 }
+
+export const MAX_IMAGES = 4

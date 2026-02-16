@@ -106,7 +106,6 @@ const ChangePassword = () => {
                             <Spinner data-icon="inline-start" />
                             : "Change Password"
                         }
-
                     </Button>
                 </form>
             </div>

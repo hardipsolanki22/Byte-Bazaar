@@ -15,12 +15,14 @@ const AdminPageLayout: React.FC<PageLayoutProps> = ({
 }) => {
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 ">
+        <div className="min-h-screen flex flex-col bg-slate-50 relative">
             <AdminNavbar />
             <SidebarProvider>
                 <AppSidebar />
                 <main className={`flex w-full ${className} ${!noPadding && "p-2"}`}>
-                    <SidebarTrigger className='cursor-pointer' />
+                        <SidebarTrigger 
+                        className='cursor-pointer absolute top-12 left-5 sm:left-64 sm:top-16 z-20'
+                         />
                     <Outlet />
                 </main>
             </SidebarProvider>

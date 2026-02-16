@@ -225,7 +225,7 @@ const initialState: UserState = {
     loading: 'idle'
 }
 
-export const counterSlice = createSlice({
+export const userSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {},
@@ -358,4 +358,4 @@ export const counterSlice = createSlice({
 
 })
 
-export default counterSlice.reducer
+export default userSlice.reducer

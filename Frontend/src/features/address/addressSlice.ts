@@ -98,7 +98,7 @@ const initialState: AddressState = {
     loading: 'idle'
 }
 
-export const counterSlice = createSlice({
+export const addressSlice = createSlice({
     name: 'address',
     initialState,
     reducers: {},
@@ -159,4 +159,4 @@ export const counterSlice = createSlice({
 
 })
 
-export default counterSlice.reducer
+export default addressSlice.reducer
