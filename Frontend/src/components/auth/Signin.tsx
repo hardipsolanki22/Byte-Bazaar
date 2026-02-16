@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Input } from "../lightswind/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../lightswind/button";
 import { Label } from "../lightswind/label";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Spinner } from "../ui/spinner";
-import { currentUser, googleAuth, loginUser } from "../../features/user/userSlice";
+import { currentUser, loginUser } from "../../features/user/userSlice";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../lightswind/popover";
 import ForgotPasswordReq from "./ForgotPasswordReq";
+import { CONFIG } from "../../config/constants";
 
 type Inputs = {
     email: string;
@@ -24,6 +25,8 @@ const SignIn: React.FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const loading = useAppSelector(({ users }) => users.loading)
+    const [searchParams] = useSearchParams();
+    const hasShownError = useRef(false);
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         dispatch(loginUser(data))
@@ -44,22 +47,30 @@ const SignIn: React.FC = () => {
     }
 
     const handleAuthGoogle = () => {
-        dispatch(googleAuth())
-            .unwrap()
-            .then((userData) => {
-                if (userData) {
-                    dispatch(currentUser())
-                        .unwrap()
-                        .then(() => {
-                            navigate("/")
-                            toast.success(userData.message)
-                        })
-                }
-            })
-            .catch((error) => {
-                toast.error(error.message)
-            })
+        window.open(CONFIG.GOOGLE_REDIRECT_URL, "_self")
     }
+    const handleAuthFacebook = () => {
+        window.open(CONFIG.FACEBOOK_REDIRECT_URL, "_self")
+    }
+
+
+    useEffect(() => {
+        if (hasShownError.current) return;
+
+        const error = searchParams.get('error');
+        const message = searchParams.get('message');
+
+        if (error && message) {
+            const decodedMessage = decodeURIComponent(message);
+            toast.error(decodedMessage, {
+                position: 'top-center',
+                duration: 6000
+            });
+
+            hasShownError.current = true;
+            window.history.replaceState({}, '', '/signin');
+        }
+    }, [searchParams]);
     return (
         <div className="flex flex-col min-h-screen items-center justify-center ">
             <div className="p-4 mt-4 bg-white rounded-md w-auto xl:w-1/3">
@@ -144,6 +155,7 @@ const SignIn: React.FC = () => {
                             </Button>
                             <Button
                                 type="button"
+                                onClick={handleAuthFacebook}
                                 variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/facebook-logo.png" alt="Facebook Logo" className="w-5 h-5" />

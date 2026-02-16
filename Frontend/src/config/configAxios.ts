@@ -5,8 +5,7 @@ import {
     type AxiosResponse,
     AxiosError,
 } from "axios"
-import { useAppDispatch } from "../app/hooks";
-import { logOutUser } from "../features/user/userSlice";
+import { CONFIG } from "./constants";
 
 // Define types for Axios responses
 export interface ApiResponse<T> {
@@ -26,7 +25,7 @@ export interface ApiError {
 
 // Create an Axios instance with base configurations
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: CONFIG.BACKEND_URL,
     withCredentials: true, // Automatically send cookies with requests
     headers: {
         "Content-Type": "application/json"

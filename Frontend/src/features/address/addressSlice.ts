@@ -111,10 +111,7 @@ export const counterSlice = createSlice({
             })
             .addCase(getAddresses.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                console.log(payload)
-                console.log(state.addresses)
                 state.addresses = payload.data
-                console.log(state.addresses)
             })
             .addCase(getAddresses.rejected, (state) => {
                 state.loading = 'failed'

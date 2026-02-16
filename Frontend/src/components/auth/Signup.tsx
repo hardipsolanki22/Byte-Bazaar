@@ -6,9 +6,10 @@ import { Input } from "../lightswind/input";
 import { Button } from "../lightswind/button";
 import { Label } from "../lightswind/label";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { currentUser, googleAuth, registerUser } from "../../features/user/userSlice";
+import { registerUser } from "../../features/user/userSlice";
 import { toast } from "sonner"
 import { Spinner } from "../ui/spinner";
+import { CONFIG } from "../../config/constants";
 
 type Inputs = {
     fullName: string;
@@ -34,31 +35,18 @@ const SignUp: React.FC = () => {
             .unwrap()
             .then((userData) => {
                 navigate("/signin")
-                console.log("userdata: ", userData)
                 toast.success(userData.message)
             })
             .catch((error) => {
-                console.log("errpr: ", error)
                 toast.error(error.message)
             })
     }
 
     const handleAuthGoogle = () => {
-        dispatch(googleAuth())
-            .unwrap()
-            .then((userData) => {
-                if (userData) {
-                    dispatch(currentUser())
-                        .unwrap()
-                        .then(() => {
-                            navigate("/")
-                            toast.success(userData.message)
-                        })
-                }
-            })
-            .catch((error) => {
-                toast.error(error.message)
-            })
+        window.open(CONFIG.GOOGLE_REDIRECT_URL, "_self")
+    }
+    const handleAuthFacebook = () => {
+        window.open(CONFIG.FACEBOOK_REDIRECT_URL, "_self")
     }
 
     return (
@@ -164,7 +152,6 @@ const SignUp: React.FC = () => {
                         </div>
                         <Button
                             disabled={loading === "pending"}
-
                             type="submit"
                             className="cursor-pointer">
                             {loading === "pending" ?
@@ -189,6 +176,7 @@ const SignUp: React.FC = () => {
                             </Button>
                             <Button
                                 type="button"
+                                onClick={handleAuthFacebook}
                                 variant="outline"
                                 className="cursor-pointer w-full flex items-center justify-center gap-2">
                                 <img src="/facebook-logo.png" alt="Facebook Logo" className="w-5 h-5" />
