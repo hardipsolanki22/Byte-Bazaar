@@ -28,7 +28,8 @@ import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js"
 import { validate } from "../validators/validate.js"
 import passport from "passport"
-import { userRole } from "../constant.js"
+import { userLoginType, userRole } from "../constant.js"
+import { passportStrategy } from "../middlewares/passportFailed.middleware.js"
 
 
 const router = Router()
@@ -45,13 +46,19 @@ router.route("/verify-email/:verificationToken").patch(verifyEmail)
 router.route("/resent-email-verification").patch(resentEmailVerification)
 
 router.route("/google").get(
-    passport.authenticate("google", { scope: ["email"] }),
+    passport.authenticate("google", { scope: ["email", "profile"] }),
 )
 router.route("/facebook").get(
     passport.authenticate("facebook", { scope: ["email"] })
 )
-router.route("/google/callback").get(passport.authenticate("google"), socialLogin)
-router.route("/facebook/callback").get(passport.authenticate("facebook", socialLogin))
+router.route("/google/callback").get(
+    passportStrategy(userLoginType.GOOGLE),
+    socialLogin
+)
+router.route("/facebook/callback").get(
+    passportStrategy(userLoginType.FACEBOOK),
+    socialLogin
+)
 
 
 router.route("/login").post(loginValidator(), validate, loginUser)

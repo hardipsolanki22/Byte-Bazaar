@@ -6,19 +6,22 @@ import { APIError } from "../utils/APIError.js"
 import { userLoginType, userRole } from "../constant.js"
 
 // Serialize and deserialize user for passport
-passport.serializeUser(function (user, cb) {
-    cb(null, user._id)
-})
+// comment is because there is no need for jwt based authentication
+// this is only for session nased authentication
 
-passport.deserializeUser(async function (userId, cb) {
-    try {
-        const user = await User.findById(userId)
-        if (user) cb(null, user)
-        else cb(new APIError(404, "User not found"), null)
-    } catch (error) {
-        cb(new APIError(500, error?.message || "Error on passport configure"), null)
-    }
-})
+// passport.serializeUser(function (user, cb) {
+//     cb(null, user._id)
+// })
+
+// passport.deserializeUser(async function (userId, cb) {
+//     try {
+//         const user = await User.findById(userId)
+//         if (user) cb(null, user)
+//         else cb(new APIError(404, "User not found"), null)
+//     } catch (error) {
+//         cb(new APIError(500, error?.message || "Error on passport configure"), null)
+//     }
+// })
 
 // Configure passport strategies for Google and Facebook login
 passport.use(
@@ -84,12 +87,13 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
-            callbackURL: "http://localhost:5000/api/v1/users/facebook/callback"
+            callbackURL: "http://localhost:5000/api/v1/users/facebook/callback",
+            profileFields: ['id', 'displayName', 'email', 'photos'],
+            profileURL: 'https://graph.facebook.com/v18.0/me',
         },
         async function (accessToken, refreshToken, profile, cb) {
             try {
-                console.log("profile", profile);
-                if (profile?.email == null) {
+                if (!profile?.emails.length) {
                     cb(
                         new APIError(
                             400, "Your Email is not regitered with facebook try another strategy to access your account"
@@ -98,7 +102,7 @@ passport.use(
                     )
                 }
 
-                const user = await User.findOne({ email: profile.email })
+                const user = await User.findOne({ email: profile.emails[0].value })
 
                 if (user) {
                     if (user.loginType !== userLoginType.FACEBOOK) {
@@ -117,12 +121,12 @@ passport.use(
 
                 } else {
 
-                    const { displayName, email, profileUrl, id } = profile
+                    const { displayName, emails, photos, id } = profile
                     const user = await User.create({
                         fullName: displayName,
-                        email,
+                        email: emails[0].value,
                         password: id,
-                        avatar: profileUrl,
+                        avatar: photos[0].value,
                         role: userRole.USER,
                         isEmailVerified: true,
                         loginType: userLoginType.FACEBOOK,

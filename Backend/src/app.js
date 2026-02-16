@@ -20,17 +20,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-    }
-}))
+
+// comment is because there is no need for jwt based authentication
+// this is only for session nased authentication
+
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//     }
+// }))
+// app.use(passport.session())
 app.use(passport.initialize())
-app.use(passport.session())
 
 
 
