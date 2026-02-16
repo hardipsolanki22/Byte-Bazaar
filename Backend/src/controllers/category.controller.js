@@ -2,6 +2,7 @@ import { Category } from "../models/category.model.js";
 import { APIError } from "../utils/APIError.js";
 import { APIResponse } from "../utils/APIResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { generateSlug } from "../utils/slugGenerator.js";
 
 const createCategory = asyncHandler(async (req, res) => {
     const { name } = req.body
@@ -16,9 +17,12 @@ const createCategory = asyncHandler(async (req, res) => {
         throw new APIError(409, "Category already exists")
     }
 
+    const slug = generateSlug(name)
+
     const createCategory = await Category.create({
-        name
-    })    
+        name,
+        slug
+    })
 
     if (!createCategory) {
         throw new APIError(500, "Internal server error while create category")
@@ -43,13 +47,13 @@ const getAllCategories = asyncHandler(async (req, res) => {
 })
 
 const getCategory = asyncHandler(async (req, res) => {
-    const { categoryId } = req.params
+    const { slug } = req.params
 
-    if (!categoryId) {
+    if (!slug) {
         throw new APIError(400, "Category id is required")
     }
 
-    const category = await Category.findById(categoryId)
+    const category = await Category.findOne({ slug })
 
     if (!category) {
         throw new APIError(404, "Category does not exists")
@@ -63,18 +67,19 @@ const getCategory = asyncHandler(async (req, res) => {
 })
 
 const updateCategory = asyncHandler(async (req, res) => {
-    const { categoryId } = req.params
+    const { slug } = req.params
     const name = req.body.name
 
     if (!name) {
         throw new APIError(400, "Category name is required")
     }
 
-    if (!categoryId) {
+    if (!slug) {
         throw new APIError(400, "Category id is required")
     }
 
-    const category = await Category.findByIdAndUpdate(categoryId,
+    const category = await Category.findOneAndUpdate(
+        { slug },
         {
             $set: {
                 name
@@ -98,13 +103,13 @@ const updateCategory = asyncHandler(async (req, res) => {
 })
 
 const deleteCategory = asyncHandler(async (req, res) => {
-    const { categoryId } = req.params
+    const { slug } = req.params
 
-    if (!categoryId) {
+    if (!slug) {
         throw new APIError(400, "Category id is required")
     }
 
-    const category = await Category.findByIdAndDelete(categoryId)
+    const category = await Category.findOneAndDelete({ slug })
 
     if (!category) {
         throw new APIError(404, "Category does not exists")

@@ -37,6 +37,10 @@ const productSchema = new Schema({
     subImages: {
         type: [String],
         default: []
+    },
+    slug: {
+        type: String,
+        required: true
     }
 }, { timestamps: true })
 
