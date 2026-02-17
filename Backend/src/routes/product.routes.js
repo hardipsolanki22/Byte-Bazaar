@@ -43,7 +43,7 @@ router.route("/")
 router.route("/search")
     .get(searchProduct)
 
-router.route("/:productId")
+router.route("/:slug")
     .get(getProduct)
     .patch(
         verifyJWT,
@@ -68,7 +68,7 @@ router.route("/:productId")
         deleteProduct
     )
 
-router.route("/category/:categoryId")
+router.route("/category/:slug")
     .get(getProductsByCategory)
 
 

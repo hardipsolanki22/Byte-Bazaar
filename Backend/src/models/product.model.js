@@ -10,7 +10,7 @@ const productSchema = new Schema({
     },
     name: {
         type: String,
-        unique: true,
+        index: true,
         required: true
     },
     description: {
@@ -23,7 +23,6 @@ const productSchema = new Schema({
     },
     stock: {
         type: Number,
-        default: 1
     },
     owner: {
         ref: "User",

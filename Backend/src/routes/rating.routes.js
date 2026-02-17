@@ -7,7 +7,7 @@ import { validate } from "../validators/validate.js";
 
 const router = Router();
 
-router.route("/products/:productId")
+router.route("/products/:slug")
     .get(getAllRating)
     .post(verifyJWT,
         createRatingValidator(),

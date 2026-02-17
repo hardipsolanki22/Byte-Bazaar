@@ -19,7 +19,9 @@ const createProductValidator = () => {
             .notEmpty()
             .withMessage("Product stock is required")
             .isNumeric()
-            .withMessage("Stock must be numerical"),
+            .withMessage("Stock must be numerical")
+            .isInt({ min: 1 })
+            .withMessage("Stock must be a valid number"),
         body("category")
             .trim()
             .notEmpty()
@@ -51,7 +53,9 @@ const updateProductValidator = () => {
             .notEmpty()
             .withMessage("Product stock is required")
             .isNumeric()
-            .withMessage("Stock must be numerical"),
+            .withMessage("Stock must be numerical")
+            .isInt({ min: 1 })
+            .withMessage("Stock must be a valid number"),
         body("category")
             .optional()
             .trim()

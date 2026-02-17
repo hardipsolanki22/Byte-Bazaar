@@ -12,18 +12,18 @@ import mongoose from "mongoose";
 // rating means star
 const createRating = asyncHandler(async (req, res) => {
     const { comment, rating } = req.body;
-    const { productId } = req.params;
+    const { slug } = req.params;
 
     // if (!comment || !rating) {
     //     throw new APIError(400, "All fields are required")
     // }
 
-    if (!productId) {
-        throw new APIError(400, "Product id is required")
+    if (!slug) {
+        throw new APIError(400, "Product slug is required")
     }
 
     // use uknown id then check what output of the product what does it retuen
-    const product = await Product.findById(productId)
+    const product = await Product.findOne({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exist")
@@ -32,7 +32,7 @@ const createRating = asyncHandler(async (req, res) => {
     // check if user has already rated the product
     const isRatingExists = await Rating.findOne({
         user: req.user._id,
-        product: productId
+        product: product._id
     })
 
     if (isRatingExists) {
@@ -48,7 +48,7 @@ const createRating = asyncHandler(async (req, res) => {
     // create rating
     const createRating = await Rating.create({
         comment,
-        product: productId,
+        product: product._id,
         user: req.user._id,
         rating
     })
@@ -67,7 +67,7 @@ const createRating = asyncHandler(async (req, res) => {
 })
 
 const getAllRating = asyncHandler(async (req, res) => {
-    // get product id
+    // get product slug
     // find product
     // use aggrigation pipeline to lookup user
     // and find average of raring
@@ -75,14 +75,14 @@ const getAllRating = asyncHandler(async (req, res) => {
     // return response
 
 
-    const { productId } = req.params;
+    const { slug } = req.params;
     const { page = 1, limit = 8 } = req.query;
 
-    if (!productId) {
-        throw new APIError(400, "Product id is required")
+    if (!slug) {
+        throw new APIError(400, "Product slug is required")
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findOne({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exist")
@@ -92,7 +92,7 @@ const getAllRating = asyncHandler(async (req, res) => {
     const aggrigation = Rating.aggregate([
         {
             $match: {
-                product: new mongoose.Types.ObjectId(productId)
+                product: new mongoose.Types.ObjectId(product._id)
             }
         },
         {
@@ -157,7 +157,7 @@ const getAllRating = asyncHandler(async (req, res) => {
                         ],
                     }
                 },
-                Good: {
+                good: {
                     $sum: {
                         $cond: [
                             { $eq: ["$rating", 4] },
@@ -166,7 +166,7 @@ const getAllRating = asyncHandler(async (req, res) => {
                         ],
                     }
                 },
-                Average: {
+                average: {
                     $sum: {
                         $cond: [
                             { $eq: ["$rating", 3] },
@@ -175,7 +175,7 @@ const getAllRating = asyncHandler(async (req, res) => {
                         ],
                     }
                 },
-                Poor: {
+                poor: {
                     $sum: {
                         $cond: [
                             { $eq: ["$rating", 2] },
@@ -184,7 +184,7 @@ const getAllRating = asyncHandler(async (req, res) => {
                         ],
                     }
                 },
-                Terrible: {
+                terrible: {
                     $sum: {
                         $cond: [
                             { $eq: ["$rating", 1] },
@@ -195,6 +195,16 @@ const getAllRating = asyncHandler(async (req, res) => {
                 },
             }
         },
+        {
+            $project: {
+                users: 1,
+                excellent: 1,
+                good: 1,
+                average: 1,
+                poor: 1,
+                terrible: 1
+            }
+        }
 
     ])
 

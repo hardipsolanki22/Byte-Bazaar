@@ -5,8 +5,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { destroyCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 import { Category } from "../models/category.model.js"
 import { Rating } from "../models/rating.modle.js"
+import { generateSlug } from '../utils/slugGenerator.js'
 import { aggregatePaginateOption } from "../utils/helpers.js";
 import mongoose from "mongoose";
+
 
 const uploadSubImages = async (subImagesPath) => {
     try {
@@ -52,7 +54,7 @@ const destroySubImages = async (subImages) => {
 const createProduct = asyncHandler(async (req, res) => {
     const { name, description, price, stock, category } = req.body;
 
-    const categoryTobeAdd = await Category.findById(category)
+    const categoryTobeAdd = await Category.findOne({ slug: category })
 
     if (!categoryTobeAdd) {
         throw new APIError(404, "Category does not exists")
@@ -84,6 +86,10 @@ const createProduct = asyncHandler(async (req, res) => {
 
     // upload subImages if exists
     const subImages = await uploadSubImages(subImagesLocalPath)
+    if (subImages.length > 0) subImages.push(mainImage)
+
+    // generate product slug 
+    const slug = generateSlug(name)
 
     const product = await Product.create({
         name,
@@ -93,7 +99,8 @@ const createProduct = asyncHandler(async (req, res) => {
         mainImage,
         subImages,
         owner: req.user._id,
-        category: categoryTobeAdd._id
+        category: categoryTobeAdd._id,
+        slug
     })
 
     if (!product) {
@@ -155,6 +162,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
                 mainImage: 1,
                 averageRating: 1,
                 ratingCount: 1,
+                slug: 1
             }
         }
     ])
@@ -180,17 +188,17 @@ const getAllProducts = asyncHandler(async (req, res) => {
 })
 
 const getProduct = asyncHandler(async (req, res) => {
-    const { productId } = req.params;
+    const { slug } = req.params;
 
-    if (!productId) {
-        throw new APIError(400, "Product id is required")
+    if (!slug) {
+        throw new APIError(400, "Product slug is required")
     }
 
     // aggregation pipeline to get product with average rating and user details
     const product = await Product.aggregate([
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(productId)
+                slug
             }
         },
         {
@@ -264,7 +272,15 @@ const getProduct = asyncHandler(async (req, res) => {
                 // }
 
                 productRating: {
-                    $arrayElemAt: ["$productRating", 0]
+                    $ifNull: [
+                        { $arrayElemAt: ["$productRating", 0] },
+                        {
+                            totalRatings: 0,
+                            averageRating: 0,
+                            totalReviews: 0
+                        }
+                    ]
+
                 },
             }
         },
@@ -278,7 +294,8 @@ const getProduct = asyncHandler(async (req, res) => {
                 mainImage: 1,
                 subImages: 1,
                 // averageRating: 1,
-                productRating: 1
+                productRating: 1,
+                slug: 1
             }
         }
     ])
@@ -297,14 +314,14 @@ const getProduct = asyncHandler(async (req, res) => {
 })
 
 const getProductsByCategory = asyncHandler(async (req, res) => {
-    const { categoryId } = req.params;
+    const { categorySlug } = req.params;
     const { limit = 8, page = 1 } = req.query;
 
-    if (!categoryId) {
-        throw new APIError(400, "Category id is required")
+    if (!categorySlug) {
+        throw new APIError(400, "Category slug is required")
     }
 
-    const isCategotyExists = await Category.findById(categoryId)
+    const isCategotyExists = await Category.findOne({ categorySlug })
 
     if (!isCategotyExists) {
         throw new APIError(404, "Category does not exists")
@@ -314,7 +331,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
     const aggregation = Product.aggregate([
         {
             $match: {
-                category: new mongoose.Types.ObjectId(categoryId)
+                category: new mongoose.Types.ObjectId(isCategotyExists._id)
             }
         },
         {
@@ -345,6 +362,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
                 mainImage: 1,
                 averageRating: 1,
                 ratingCount: 1,
+                slug: 1
             }
         }
     ])
@@ -368,22 +386,22 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
 })
 
 const updateProduct = asyncHandler(async (req, res) => {
-    const { productId } = req.params;
-    const { name, description, price, stock, category } = req.body;
+    const { slug } = req.params;
+    const { name, description, price, stock, categorySlug } = req.body;
 
-    if (!productId) {
-        throw new APIError(400, "Product id is required")
+    if (!slug) {
+        throw new APIError(400, "Product slug is required")
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findOne({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exists")
     }
 
-    const isCategotyExists = await Category.findById(category)
+    const isCategotyExists = await Category.findOne({ categorySlug })
 
-    if (category && !isCategotyExists) {
+    if (categorySlug && !isCategotyExists) {
         throw new APIError(404, "Category does not exists")
     }
 
@@ -418,16 +436,26 @@ const updateProduct = asyncHandler(async (req, res) => {
     // destroy previous subImages 
     subImages.length && await destroySubImages(productSubImages)
 
-    const updateProduct = await Product.findByIdAndUpdate(productId,
+    // check product with same slug is already exist
+    const isProductWithSameSlugExist = await Product.findOne({ name })
+    if (isProductWithSameSlugExist) {
+        throw new APIError(409, "Product with same name is already exist")
+    }
+    // generate new slug based on updated name
+    const newSlug = generateSlug(name)
+
+    const updateProduct = await Product.findOneAndUpdate(
+        { slug },
         {
             $set: {
-                category,
+                category: isCategotyExists._id,
                 name,
                 description,
                 stock,
                 price,
                 mainImage, // if mainImage is not undefined then update mainImage
-                ...(subImages.length > 0 && { subImages }) // if subImages is not empty then update subImages
+                ...(subImages.length > 0 && { subImages }), // if subImages is not empty then update subImages
+                slug: newSlug
 
             }
         },
@@ -444,21 +472,21 @@ const updateProduct = asyncHandler(async (req, res) => {
 })
 
 const deleteProduct = asyncHandler(async (req, res) => {
-    const { productId } = req.params;
+    const { slug } = req.params;
 
-    if (!productId) {
+    if (!slug) {
         throw new APIError(400, "Product id is required")
     }
 
     // delete product from database
-    const product = await Product.findByIdAndDelete(productId)
+    const product = await Product.findOneAndDelete({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exist")
     }
 
     // delete product all rating
-    await Rating.deleteMany({ product: productId })
+    await Rating.deleteMany({ product: product._id })
 
     // delete product mainImages
     await destroyCloudinary(product.mainImage)
@@ -528,6 +556,7 @@ const searchProduct = asyncHandler(async (req, res) => {
                 mainImage: 1,
                 averageRating: 1,
                 ratingCount: 1,
+                slug: 1
             }
         }
     ])

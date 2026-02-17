@@ -50,7 +50,7 @@ const getCategory = asyncHandler(async (req, res) => {
     const { slug } = req.params
 
     if (!slug) {
-        throw new APIError(400, "Category id is required")
+        throw new APIError(400, "Category slug is required")
     }
 
     const category = await Category.findOne({ slug })
@@ -75,14 +75,23 @@ const updateCategory = asyncHandler(async (req, res) => {
     }
 
     if (!slug) {
-        throw new APIError(400, "Category id is required")
+        throw new APIError(400, "Category slug is required")
     }
 
+    const isCategoryExist = await Category.findOne({ name })
+
+    if (isCategoryExist) {
+        throw new APIError(409, "Category with this name is already exist")
+    }
+
+    // generate new slug based on upaded name
+    const newSlug = generateSlug(name)
     const category = await Category.findOneAndUpdate(
         { slug },
         {
             $set: {
-                name
+                name,
+                slug: newSlug
             }
         },
         {
@@ -106,7 +115,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
     const { slug } = req.params
 
     if (!slug) {
-        throw new APIError(400, "Category id is required")
+        throw new APIError(400, "Category slug is required")
     }
 
     const category = await Category.findOneAndDelete({ slug })
