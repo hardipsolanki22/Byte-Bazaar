@@ -134,8 +134,11 @@ export const categorySlice = createSlice({
             .addCase(updateCategory.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
                 if (state.catagories) {
-                    const findAddIndex = state.catagories?.findIndex(cat => cat.slug === payload.data.slug)
-                    state.catagories?.splice(findAddIndex, 1, payload.data)
+                    const findAddIndex = state.catagories?.findIndex(cat => cat._id === payload.data._id)
+                    if (findAddIndex !== -1) {
+                        state.catagories?.splice(findAddIndex, 1, payload.data)
+                    }
+
                 }
             })
             .addCase(updateCategory.rejected, (state) => {
@@ -149,7 +152,9 @@ export const categorySlice = createSlice({
                 state.loading = 'succeeded'
                 if (state.catagories) {
                     const findAddIndex = state.catagories?.findIndex(cat => cat.slug === payload.slug)
-                    state.catagories?.splice(findAddIndex, 1)
+                    if (findAddIndex !== -1) {
+                        state.catagories?.splice(findAddIndex, 1)
+                    }
                 }
             })
             .addCase(deleteCategory.rejected, (state) => {
