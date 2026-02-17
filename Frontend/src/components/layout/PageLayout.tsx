@@ -27,11 +27,11 @@ const PageLayout = ({
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 ">
+      <Toaster />
       <Navbar />
       <main
         className={`flex-auto w-full ${className} ${!noPadding && "p-2"}
         `}>
-        <Toaster />
         <Outlet />
       </main>
       {!noFooter && <Footer />}

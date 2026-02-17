@@ -18,11 +18,12 @@ const Product: React.FC = () => {
     ratingCount: 120,
     stock: 10,
     description: 'The iPhone 13 features a sleek design, powerful A15 Bionic chip, and an advanced dual-camera system for stunning photos and videos.',
-    subImages: [
-      'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-      '/facebook-logo.png',
-      'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D'
-    ]
+    // subImages: [
+    //   'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
+    //   '/facebook-logo.png',
+    //   'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D'
+    // ]
+    subImages: []
   }
 
   const products = [
@@ -68,18 +69,20 @@ const Product: React.FC = () => {
       grid grid-cols-1 lg:grid-cols-12  gap-4'>
         <div className='lg:col-span-6'>
           <div className='flex sm:flex-row flex-col-reverse justify-center gap-6'>
-            <div className='flex sm:flex-col items-center flex-wrap justify-center sm:justify-normal gap-4 sm:mt-4'>
-              {product.subImages.map((imgUrl, idx) => (
-                <img
-                  onClick={() => setProductMainImageUrl(imgUrl)}
-                  key={idx}
-                  src={imgUrl}
-                  alt={`Product ${idx + 1}`}
-                  className='w-16 h-16 sm:h-20 sm:w-20  object-cover rounded-md hover:scale-105 transition-transform
+            {!!product.subImages.length &&
+              <div className='flex sm:flex-col items-center flex-wrap justify-center sm:justify-normal gap-4 sm:mt-4'>
+                {product.subImages.map((imgUrl, idx) => (
+                  <img
+                    onClick={() => setProductMainImageUrl(imgUrl)}
+                    key={idx}
+                    src={imgUrl}
+                    alt={`Product ${idx + 1}`}
+                    className='w-16 h-16 sm:h-20 sm:w-20  object-cover rounded-md hover:scale-105 transition-transform
                      cursor-pointer'
-                />
-              ))}
-            </div>
+                  />
+                ))}
+              </div>
+            }
             <div className='px-4 sm:px-10 border rounded-sm border-slate-400'>
               <img
                 src={productMainImageUrl}

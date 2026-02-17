@@ -37,7 +37,7 @@ const CategoryForm = ({ name, slug }: Category) => {
                     toast.success(ctgData.message)
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.success(error.message)
                 })
         } else {
             dispatch(addCategory(data))

@@ -18,6 +18,7 @@ const AdminNavbar = () => {
     dispatch(logOutUser())
       .unwrap()
       .then((data) => {
+        console.log("data: ", data)
         toast.success(data.message)
         navigate("/signin")
       })

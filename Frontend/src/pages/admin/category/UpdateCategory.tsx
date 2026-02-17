@@ -17,7 +17,7 @@ const UpdateCategory = () => {
         }
     }, [dispatch])
 
-    return loading === "pending" ? (
+    return loading === "pending" && !!!categories?.length ? (
         <div>
             <h1>Loading...</h1>
         </div>

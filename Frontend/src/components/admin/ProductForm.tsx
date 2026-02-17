@@ -9,17 +9,22 @@ import type { ProductFormData } from '../../types/productTypes'
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getCategories } from '../../features/admin/category/categorySlice'
+import { addProduct, getProducts } from '../../features/admin/product/productSlice'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import { Spinner } from '../ui/spinner'
 
 const ProductForm: React.FC = () => {
     const [subImages, setSubImages] = useState<string[]>([]);
     const [mainImage, setMainImage] = useState<string>("");
     const categories = useAppSelector(({ category }) => category.catagories)
-    const loading = useAppSelector(({ category }) => category.loading)
+    const categoryInitLoading = useAppSelector(({ category }) => category.loading)
+    const productLoading = useAppSelector(({ product }) => product.loading)
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     const {
         register,
         handleSubmit,
-        reset,
         control,
         formState: { errors },
     } = useForm<ProductFormData>()
@@ -49,10 +54,29 @@ const ProductForm: React.FC = () => {
         setMainImage(URL.createObjectURL(e.target.files[0]));
     }
 
-
-
     const onSubmit: SubmitHandler<ProductFormData> = (data) => {
-        console.log(data)
+        const formData = new FormData()
+        formData.append("mainImage", data.mainImage[0])
+        formData.append("name", data.name)
+        formData.append("description", data.description)
+        formData.append("price", String(data.price))
+        formData.append("stock", String(data.stock))
+        formData.append("category", data.category)
+        if (data?.subImages?.length) {
+            Array.from(data?.subImages).forEach((file) => {
+                formData.append("subImages", file)
+            })
+        }
+        dispatch(addProduct(formData))
+            .unwrap()
+            .then((productData) => {
+                dispatch(getProducts())
+                navigate("/admin/products")
+                toast.success(productData.message)
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
     }
     useEffect(() => {
         if (!categories?.length) {
@@ -60,7 +84,7 @@ const ProductForm: React.FC = () => {
         }
     }, [dispatch])
 
-    return loading === 'pending' ? (
+    return categoryInitLoading === "pending" ? (
         <div>
             <h1>Loading...</h1>
         </div>
@@ -147,15 +171,12 @@ const ProductForm: React.FC = () => {
                                                 value={category.slug}>
                                                 {category.name}
                                             </SelectItem>
-
                                         ))}
                                     </SelectContent>
                                 </Select>
                             ))}
                         />
-
                         {errors.category && <span className="text-red-500 m-2">{errors.category.message}</span>}
-
                     </div>
                     <div className='mt-4'>
                         {mainImage &&
@@ -179,7 +200,6 @@ const ProductForm: React.FC = () => {
                             }}
                         />
                         {errors.mainImage && <span className="text-red-500 m-2">{errors.mainImage.message}</span>}
-
                         <div className='mb-4'>
                             <div className='flex w-full gap-4 mb-2'>
                                 {subImages.map((image, idx) => (
@@ -205,22 +225,21 @@ const ProductForm: React.FC = () => {
                                 multiple
                                 className="mt-2"
                                 accept="image/png, image.gpeg image/jpg image/gif"
-                                {...register("subImages", {
-                                    required: "Sub images are required"
-                                })}
+                                {...register("subImages")}
                                 onChange={(e) => {
                                     handleSubImagesChange(e)
                                     register("subImages").onChange(e)
                                 }}
                             />
-                            {errors.subImages && <span className="text-red-500 m-2">{errors.subImages.message}</span>}
-
                         </div>
                     </div>
                     <Button
                         type='submit'
                         className="cursor-pointer">
-                        Submit
+                        {productLoading === "pending" ?
+                            <Spinner data-icon="inline-start" />
+                            : "Submit"
+                        }
                     </Button>
                 </form>
             </div>
