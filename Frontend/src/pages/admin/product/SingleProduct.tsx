@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '../../../components/lightswind/button'
 import { DivideCircle, Star, MoreVertical } from 'lucide-react'
 import { Badge } from '../../../components/lightswind/badge'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../../components/lightswind/hover-card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/lightswind/dialog'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { getProduct } from '../../../features/admin/product/productSlice'
+import { deleteProduct, getProduct } from '../../../features/admin/product/productSlice'
 import { getRating } from '../../../features/rating/ratingSlice'
+import { calRatingPercentage } from '../../../helpers/calRatingPercentage'
+import { Spinner } from '../../../components/ui/spinner'
+import { toast } from 'sonner'
 
 const SingleProduct: React.FC = () => {
 
@@ -16,8 +19,9 @@ const SingleProduct: React.FC = () => {
     const productRating = useAppSelector(({ rating }) => rating.rating)
     const loading = useAppSelector(({ product }) => product.loading)
     const ratingLoading = useAppSelector(({ rating }) => rating.loading)
-
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
     if (!slug) return
     useEffect(() => {
         Promise.all([
@@ -26,9 +30,18 @@ const SingleProduct: React.FC = () => {
         ])
     }, [dispatch, slug])
 
-    const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
 
-    if (loading === "pending" || loading === "idle"
+    const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
+    const handleProductDelete = (slug: string) => {
+        dispatch(deleteProduct(slug))
+            .unwrap()
+            .then((userData) => {
+                navigate("/admin/products")
+                toast.success(userData.message)
+            })
+    }
+
+    if ((!!!product) && loading === "pending" || loading === "idle"
         || ratingLoading === 'pending' || ratingLoading == 'idle'
     ) {
         return (
@@ -37,9 +50,19 @@ const SingleProduct: React.FC = () => {
             </div>
         )
     }
+    if (!product) {
+        return (
+            <div className='w-full flex items-center justify-center text-center h-full'>
+                <h2 className='text-2xl text-slate-600 font-semibold'>
+                    Products Not Found
+                </h2>
+            </div>
+        )
+    }
+
 
     return (
-        <div className='pt-4 flex flex-col mx-2'>
+        <div className='pt-4 flex flex-col mx-2 w-full'>
             <div className='flex justify-between mx-2 border-b pb-3 border-slate-200'>
                 <h2 className='text-2xl font-semibold'>Product Management</h2>
                 <HoverCard openDelay={200}>
@@ -49,7 +72,7 @@ const SingleProduct: React.FC = () => {
                         </Button>
                     </HoverCardTrigger>
                     <HoverCardContent>
-                        <Link to="/admin/add-product">
+                        <Link to={`/admin/products/${slug}/update`}>
                             <Button variant="ghost"
                                 className="w-full text-left mb-3 cursor-pointer">
                                 Update
@@ -70,8 +93,13 @@ const SingleProduct: React.FC = () => {
                                         This action cannot be undone. Are you sure you want to delete this product
                                     </DialogDescription>
                                     <div className='flex justify-end items-center m-2'>
-                                        <Button variant='destructive' className='cursor-pointer'>
-                                            Delete
+                                        <Button
+                                            onClick={() => handleProductDelete(slug)}
+                                            variant='destructive' className='cursor-pointer'>
+                                            {loading === "pending" ?
+                                                <Spinner data-icon="inline-start" />
+                                                : "Delete"
+                                            }
                                         </Button>
                                     </div>
                                 </DialogHeader>
@@ -81,9 +109,9 @@ const SingleProduct: React.FC = () => {
                 </HoverCard>
             </div>
 
-
             <div className='rounded-md p-4 m-4 grid grid-cols-1 lg:grid-cols-12 gap-4'>
                 <div className='lg:col-span-6'>
+                    {/* Product Details Section */}
                     <div className='flex sm:flex-row flex-col-reverse justify-center gap-6'>
                         {!!product?.subImages.length &&
                             <div className='flex sm:flex-col items-center flex-wrap justify-center sm:justify-normal gap-4 sm:mt-4'>
@@ -126,8 +154,8 @@ const SingleProduct: React.FC = () => {
                                 <span className='text-slate-500'>({product?.productRating.totalRatings} reviews)</span>
                             </div>
                         </div>
-
                     </div>
+                    {/* Rating Section */}
                     {!!!productRating ? (
                         <div className='flex w-full justify-center items-center h-full'>
                             <h2 className='text-2xl text-slate-600 font-semibold'>
@@ -156,37 +184,59 @@ const SingleProduct: React.FC = () => {
                                             <div className='flex items-center gap-2 my-1'>
                                                 <span className='text-sm text-slate-500 w-16'>Excellent</span>
                                                 <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                                                    <div className='h-4 bg-green-500 rounded-full' style={{ width: '70%' }}></div>
+                                                    <div className='h-4 bg-green-500 rounded-full'
+                                                        style={{ width: `${calRatingPercentage(productRating.excellent ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                                                    </div>
                                                 </div>
-                                                <span className='text-sm text-slate-500 w-8 text-right'>70%</span>
+                                                <span className='text-sm text-slate-500 w-8 text-right'>
+                                                    {calRatingPercentage(productRating.excellent ?? 0, product?.productRating.totalRatings ?? 0)}
+                                                </span>
                                             </div>
                                             <div className='flex items-center gap-2 my-1'>
                                                 <span className='text-sm text-slate-500 w-16'>Good</span>
                                                 <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                                                    <div className='h-4 bg-blue-500 rounded-full' style={{ width: '50%' }}></div>
+                                                    <div className='h-4 bg-blue-500 rounded-full'
+                                                        style={{ width: `${calRatingPercentage(productRating.good ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                                                    </div>
                                                 </div>
-                                                <span className='text-sm text-slate-500 w-8 text-right'>50%</span>
+                                                <span className='text-sm text-slate-500 w-8 text-right'>
+                                                    {calRatingPercentage(productRating.good ?? 0, product?.productRating.totalRatings ?? 0)}
+                                                </span>
                                             </div>
                                             <div className='flex items-center gap-2 my-1'>
                                                 <span className='text-sm text-slate-500 w-16'>Average</span>
                                                 <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                                                    <div className='h-4 bg-yellow-500 rounded-full' style={{ width: '30%' }}></div>
+                                                    <div className='h-4 bg-yellow-500 rounded-full'
+                                                        style={{ width: `${calRatingPercentage(productRating.average ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                                                    </div>
                                                 </div>
-                                                <span className='text-sm text-slate-500 w-8 text-right'>30%</span>
+                                                <span className='text-sm text-slate-500 w-8 text-right'>
+                                                    {calRatingPercentage(productRating.average ?? 0, product?.productRating.totalRatings ?? 0)}
+                                                </span>
                                             </div>
                                             <div className='flex items-center gap-2 my-1'>
                                                 <span className='text-sm text-slate-500 w-16'>Poor</span>
                                                 <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                                                    <div className='h-4 bg-orange-500 rounded-full' style={{ width: '15%' }}></div>
+                                                    <div className='h-4 bg-orange-500 rounded-full'
+                                                        style={{ width: `${calRatingPercentage(productRating.poor ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+
+                                                    </div>
                                                 </div>
-                                                <span className='text-sm text-slate-500 w-8 text-right'>15%</span>
+                                                <span className='text-sm text-slate-500 w-8 text-right'>
+                                                    {calRatingPercentage(productRating.poor ?? 0, product?.productRating.totalRatings ?? 0)}
+                                                </span>
                                             </div>
                                             <div className='flex items-center gap-2 my-1'>
                                                 <span className='text-sm text-slate-500 w-16'>Terrible</span>
                                                 <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                                                    <div className='h-4 bg-red-500 rounded-full' style={{ width: '5%' }}></div>
+                                                    <div className='h-4 bg-red-500 rounded-full'
+                                                        style={{ width: `${calRatingPercentage(productRating.terrible ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+
+                                                    </div>
                                                 </div>
-                                                <span className='text-sm text-slate-500 w-8 text-right'>5%</span>
+                                                <span className='text-sm text-slate-500 w-8 text-right'>
+                                                    {calRatingPercentage(productRating.terrible ?? 0, product?.productRating.totalRatings ?? 0)}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +247,10 @@ const SingleProduct: React.FC = () => {
                                 <div key={rataingUser._id}
                                     className='mt-4 flex items-start flex-col border-b border-slate-300 pb-4 w-full'>
                                     <div className='flex items-center gap-4 '>
-                                        <img src="" alt="user avatar" className="w-10 h-10 rounded-full" />
+                                        <img
+                                            src={rataingUser.user.avatar}
+                                            alt={rataingUser.user.fullName}
+                                            className="w-10 h-10 rounded-full" />
                                         <h3 className='text-slate-400 text-sm'>
                                             {rataingUser.user.fullName}
                                         </h3>
@@ -213,9 +266,8 @@ const SingleProduct: React.FC = () => {
                                         </div>
                                         <div className='bg-slate-400 rounded-full p-[2px]'></div>
                                         <span className='text-slate-400 text-sm'>
-                                            {new Date(rataingUser.createdAt).toLocaleTimeString()}
+                                            {new Date(rataingUser.createdAt).toLocaleDateString('gu-IN')}
                                         </span>
-
                                     </div>
                                     <p className='mt-2 text-slate-600'>
                                         {rataingUser?.comment}
