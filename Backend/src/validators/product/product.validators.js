@@ -61,14 +61,29 @@ const updateProductValidator = () => {
             .trim()
             .notEmpty()
             .withMessage("Category is required"),
-        param("productId")
+        param("slug")
             .trim()
             .notEmpty()
-            .withMessage("Products id is required")
+            .withMessage("Products slug is required")
+    ]
+}
+
+const deleteProductSubImagesValidator = () => {
+    return [
+        param("slug")
+            .trim()
+            .notEmpty()
+            .withMessage("Products slug is required"),
+        body("url")
+            .trim()
+            .notEmpty()
+            .withMessage("Image url is required")
     ]
 }
 
 export {
     createProductValidator,
-    updateProductValidator
+    updateProductValidator,
+    deleteProductSubImagesValidator
+
 }

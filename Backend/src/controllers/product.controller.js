@@ -86,7 +86,6 @@ const createProduct = asyncHandler(async (req, res) => {
 
     // upload subImages if exists
     const subImages = await uploadSubImages(subImagesLocalPath)
-    if (subImages.length > 0) subImages.push(mainImage)
 
     // generate product slug 
     const slug = generateSlug(name)
@@ -162,6 +161,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
                 mainImage: 1,
                 averageRating: 1,
                 ratingCount: 1,
+                category: 1,
                 slug: 1
             }
         }
@@ -295,6 +295,7 @@ const getProduct = asyncHandler(async (req, res) => {
                 subImages: 1,
                 // averageRating: 1,
                 productRating: 1,
+                category: 1,
                 slug: 1
             }
         }
@@ -386,12 +387,18 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
 })
 
 const updateProduct = asyncHandler(async (req, res) => {
+
+    // stuck on sub Images and main images
+    // first we check exisiting subImages length if it is 3 then
+    //  we can't upload new subImages because maximum subImages allowed is 3
+    // if subImages is not undefined then update subImages 
+    // by adding new subImages with previous subImages
+    // we add previous subImages because if we update subImages 
+    // then previous subImages will be removed from database and cloudinary
+    // and if we want to keep previous subImages then we need to add previous subImages with new subImages
+
     const { slug } = req.params;
     const { name, description, price, stock, categorySlug } = req.body;
-
-    if (!slug) {
-        throw new APIError(400, "Product slug is required")
-    }
 
     const product = await Product.findOne({ slug })
 
@@ -399,7 +406,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         throw new APIError(404, "Product does not exists")
     }
 
-    const isCategotyExists = await Category.findOne({ categorySlug })
+    const isCategotyExists = await Category.findOne({ slug: categorySlug })
 
     if (categorySlug && !isCategotyExists) {
         throw new APIError(404, "Category does not exists")
@@ -424,37 +431,49 @@ const updateProduct = asyncHandler(async (req, res) => {
     // handle subImages upload if exists
     let subImagesLocalPath = [];
 
+
     if (req.files && req.files?.subImages && req.files?.subImages.length > 0) {
         subImagesLocalPath = req.files.subImages.map(file => file.path)
+    }
+    if (
+        !mainImageLocalPath && !subImagesLocalPath.length &&
+        !name && !description && !price && !stock && !categorySlug
+    ) {
+        throw new APIError(400, "At least one field is required to update product")
     }
 
     const productSubImages = product.subImages
 
+    if (productSubImages.length === 3 && subImagesLocalPath.length > 0) {
+        throw new APIError(400, "You can upload maximum 3 sub images")
+    }
+
     // upload subImages 
-    const subImages = await uploadSubImages(subImagesLocalPath)
+    let subImages = await uploadSubImages(subImagesLocalPath)
 
     // destroy previous subImages 
-    subImages.length && await destroySubImages(productSubImages)
+    // subImages.length && await destroySubImages(productSubImages)
 
     // check product with same slug is already exist
     const isProductWithSameSlugExist = await Product.findOne({ name })
+
     if (isProductWithSameSlugExist) {
         throw new APIError(409, "Product with same name is already exist")
     }
     // generate new slug based on updated name
-    const newSlug = generateSlug(name)
+    const newSlug = name && generateSlug(name)
 
     const updateProduct = await Product.findOneAndUpdate(
         { slug },
         {
             $set: {
-                category: isCategotyExists._id,
+                ...(categorySlug && { category: isCategotyExists._id }),
                 name,
                 description,
                 stock,
                 price,
-                mainImage, // if mainImage is not undefined then update mainImage
-                ...(subImages.length > 0 && { subImages }), // if subImages is not empty then update subImages
+                mainImage,
+                ...(subImages.length > 0 && { subImages: [...productSubImages, ...subImages] }), // if subImages is not empty then update subImages
                 slug: newSlug
 
             }
@@ -583,6 +602,31 @@ const searchProduct = asyncHandler(async (req, res) => {
         )
 })
 
+const deleteProductSubImages = asyncHandler(async (req, res) => {
+    const { slug } = req.params
+
+    const url = req.body.url
+
+    const product = await Product.findOne({ slug })
+
+    if (!product) {
+        throw new APIError(404, "Product does not exist")
+    }
+    await Product.findOneAndUpdate(
+        { slug },
+        { $pull: { subImages: url } },
+        { new: true }
+    )
+    // remove subImage from cloudinary
+    await destroyCloudinary(url)
+
+    return res
+        .status(200)
+        .json(
+            new APIResponse(200, { url }, "SubImage Deleted Successfully")
+        )
+})
+
 
 
 
@@ -593,5 +637,6 @@ export {
     getAllProducts,
     getProduct,
     getProductsByCategory,
-    searchProduct
+    searchProduct,
+    deleteProductSubImages
 }

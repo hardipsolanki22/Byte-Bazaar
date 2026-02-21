@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     createProduct,
     deleteProduct,
+    deleteProductSubImages,
     getAllProducts,
     getProduct,
     getProductsByCategory,
@@ -13,6 +14,7 @@ import { verifyJWT, verifyPermisson } from "../middlewares/auth.middleware.js";
 import { userRole } from "../constant.js";
 import {
     createProductValidator,
+    deleteProductSubImagesValidator,
     updateProductValidator
 } from "../validators/product/product.validators.js";
 import { validate } from "../validators/validate.js";
@@ -31,7 +33,7 @@ router.route("/")
             },
             {
                 name: "subImages",
-                maxCount: 4
+                maxCount: 3
             }
         ]),
         createProductValidator(),
@@ -42,6 +44,8 @@ router.route("/")
 
 router.route("/search")
     .get(searchProduct)
+
+
 
 router.route("/:slug")
     .get(getProduct)
@@ -55,7 +59,7 @@ router.route("/:slug")
             },
             {
                 name: "subImages",
-                maxCount: 4
+                maxCount: 3
             }
         ]),
         updateProductValidator(),
@@ -68,6 +72,14 @@ router.route("/:slug")
         deleteProduct
     )
 
+router.route("/delete-sub-images/:slug")
+    .patch(
+        verifyJWT,
+        verifyPermisson(userRole.ADMIN),
+        deleteProductSubImagesValidator(),
+        validate,
+        deleteProductSubImages
+    )
 router.route("/category/:slug")
     .get(getProductsByCategory)
 

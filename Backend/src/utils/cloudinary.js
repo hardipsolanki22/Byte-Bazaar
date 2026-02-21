@@ -29,7 +29,9 @@ const destroyCloudinary = async (imageUrl) => {
         if (!imageUrl) return null
         const imagePublicId = imageUrl.split("/").pop().split(".")[0];
         const destroyImage = await cloudinary.uploader.destroy(imagePublicId)
-        if (destroyImage.result === "ok") console.log("Image Delete Successfully");
+        if (destroyImage.result === "ok") {
+            console.log(`Image Destroyed Successfully ::  `);
+        }
     } catch (error) {
         console.log(`Error While delete file on Cloudinary ::  `, error);
     }
