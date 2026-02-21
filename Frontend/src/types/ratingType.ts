@@ -19,9 +19,10 @@ export interface Rating {
     terrible: number;
 }
 export interface GetRatingRes {
-    data: Rating
-    // other fields likes totalRating, page, limit, hasNextPage if need for pagination logic
-
+    data: {
+        ratings: Rating[]
+        // other fields likes totalRating, page, limit, hasNextPage if need for pagination logic
+    }
     status: number;
     message: string;
     success: boolean

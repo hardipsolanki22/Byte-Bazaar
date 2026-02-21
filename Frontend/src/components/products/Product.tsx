@@ -37,7 +37,7 @@ const Product = ({
                             </span>
                             <Star size={16} color='white' />
                         </div>
-                        <span className='text-slate-600'>{ratingCount} reviews</span>
+                        <span className='text-slate-600'>{ratingCount} ratings</span>
                     </div>
                 }
             </div>

@@ -18,15 +18,14 @@ const UpdateCategory = () => {
     }, [dispatch])
 
     return loading === "pending" && !!!categories?.length ? (
-        <div>
+        <div className='flex items-center  w-full justify-center h-full'>
             <h1>Loading...</h1>
         </div>
     ) : (
         <div className='flex min-h-screen w-full items-center justify-center'>
             <div className='bg-white rounded-md lg:w-1/2 w-full sm:w-md'>
                 <CategoryForm
-                    name={category?.name}
-                    slug={category?.slug}
+                   {...category}
                 />
             </div>
         </div>

@@ -10,6 +10,7 @@ import { addCategory, updateCategory } from '../../features/admin/category/categ
 import { toast } from 'sonner'
 
 type Category = {
+    _id?: string
     name?: string
     slug?: string
 }

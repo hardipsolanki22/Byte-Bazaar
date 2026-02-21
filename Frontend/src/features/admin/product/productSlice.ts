@@ -3,10 +3,17 @@ import { deleteReq, getReq, patchReq, postReq } from '../../../config/configAxio
 
 import type {
     AddProductRes,
+    DeleteProductRes,
+    DeleteProductSubImage,
+    DeleteProductSubImageReq,
+    DeleteProductSubImageRes,
     GetProductRes,
     GetProductsRes,
     Product,
-    SingleProduct
+    SingleProduct,
+    UpdateProduct,
+    UpdateProductReq,
+    UpdateProductRes
 } from '../../../types/productTypes';
 
 
@@ -81,6 +88,68 @@ export const getProduct = createAsyncThunk(
         }
     },
 )
+export const updateProduct = createAsyncThunk(
+    'product/update',
+    async ({ slug, data }: UpdateProductReq, { rejectWithValue }) => {
+        try {
+            const response = await patchReq<FormData, UpdateProductRes>(
+                `/api/v1/products/${slug}`,
+                data,
+                {
+                    "headers": {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            )
+            return response.data
+        } catch (error: any) {
+            console.log('Error while update product: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+
+
+export const deleteProduct = createAsyncThunk(
+    'product/delete',
+    async (slug: string, { rejectWithValue }) => {
+        try {
+            const response = await deleteReq<DeleteProductRes>(`/api/v1/products/${slug}`)
+            return { ...response.data, slug: slug }
+        } catch (error: any) {
+            console.log('Error while delete product: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+
+export const deleteProductSubImage = createAsyncThunk(
+    'product/subImage-delete',
+    async ({ slug, data }: DeleteProductSubImageReq, { rejectWithValue }) => {
+        try {
+            const response = await patchReq<DeleteProductSubImage, DeleteProductSubImageRes>(
+                `/api/v1/products/delete-sub-images/${slug}`,
+                data
+            )
+            return response.data
+        } catch (error: any) {
+            console.log('Error while delete product sub image: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
 
 
 
@@ -94,7 +163,11 @@ const initialState: ProductState = {
 export const productSlice = createSlice({
     name: 'product',
     initialState,
-    reducers: {},
+    reducers: {
+        clearSingleProduct: (state) => {
+            state.singleProduct = undefined
+        }
+    },
     extraReducers: (builder) => {
         builder
             // add product
@@ -132,13 +205,62 @@ export const productSlice = createSlice({
             })
             .addCase(getProduct.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                state.singleProduct = payload.data
+                state.singleProduct = {
+                    ...payload.data,
+                    subImages: payload.data.subImages.length ? [...payload.data.subImages, payload.data.mainImage] : []
+                }
             })
             .addCase(getProduct.rejected, (state) => {
+                state.loading = 'failed'
+            })
+
+            // delete product
+            .addCase(deleteProduct.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(deleteProduct.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                if (state.products?.length) {
+                    const findAddIndex = state.products?.findIndex(product => product.slug === payload.slug)
+                    if (findAddIndex !== -1) {
+                        state.products?.splice(findAddIndex, 1)
+                    }
+                }
+            })
+            .addCase(deleteProduct.rejected, (state) => {
+                state.loading = 'failed'
+            })
+
+            // update product
+            .addCase(updateProduct.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(updateProduct.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                if (state.singleProduct) {
+                    state.singleProduct = { ...state.singleProduct, ...payload.data }
+                }
+            })
+            .addCase(updateProduct.rejected, (state) => {
+                state.loading = 'failed'
+            })
+
+            // delete product subImage
+            .addCase(deleteProductSubImage.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(deleteProductSubImage.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                if (state.singleProduct) {
+                    state.singleProduct.subImages = state.singleProduct.subImages.filter(image => image !== payload.data.url)
+                }
+            })
+            .addCase(deleteProductSubImage.rejected, (state) => {
                 state.loading = 'failed'
             })
     }
 
 })
 
+export const { clearSingleProduct } = productSlice.actions
 export default productSlice.reducer

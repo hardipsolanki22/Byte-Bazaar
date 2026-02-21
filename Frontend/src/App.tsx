@@ -30,6 +30,7 @@ import ForgotPassowrd from './components/auth/ForgotPassowrd'
 import AddCategory from './pages/admin/category/AddCategory'
 import Category from './pages/admin/category/Category'
 import UpdateCategory from './pages/admin/category/UpdateCategory'
+import UpdateProduct from './pages/admin/product/UpdateProduct'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -128,6 +129,9 @@ const App = () => {
           <Route element={
             <SingleProduct />
           } path='/admin/products/:slug' />
+          <Route element={
+            <UpdateProduct />
+          } path='/admin/products/:slug/update' />
           <Route element={
             <Coupon />
           } path='/admin/coupon' />

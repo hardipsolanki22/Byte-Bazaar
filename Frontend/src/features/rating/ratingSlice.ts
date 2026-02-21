@@ -54,7 +54,7 @@ export const ratingSlice = createSlice({
             })
             .addCase(getRating.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                state.rating = payload.data
+                state.rating = payload.data.ratings[0]
             })
             .addCase(getRating.rejected, (state) => {
                 state.loading = 'failed'

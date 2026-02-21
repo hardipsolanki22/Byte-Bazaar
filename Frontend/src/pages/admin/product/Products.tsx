@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import Product from '../../../components/products/Product'
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../../../components/lightswind/pagination'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { getProducts } from '../../../features/admin/product/productSlice'
+import { clearSingleProduct, getProducts } from '../../../features/admin/product/productSlice'
 
 const Products: React.FC = () => {
     const productLoading = useAppSelector(({ product }) => product.loading)
@@ -14,6 +14,7 @@ const Products: React.FC = () => {
         if (!products?.length) {
             dispatch(getProducts())
         }
+        dispatch(clearSingleProduct())
         return
     }, [dispatch])
 

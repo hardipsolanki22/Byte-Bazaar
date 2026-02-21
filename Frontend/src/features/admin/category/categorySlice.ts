@@ -150,7 +150,7 @@ export const categorySlice = createSlice({
             })
             .addCase(deleteCategory.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                if (state.catagories) {
+                if (state.catagories?.lastIndexOf) {
                     const findAddIndex = state.catagories?.findIndex(cat => cat.slug === payload.slug)
                     if (findAddIndex !== -1) {
                         state.catagories?.splice(findAddIndex, 1)
