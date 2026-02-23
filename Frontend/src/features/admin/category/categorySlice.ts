@@ -136,7 +136,7 @@ export const categorySlice = createSlice({
                 if (state.catagories) {
                     const findAddIndex = state.catagories?.findIndex(cat => cat._id === payload.data._id)
                     if (findAddIndex !== -1) {
-                        state.catagories?.splice(findAddIndex, 1, payload.data)
+                        state.catagories.splice(findAddIndex, 1, payload.data)
                     }
 
                 }
@@ -153,7 +153,7 @@ export const categorySlice = createSlice({
                 if (state.catagories?.lastIndexOf) {
                     const findAddIndex = state.catagories?.findIndex(cat => cat.slug === payload.slug)
                     if (findAddIndex !== -1) {
-                        state.catagories?.splice(findAddIndex, 1)
+                        state.catagories.splice(findAddIndex, 1)
                     }
                 }
             })

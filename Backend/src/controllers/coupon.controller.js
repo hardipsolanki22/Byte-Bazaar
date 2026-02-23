@@ -27,7 +27,7 @@ const generateRandomCode = (length, type) => {
 }
 
 const createCoupon = asyncHandler(async (req, res) => {
-    const { name, backCouponType = "number", discountPercentage, isActive, minCartValue, usedFrom, limit }
+    const { name, backCouponType = "number", discountPercentage, isActive, minCartValue, limit, expiryTime }
         = req.body
 
     // generate randome code
@@ -45,7 +45,7 @@ const createCoupon = asyncHandler(async (req, res) => {
         couponCode: name + randomCode,
         discountPercentage,
         isActive,
-        expiryTime: Date.now() + COUPON_EXPIRY,
+        expiryTime,
         minCartValue,
         limit,
         user: req.user._id
@@ -130,7 +130,7 @@ const updateCoupon = asyncHandler(async (req, res) => {
     // -> update coupon document
 
     const couponId = req.params.couponId
-    const { couponCode, backCouponType, discountPercentage, isActive, minCartValue, usedFrom, limit }
+    const { name, backCouponType, discountPercentage, isActive, minCartValue, expiryTime, limit }
         = req.body
 
     if (!couponId) {
@@ -139,8 +139,8 @@ const updateCoupon = asyncHandler(async (req, res) => {
 
     let coupon;
 
-    if (backCouponType && couponCode) {
-        const couponCodeOfArray = couponCode?.split("")
+    if (backCouponType) {
+        const couponCodeOfArray = name?.split("")
 
         // remove randome 3 digit code from coupon
         couponCodeOfArray?.splice(couponCodeOfArray.length - 3, 3)
@@ -150,7 +150,7 @@ const updateCoupon = asyncHandler(async (req, res) => {
         const randomeCode = generateRandomCode(3, backCouponType)
         coupon = removedLastCodeFromCoupon + randomeCode
     } else
-        coupon = couponCode
+        coupon = name
 
     const isCouponExists = await Coupon.findOne({
         couponCode: coupon
@@ -167,7 +167,8 @@ const updateCoupon = asyncHandler(async (req, res) => {
                 discountPercentage,
                 isActive,
                 minCartValue,
-                limit
+                limit,
+                expiryTime
             }
         },
         {

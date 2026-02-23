@@ -133,7 +133,7 @@ export const addressSlice = createSlice({
                 state.loading = 'succeeded'
                 if (state.addresses) {
                     const findAddIndex = state.addresses?.findIndex(add => add._id === payload.data._id)
-                    state.addresses?.splice(findAddIndex, 1, payload.data)
+                    state.addresses.splice(findAddIndex, 1, payload.data)
                 }
             })
             .addCase(updateAddress.rejected, (state) => {
@@ -147,7 +147,7 @@ export const addressSlice = createSlice({
                 state.loading = 'succeeded'
                 if (state.addresses) {
                     const findAddIndex = state.addresses?.findIndex(add => add._id === payload._id)
-                    state.addresses?.splice(findAddIndex, 1)
+                    state.addresses.splice(findAddIndex, 1)
                 }
             })
             .addCase(deleteAddress.rejected, (state) => {

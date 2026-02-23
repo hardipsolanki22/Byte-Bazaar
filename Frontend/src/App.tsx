@@ -31,6 +31,7 @@ import AddCategory from './pages/admin/category/AddCategory'
 import Category from './pages/admin/category/Category'
 import UpdateCategory from './pages/admin/category/UpdateCategory'
 import UpdateProduct from './pages/admin/product/UpdateProduct'
+import UpdateCoupon from './pages/admin/coupon/UpdateCoupon'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -147,6 +148,9 @@ const App = () => {
           <Route element={
             <AddCoupon />
           } path='/admin/add-coupon' />
+          <Route element={
+            <UpdateCoupon />
+          } path='/admin/coupon/:couponId' />
           <Route element={
             <Users />
           } path='/admin/users' />

@@ -4,7 +4,8 @@ import addressReducer from "../features/address/addressSlice"
 import categorySlice from "../features/admin/category/categorySlice"
 import productSlice from '../features/admin/product/productSlice'
 import ratingSlice from '../features/rating/ratingSlice'
-import getUsersList from '../features/admin/user/userSlice'
+import userSlice from '../features/admin/user/userSlice'
+import couponSlice from '../features/admin/coupon/couponSlice'
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     category: categorySlice,
     product: productSlice,
     rating: ratingSlice,
-    userList: getUsersList
+    userList: userSlice,
+    coupon: couponSlice,
   },
 })
 

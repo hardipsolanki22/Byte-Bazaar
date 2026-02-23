@@ -30,9 +30,10 @@ const Category = () => {
     }
 
     if ((loading === "pending" || loading === "idle") && !categories?.length) {
-        return (<div>
-            <h1>Loading...</h1>
-        </div>
+        return (
+            <div className='flex items-center  w-full justify-center h-full'>
+                <h1>Loading...</h1>
+            </div>
         )
     }
     return (

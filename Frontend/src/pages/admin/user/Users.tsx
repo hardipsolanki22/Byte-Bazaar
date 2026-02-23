@@ -19,8 +19,6 @@ const Users: React.FC = () => {
         }
     }, [dispatch])
 
-
-
     if (!users.length && loading === "pending") {
         return (
             <div className='flex items-center w-full justify-center h-full'>
@@ -35,7 +33,6 @@ const Users: React.FC = () => {
             .then((userData) => {
                 toast.success(userData.message)
             })
-
     }
 
     return (

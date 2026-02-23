@@ -31,8 +31,10 @@ const createCouponValidator = () => {
             .isNumeric()
             .withMessage("Limit must be numerical")
             .isInt({ min: 1 })
-            .withMessage("Limit must be at least 1")
-        ,
+            .withMessage("Limit must be at least 1"),
+        body("expiryTime")
+            .notEmpty()
+            .withMessage("Expiry time is required"),
         body("usedFrom")
             .optional()
             .notEmpty()
@@ -80,13 +82,10 @@ const updateCouponValidator = () => {
             .withMessage("Limit must be numerical")
             .isInt({ min: 1 })
             .withMessage("Limit must be at least 1"),
-        body("usedFrom")
+        body("expiryTime")
             .optional()
             .notEmpty()
-            .withMessage("usedFrom is required")
-            .isNumeric()
-            .withMessage("usedFrom must be numerical")
-
+            .withMessage("Expiry time is required")
     ]
 }
 
