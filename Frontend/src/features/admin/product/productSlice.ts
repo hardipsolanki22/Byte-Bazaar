@@ -1,4 +1,4 @@
-import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { deleteReq, getReq, patchReq, postReq } from '../../../config/configAxios';
 
 import type {
@@ -11,7 +11,6 @@ import type {
     GetProductsRes,
     Product,
     SingleProduct,
-    UpdateProduct,
     UpdateProductReq,
     UpdateProductRes
 } from '../../../types/productTypes';

@@ -337,7 +337,13 @@ const ProductForm = ({
                             />
                         </div>
                     </div>
-                    <div className='w-full'>
+                    <div className='w-full flex gap-4'>
+                        {name && slug && <Button
+                            onClick={() => navigate(`/admin/products/${slug}`)}
+                            type="button"
+                            className="cursor-pointer w-full">
+                            Cancel
+                        </Button>}
                         <Button
                             type='submit'
                             className="cursor-pointer w-full">
@@ -347,7 +353,6 @@ const ProductForm = ({
                             }
                         </Button>
                     </div>
-
                 </form>
             </div>
         </div>

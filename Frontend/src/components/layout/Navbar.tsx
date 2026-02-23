@@ -14,7 +14,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
   from '../lightswind/command';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { toast } from 'sonner';
-import { logOutUser } from '../../features/user/userSlice';
+import { logOutUser } from '../../features/auth/authSlice';
 
 
 type CategoriesType = {

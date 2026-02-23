@@ -14,7 +14,7 @@ import ForgotPasswordReq from "../components/auth/ForgotPasswordReq";
 import ChangePassword from "../components/auth/ChangePassword";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
-import { logOutUser } from "../features/user/userSlice";
+import { logOutUser } from "../features/auth/authSlice";
 import { toast } from "sonner";
 import { Spinner } from "../components/ui/spinner";
 import { deleteAddress, getAddresses } from "../features/address/addressSlice";

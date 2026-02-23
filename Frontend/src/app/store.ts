@@ -1,17 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
-import usersReducer from "../features/user/userSlice"
+import authSlice from "../features/auth/authSlice"
 import addressReducer from "../features/address/addressSlice"
 import categorySlice from "../features/admin/category/categorySlice"
 import productSlice from '../features/admin/product/productSlice'
 import ratingSlice from '../features/rating/ratingSlice'
+import getUsersList from '../features/admin/user/userSlice'
 
 export const store = configureStore({
   reducer: {
-    users: usersReducer, // rename -> user
+    users: authSlice, // rename -> user
     address: addressReducer,
     category: categorySlice,
     product: productSlice,
-    rating: ratingSlice
+    rating: ratingSlice,
+    userList: getUsersList
   },
 })
 

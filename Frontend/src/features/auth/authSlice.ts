@@ -18,7 +18,7 @@ import type {
     UserUpdateRequest,
     UserUpdateResponse,
     VerifyEamilResponse
-} from '../../types/userTypes';
+} from '../../types/authTypes';
 
 
 // Define a type for the slice state
@@ -225,7 +225,7 @@ const initialState: UserState = {
     loading: 'idle'
 }
 
-export const userSlice = createSlice({
+export const authSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {},
@@ -358,4 +358,4 @@ export const userSlice = createSlice({
 
 })
 
-export default userSlice.reducer
+export default authSlice.reducer

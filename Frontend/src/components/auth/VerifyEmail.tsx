@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Spinner } from '../ui/spinner'
 import { useNavigate, useParams } from 'react-router-dom'
-import { verifyEmail } from '../../features/user/userSlice'
+import { verifyEmail } from '../../features/auth/authSlice'
 import { toast } from 'sonner'
 import { useEffect, useState } from 'react'
 

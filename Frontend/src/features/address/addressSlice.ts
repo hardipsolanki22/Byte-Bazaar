@@ -90,8 +90,6 @@ export const deleteAddress = createAsyncThunk(
     },
 )
 
-
-
 // Define the initial state using that type
 const initialState: AddressState = {
     addresses: [],

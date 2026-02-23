@@ -36,9 +36,18 @@ const Category = () => {
         )
     }
     return (
-        <div className='flex justify-center w-full'>
+        <div className='flex items-center flex-col w-full'>
+            <div className='flex justify-between mx-2 my-4 w-full px-2'>
+                <h2 className='text-2xl font-semibold'>Category Management</h2>
+                <Button
+                    onClick={() => navigate("/admin/add-category")}
+                    className='cursor-pointer'>
+                    Add New Category
+                </Button>
+            </div>
             <div className='p-4 mx-2 my-4 bg-white rounded-md lg:w-1/2 w-full 
             sm:w-md h-fit flex flex-col gap-4 items-center '>
+
                 <h2 className="text-3xl font-semibold">Categories</h2>
                 <div className='w-full flex flex-col gap-4'>
                     {categories?.length && categories?.length > 0 ? (

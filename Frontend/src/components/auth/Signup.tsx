@@ -6,7 +6,7 @@ import { Input } from "../lightswind/input";
 import { Button } from "../lightswind/button";
 import { Label } from "../lightswind/label";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { registerUser } from "../../features/user/userSlice";
+import { registerUser } from "../../features/auth/authSlice";
 import { toast } from "sonner"
 import { Spinner } from "../ui/spinner";
 import { CONFIG } from "../../config/constants";

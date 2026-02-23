@@ -6,3 +6,8 @@ export const CONFIG = {
 }
 
 export const MAX_IMAGES = 3
+
+export const userRole = {
+    USER: "USER",
+    ADMIN: "ADMIN"
+}

@@ -5,7 +5,7 @@ import { Label } from '../lightswind/label'
 import { Spinner } from '../ui/spinner'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { forgotPasswordReq } from '../../features/user/userSlice'
+import { forgotPasswordReq } from '../../features/auth/authSlice'
 import { toast } from 'sonner'
 
 type Input = {

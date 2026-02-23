@@ -6,7 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Spinner } from '../ui/spinner'
-import { changePassword } from '../../features/user/userSlice'
+import { changePassword } from '../../features/auth/authSlice'
 
 type Inputs = {
     oldPassword: string;

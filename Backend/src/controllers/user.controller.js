@@ -530,10 +530,6 @@ const assignRole = asyncHandler(async (req, res) => {
     const { userId } = req.params
     const { role } = req.body
 
-    if (!userId) {
-        throw new APIError(400, "User id is required")
-    }
-
     const user = await User.findByIdAndUpdate(userId,
         {
             $set: {
@@ -566,6 +562,8 @@ const getUsersListsByAdmin = asyncHandler(async (req, res) => {
             $project: {
                 fullName: 1,
                 email: 1,
+                avatar: 1,
+                phoneNumber: 1,
                 role: 1
             }
         }

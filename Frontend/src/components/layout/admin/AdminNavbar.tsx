@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../lightswind/hover-card'
 import { Avatar, AvatarImage } from '../../lightswind/avatar'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { logOutUser } from '../../../features/user/userSlice'
+import { logOutUser } from '../../../features/auth/authSlice'
 import { toast } from 'sonner'
 
 const AdminNavbar = () => {

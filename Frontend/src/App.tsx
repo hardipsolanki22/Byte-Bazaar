@@ -24,7 +24,7 @@ import SingleOrderByAdmin from "./pages/admin/order/SingleOrder"
 import VerifyEmail from './components/auth/VerifyEmail'
 import { useEffect } from 'react'
 import { useAppDispatch } from './app/hooks'
-import { currentUser } from './features/user/userSlice'
+import { currentUser } from './features/auth/authSlice'
 import AuthLayout from './components/layout/AuthLayout'
 import ForgotPassowrd from './components/auth/ForgotPassowrd'
 import AddCategory from './pages/admin/category/AddCategory'

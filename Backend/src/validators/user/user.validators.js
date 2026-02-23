@@ -81,6 +81,10 @@ const updateUserDetailsValidator = () => {
 
 const assignUserRoleValidator = () => {
     return [
+        param("userId")
+            .trim()
+            .notEmpty()
+            .withMessage("User ID is required"),
         body("role")
             .trim()
             .notEmpty()
