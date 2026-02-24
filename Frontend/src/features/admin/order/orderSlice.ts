@@ -9,7 +9,7 @@ import type {
     UpdateOrderStatusAndIsPaymentDone,
     UpdateOrderStatusAndIsPaymentDoneReq,
     UpdateOrderStatusAndIsPaymentDoneRes
-} from '../../../types/order';
+} from '../../../types/orderTypes';
 
 // Define a type for the slice state
 interface OrderState {

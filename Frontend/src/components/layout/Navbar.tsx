@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Home, User, Contact } from "lucide-react";
 import { Button } from '../lightswind/button';
 import { Input } from "../lightswind/input"
-import HamburgerMenuOverlay from '../lightswind/hamburger-menu-overlay';
 import {
   HoverCard,
   HoverCardContent,
@@ -15,6 +14,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { toast } from 'sonner';
 import { logOutUser } from '../../features/auth/authSlice';
+import { getCategories } from '../../features/admin/category/categorySlice';
 
 
 type CategoriesType = {
@@ -29,11 +29,17 @@ type NavItemsType = {
 }
 const Navbar: React.FC = () => {
   const isAuthenticated = useAppSelector(({ users }) => users.isAuthenticated)
+  const categories = useAppSelector(({ category }) => category.catagories)
+  const categoryLoading = useAppSelector(({ category }) => category.loading)
   const user = useAppSelector(({ users }) => users.userData)
   const loading = useAppSelector(({ users }) => users.loading)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const location = useLocation()
+
+  useEffect(() => {
+    if (!categories?.length) dispatch(getCategories())
+  }, [dispatch])
 
 
   const ignoreCategory = [
@@ -59,28 +65,6 @@ const Navbar: React.FC = () => {
     { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
   ];
 
-  const categories: CategoriesType[] = [
-    { name: "Electronics", slug: "electronics" },
-    { name: "Fashion", slug: "fashion" },
-    { name: "Home & Kitchen", slug: "home-kitchen" },
-    { name: "Books", slug: "books" },
-    { name: "Toys & Games", slug: "toys-games" },
-    { name: "Sports", slug: "sports" },
-    { name: "Beauty", slug: "beauty" },
-    { name: "Automotive", slug: "automotive" },
-    { name: "Grocery", slug: "grocery" },
-    { name: "Health", slug: "health" },
-    { name: "Garden", slug: "garden" },
-    { name: "Music", slug: "music" },
-    { name: "Office Supplies", slug: "office-supplies" },
-    { name: "Pet Supplies", slug: "pet-supplies" },
-    { name: "Baby Products", slug: "baby-products" },
-
-
-
-
-  ]
-
   const logoutHandler = () => {
     dispatch(logOutUser())
       .unwrap()
@@ -93,7 +77,6 @@ const Navbar: React.FC = () => {
       })
   }
   return (
-
     <>
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
         <div className='gap-10 flex items-center justify-center w-[50%] lg:w-[60%] relative'>
@@ -209,15 +192,10 @@ const Navbar: React.FC = () => {
 
         </ul>
       </nav>
-
-      <HamburgerMenuOverlay
-        items={menuItems}
-        className='md:hidden' />
-
       {!ignoreCategory.includes(location.pathname) &&
         <div className="flex w-full text-center items-center justify-center
        space-x-2 overflow-x-auto p-2  border-b border-gray-200 bg-white mt-1">
-          {categories.map((category, idx) => (
+          {categories?.map((category, idx) => (
             <Button
               variant="link"
               key={idx}

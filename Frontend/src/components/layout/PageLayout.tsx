@@ -20,7 +20,7 @@ const PageLayout = ({
 }: PageLayoutProps) => {
 
   const location = useLocation()
-  const hideFooterPaths = ["/signin", "/signup"]
+  const hideFooterPaths = ["/signin", "/signup", "/checkout/cart", "/checkout/address", "/checkout/payment"]
   if (hideFooterPaths.includes(location.pathname)) {
     noFooter = true
   }

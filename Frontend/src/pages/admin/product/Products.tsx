@@ -123,7 +123,6 @@ const Products: React.FC = () => {
                 </div>
             )
             }
-
         </div>
     )
 }

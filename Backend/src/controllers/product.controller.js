@@ -280,7 +280,6 @@ const getProduct = asyncHandler(async (req, res) => {
                             totalReviews: 0
                         }
                     ]
-
                 },
             }
         },

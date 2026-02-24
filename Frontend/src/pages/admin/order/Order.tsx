@@ -6,7 +6,7 @@ import { Badge } from '../../../components/lightswind/badge'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { clearSingleOrder, getOrders } from '../../../features/admin/order/orderSlice'
-import type { FilterOrders } from '../../../types/order'
+import type { FilterOrders } from '../../../types/orderTypes'
 
 const Order: React.FC = () => {
     const loading = useAppSelector(({ order }) => order.loading)

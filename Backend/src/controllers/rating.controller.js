@@ -235,7 +235,6 @@ const updateRating = asyncHandler(async (req, res) => {
     // if (!comment || !rating) {
     //     throw new APIError(400, "All fileds are required")
     // }
-
     if (!ratingId) {
         throw new APIError(400, "Rating id is required")
     }

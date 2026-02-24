@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom'
-import type { AddCouponReq, UpdateCoupon } from '../../types/coupon'
+import type { AddCouponReq, UpdateCoupon } from '../../types/couponTypes'
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { createCoupon, updateCoupon } from '../../features/admin/coupon/couponSlice'
 import { Spinner } from '../ui/spinner'

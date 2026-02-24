@@ -1,73 +1,57 @@
 import { DivideCircle, Star } from 'lucide-react';
-import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../components/lightswind/button';
 import RelatedProduct from '../components/products/Product';
 import { Badge } from '../components/lightswind/badge';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { getProduct, getProductsByCategory } from '../features/admin/product/productSlice';
+import { getRating } from '../features/rating/ratingSlice';
+import { calRatingPercentage } from '../helpers/calRatingPercentage';
 
 const Product: React.FC = () => {
 
 
-  const { slug } = useParams();
+  const { slug } = useParams()
+  if (!slug) return
+  const product = useAppSelector(({ product }) => product.singleProduct)
+  const products = useAppSelector(({ product }) => product.products)
+  const productRating = useAppSelector(({ rating }) => rating.rating)
+  const loading = useAppSelector(({ product }) => product.loading)
+  const ratingLoading = useAppSelector(({ rating }) => rating.loading)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const product = {
+  useEffect(() => {
+    Promise.all([
+      dispatch(getProduct(slug)),
+      dispatch(getRating(slug)),
+      product?.category && dispatch(getProductsByCategory(product?.category))
 
-    name: 'iPhone 13',
-    price: 999,
-    mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-    averageRating: 4.5,
-    ratingCount: 120,
-    stock: 10,
-    description: 'The iPhone 13 features a sleek design, powerful A15 Bionic chip, and an advanced dual-camera system for stunning photos and videos.',
-    // subImages: [
-    //   'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-    //   '/facebook-logo.png',
-    //   'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D'
-    // ]
-    subImages: []
+    ])
+  }, [dispatch, slug])
+
+  const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
+  const filtredProducts = products?.filter(product => product.slug !== slug)
+  if ((!!!product) && loading === "pending" || loading === "idle"
+    || ratingLoading === 'pending' || ratingLoading == 'idle'
+  ) {
+    return (
+      <div className='flex items-center  w-full justify-center h-full'>
+        <h1>Loading...</h1>
+      </div>
+    )
+  }
+  if (!product) {
+    return (
+      <div className='w-full flex items-center justify-center text-center h-full'>
+        <h2 className='text-2xl text-slate-600 font-semibold'>
+          Products Not Found
+        </h2>
+      </div>
+    )
   }
 
-  const products = [
-    {
-      _id: "s",
-      name: 'iPhone 13',
-      price: 999,
-      mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-      averageRating: 4.5,
-      ratingCount: 120,
-      slug: 'iphone-13'
-    },
-    {
-      _id: "s",
-      name: 'Samsung Galaxy S21',
-      price: 899,
-      mainImage: '/facebook-logo.png',
-      averageRating: 4.3,
-      ratingCount: 95,
-      slug: 'samsung-galaxy-s21'
-    },
-    {
-      _id: "s",
-      name: 'Apple Watch Series 7',
-      price: 399,
-      mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-      averageRating: 4.7,
-      ratingCount: 80,
-      slug: 'apple-watch-series-7'
-    },
-    {
-      _id: "s",
-      name: 'Sony Alpha a7 III',
-      price: 299,
-      mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
-      averageRating: 4.3,
-      ratingCount: 45,
-      slug: 'sony-alpha-a7-iii'
-    }
-  ]
-  const [productMainImageUrl, setProductMainImageUrl] = useState(product.mainImage)
-
-  console.log(slug)
   return (
     <div className=' pt-4 justify-center items-center'>
       <div className=' rounded-md p-4 m-4 
@@ -90,7 +74,7 @@ const Product: React.FC = () => {
             }
             <div className='px-4 sm:px-10 border rounded-sm border-slate-400'>
               <img
-                src={productMainImageUrl}
+                src={productMainImageUrl || product?.mainImage}
                 alt={product.name}
                 className="w-[30rem] h-[30rem] object-cover"
               />
@@ -104,15 +88,15 @@ const Product: React.FC = () => {
               <p className='text-slate-600 mb-2'>{product.description}</p>
               <p className='text-xl font-semibold mb-2 text-slate-700'>${product.price}</p>
               <div className='flex items-center mb-2'>
-                {product.stock > 5 ? <Badge variant={'success'}>In Stock</Badge>
-                  : <Badge variant={'destructive'}>Low Stock</Badge>}
+                {product.stock > 5 ? <Badge variant={'success'}>In Stock {product.stock}</Badge>
+                  : <Badge variant={'destructive'}>Low Stock {product.stock}</Badge>}
               </div>
               <div className='flex items-center'>
                 <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-2'>
                   <Star className='w-4 h-4 fill-white text-white' />
-                  <span className='text-white font-medium'>{product.averageRating}</span>
+                  <span className='text-white font-medium'>{product.productRating.averageRating}</span>
                 </div>
-                <span className='text-slate-500'>({product.ratingCount} reviews)</span>
+                <span className='text-slate-500'>({product.productRating.totalReviews} reviews)</span>
               </div>
             </div>
             <div className='flex gap-4 justify-evenly my-4 items-center sm:rounded-md  
@@ -126,148 +110,141 @@ const Product: React.FC = () => {
 
             </div>
           </div>
-          <div className='sm:border rounded-md border-slate-200 p-4 flex sm:items-start
-         flex-col'>
-            <div className='border-b pb-4 sm:w-full border-slate-300 '>
-              <h2 className='sm:text-xl font-semibold '>
-                Product Ratings & Reviews
+          {/* Rating Section */}
+          {!!!productRating ? (
+            <div className='flex w-full justify-center items-center h-full'>
+              <h2 className='text-2xl text-slate-600 font-semibold'>
+                No Rating Available
               </h2>
-              <div className='flex items-center flex-col sm:flex-row justify-around m-4'>
-                <div className='flex flex-col items-center justify-center mb-4 sm:mb-0'>
-                  <div className='flex items-center justify-center my-2'>
-                    <h2 className='text-xl sm:text-4xl font-semibold mt-2'>4.2</h2>
-                    <Star className='w-5 h-5 fill-yellow-400 text-yellow-400 ml-1' />
-                  </div>
-                  <p className='text-slate-400 text-sm'>3659  Ratings,</p>
-                  <p className='text-slate-400 text-sm'>2473  Reviews</p>
-                </div>
-                <div className='flex items-center'>
-                  <DivideCircle className='w-1 h-32 ml-4 text-slate-300' />
-                  <div>
-                    <div className='flex items-center gap-2 my-1'>
-                      <span className='text-sm text-slate-500 w-16'>Excellent</span>
-                      <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                        <div className='h-4 bg-green-500 rounded-full' style={{ width: '70%' }}></div>
-                      </div>
-                      <span className='text-sm text-slate-500 w-8 text-right'>70%</span>
-                    </div>
-                    <div className='flex items-center gap-2 my-1'>
-                      <span className='text-sm text-slate-500 w-16'>Good</span>
-                      <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                        <div className='h-4 bg-blue-500 rounded-full' style={{ width: '50%' }}></div>
-                      </div>
-                      <span className='text-sm text-slate-500 w-8 text-right'>50%</span>
-                    </div>
-                    <div className='flex items-center gap-2 my-1'>
-                      <span className='text-sm text-slate-500 w-16'>Average</span>
-                      <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                        <div className='h-4 bg-yellow-500 rounded-full' style={{ width: '30%' }}></div>
-                      </div>
-                      <span className='text-sm text-slate-500 w-8 text-right'>30%</span>
-                    </div>
-                    <div className='flex items-center gap-2 my-1'>
-                      <span className='text-sm text-slate-500 w-16'>Poor</span>
-                      <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                        <div className='h-4 bg-orange-500 rounded-full' style={{ width: '15%' }}></div>
-                      </div>
-                      <span className='text-sm text-slate-500 w-8 text-right'>15%</span>
-                    </div>
-                    <div className='flex items-center gap-2 my-1'>
-                      <span className='text-sm text-slate-500 w-16'>Terrible</span>
-                      <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
-                        <div className='h-4 bg-red-500 rounded-full' style={{ width: '5%' }}></div>
-                      </div>
-                      <span className='text-sm text-slate-500 w-8 text-right'>5%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-            <div className='mt-4 flex items-start flex-col border-b border-slate-300 pb-4 w-full'>
-              <div className='flex items-center gap-4 '>
-                <img src="" alt="user avatar" className="w-10 h-10 rounded-full" />
-                <h3 className='text-slate-400 text-sm'>
-                  John Doe
-                </h3>
-              </div>
-              <div className='m-3 rounded-lg flex items-center gap-2'>
-                <div className='flex items-center mt-2'>
-                  <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1'>
-                    <span className='text-white'>
-                      {product.averageRating}
-                    </span>
-                    <Star size={16} color='white' />
+          ) : (
+            <div className='sm:border rounded-md border-slate-200 p-4 flex sm:items-start
+                 flex-col'>
+              <div className='border-b pb-4 sm:w-full border-slate-300 '>
+                <h2 className='sm:text-xl font-semibold '>
+                  Product Ratings & Reviews
+                </h2>
+                <div className='flex items-center flex-col sm:flex-row justify-around m-4'>
+                  <div className='flex flex-col items-center justify-center mb-4 sm:mb-0'>
+                    <div className='flex items-center justify-center my-2'>
+                      <h2 className='text-xl sm:text-4xl font-semibold mt-2'>{product?.productRating.averageRating}</h2>
+                      <Star className='w-5 h-5 fill-yellow-400 text-yellow-400 ml-1' />
+                    </div>
+                    <p className='text-slate-400 text-sm'>{product?.productRating.totalRatings} Ratings,</p>
+                    <p className='text-slate-400 text-sm'>{product?.productRating.totalReviews} Reviews</p>
                   </div>
-                </div>
-                <div className='bg-slate-400 rounded-full p-[2px]'></div>
-                <span className='text-slate-400 text-sm'>Posted on 14 Oct 2025</span>
+                  <div className='flex items-center'>
+                    <DivideCircle className='w-1 h-32 ml-4 text-slate-300' />
+                    <div>
+                      <div className='flex items-center gap-2 my-1'>
+                        <span className='text-sm text-slate-500 w-16'>Excellent</span>
+                        <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
+                          <div className='h-4 bg-green-500 rounded-full'
+                            style={{ width: `${calRatingPercentage(productRating.excellent ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                          </div>
+                        </div>
+                        <span className='text-sm text-slate-500 w-8 text-right'>
+                          {calRatingPercentage(productRating.excellent ?? 0, product?.productRating.totalRatings ?? 0)}
+                        </span>
+                      </div>
+                      <div className='flex items-center gap-2 my-1'>
+                        <span className='text-sm text-slate-500 w-16'>Good</span>
+                        <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
+                          <div className='h-4 bg-blue-500 rounded-full'
+                            style={{ width: `${calRatingPercentage(productRating.good ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                          </div>
+                        </div>
+                        <span className='text-sm text-slate-500 w-8 text-right'>
+                          {calRatingPercentage(productRating.good ?? 0, product?.productRating.totalRatings ?? 0)}
+                        </span>
+                      </div>
+                      <div className='flex items-center gap-2 my-1'>
+                        <span className='text-sm text-slate-500 w-16'>Average</span>
+                        <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
+                          <div className='h-4 bg-yellow-500 rounded-full'
+                            style={{ width: `${calRatingPercentage(productRating.average ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+                          </div>
+                        </div>
+                        <span className='text-sm text-slate-500 w-8 text-right'>
+                          {calRatingPercentage(productRating.average ?? 0, product?.productRating.totalRatings ?? 0)}
+                        </span>
+                      </div>
+                      <div className='flex items-center gap-2 my-1'>
+                        <span className='text-sm text-slate-500 w-16'>Poor</span>
+                        <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
+                          <div className='h-4 bg-orange-500 rounded-full'
+                            style={{ width: `${calRatingPercentage(productRating.poor ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
 
-              </div>
-              <p className='mt-2 text-slate-600'>
-                This product is amazing! I highly recommend it.
-              </p>
-            </div>
-            <div className='mt-4 flex items-start flex-col'>
-              <div className='flex items-center gap-4 '>
-                <img src="" alt="user avatar" className="w-10 h-10 rounded-full" />
-                <h3 className='text-slate-400 text-sm'>
-                  John Doe
-                </h3>
-              </div>
-              <div className='m-3 rounded-lg flex items-center gap-2'>
-                <div className='flex items-center mt-2'>
-                  <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1'>
-                    <span className='text-white'>
-                      {product.averageRating}
-                    </span>
-                    <Star size={16} color='white' />
+                          </div>
+                        </div>
+                        <span className='text-sm text-slate-500 w-8 text-right'>
+                          {calRatingPercentage(productRating.poor ?? 0, product?.productRating.totalRatings ?? 0)}
+                        </span>
+                      </div>
+                      <div className='flex items-center gap-2 my-1'>
+                        <span className='text-sm text-slate-500 w-16'>Terrible</span>
+                        <div className='w-40 h-4 bg-slate-200 rounded-full overflow-hidden'>
+                          <div className='h-4 bg-red-500 rounded-full'
+                            style={{ width: `${calRatingPercentage(productRating.terrible ?? 0, product?.productRating.totalRatings ?? 0)}` }}>
+
+                          </div>
+                        </div>
+                        <span className='text-sm text-slate-500 w-8 text-right'>
+                          {calRatingPercentage(productRating.terrible ?? 0, product?.productRating.totalRatings ?? 0)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className='bg-slate-400 rounded-full p-[2px]'></div>
-                <span className='text-slate-400 text-sm'>Posted on 14 Oct 2025</span>
+              </div>
 
-              </div>
-              <p className='mt-2 text-slate-600'>
-                This product is amazing! I highly recommend it.
-              </p>
-            </div>
-            <div className='mt-4 flex items-start flex-col'>
-              <div className='flex items-center gap-4 '>
-                <img src="" alt="user avatar" className="w-10 h-10 rounded-full" />
-                <h3 className='text-slate-400 text-sm'>
-                  John Doe
-                </h3>
-              </div>
-              <div className='m-3 rounded-lg flex items-center gap-2'>
-                <div className='flex items-center mt-2'>
-                  <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1'>
-                    <span className='text-white'>
-                      {product.averageRating}
-                    </span>
-                    <Star size={16} color='white' />
+              {!!productRating && productRating.users.map((rataingUser) => (
+                <div key={rataingUser._id}
+                  className='mt-4 flex items-start flex-col border-b border-slate-300 pb-4 w-full'>
+                  <div className='flex items-center gap-4 '>
+                    <img
+                      src={rataingUser.user.avatar}
+                      alt={rataingUser.user.fullName}
+                      className="w-10 h-10 rounded-full" />
+                    <h3 className='text-slate-400 text-sm'>
+                      {rataingUser.user.fullName}
+                    </h3>
                   </div>
+                  <div className='m-3 rounded-lg flex items-center gap-2'>
+                    <div className='flex items-center mt-2'>
+                      <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1'>
+                        <span className='text-white'>
+                          {String(rataingUser.rating)}
+                        </span>
+                        <Star size={16} color='white' />
+                      </div>
+                    </div>
+                    <div className='bg-slate-400 rounded-full p-[2px]'></div>
+                    <span className='text-slate-400 text-sm'>
+                      {new Date(rataingUser.createdAt).toLocaleDateString('gu-IN')}
+                    </span>
+                  </div>
+                  <p className='mt-2 text-slate-600'>
+                    {rataingUser?.comment}
+                  </p>
                 </div>
-                <div className='bg-slate-400 rounded-full p-[2px]'></div>
-                <span className='text-slate-400 text-sm'>Posted on 14 Oct 2025</span>
-
-              </div>
-              <p className='mt-2 text-slate-600'>
-                This product is amazing! I highly recommend it.
-              </p>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </div>
-      <div>
+      {products?.length && <div>
         <h2 className='text-2xl font-semibold text-slate-700 mb-4 mx-4'>You may also like</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4 mb-8'>
-          {products.map((prod, idx) => (
+          {filtredProducts?.map((prod, idx) => (
             <Link key={idx} to={`/products/${prod.slug}`}>
               <RelatedProduct {...prod} />
             </Link>
           ))}
         </div>
       </div>
+
+      }
     </div>
   )
 }

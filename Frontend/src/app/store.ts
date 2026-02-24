@@ -8,6 +8,7 @@ import userSlice from '../features/admin/user/userSlice'
 import couponSlice from '../features/admin/coupon/couponSlice'
 import orderSlice from '../features/admin/order/orderSlice'
 import bannerSlice from '../features/admin/heroBanner/heroBannerSlice'
+import cartSlice from '../features/cart/cartSlice'
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
     userList: userSlice,
     coupon: couponSlice,
     order: orderSlice,
-    banner: bannerSlice
+    banner: bannerSlice,
+    cart: cartSlice
   },
 })
 

@@ -9,7 +9,7 @@ import type {
     UpdateCoupon,
     UpdateCouponReq,
     UpdateCouponRes
-} from '../../../types/coupon';
+} from '../../../types/couponTypes';
 
 
 // Define a type for the slice state

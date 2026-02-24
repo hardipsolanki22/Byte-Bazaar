@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 const SingleProduct: React.FC = () => {
 
     const { slug } = useParams()
+    if (!slug) return
     const product = useAppSelector(({ product }) => product.singleProduct)
     const productRating = useAppSelector(({ rating }) => rating.rating)
     const loading = useAppSelector(({ product }) => product.loading)
@@ -22,14 +23,12 @@ const SingleProduct: React.FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    if (!slug) return
     useEffect(() => {
         Promise.all([
             dispatch(getProduct(slug)),
             dispatch(getRating(slug))
         ])
     }, [dispatch, slug])
-
 
     const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
     const handleProductDelete = (slug: string) => {

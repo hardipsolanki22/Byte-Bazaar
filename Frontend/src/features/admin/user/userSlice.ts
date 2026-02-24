@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getReq, patchReq } from '../../../config/configAxios';
-import type { AssignRoleReq, AssignRoleRes, GetUsersRes, Role, Users } from '../../../types/user';
+import type { AssignRoleReq, AssignRoleRes, GetUsersRes, Role, Users } from '../../../types/userTypes';
 
 
 // Define a type for the slice state

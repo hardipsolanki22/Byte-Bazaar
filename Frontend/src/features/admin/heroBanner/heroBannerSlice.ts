@@ -8,7 +8,7 @@ import type {
     HeroBaner,
     UpdateHeroBannerReq,
     UpdateHeroBannerRes
-} from '../../../types/heroBanner';
+} from '../../../types/heroBannerTypes';
 
 
 // Define a type for the slice state

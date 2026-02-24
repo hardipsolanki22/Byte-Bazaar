@@ -30,30 +30,48 @@ const getCart = async (userId) => {
                             localField: "_id",
                             foreignField: "product",
                             as: "productRating",
+                            pipeline: [
+                                {
+                                    $group: {
+                                        _id: null,
+                                        averageRating: { $avg: "$rating" },
+                                        totalReviews: {
+                                            // if comment is !not or ! null then count to review by 1 ($sum opt)
+                                            $sum: {
+                                                $cond: [
+                                                    { $ifNull: ["$comment", false] },
+                                                    1,
+                                                    0
+                                                ]
+                                            }
+                                        },
+                                    }
+                                },
+                            ]
                         }
                     },
                     {
                         $addFields: {
-                            // count of product ratings
-                            countProductRating: {
-                                $size: {
-                                    $ifNull: ["$productRating", 0]
-                                }
-                            },
-                            // calculating average rating
-                            averageRating: {
-                                $avg: "$productRating.rating"
+                            productRating: {
+                                $ifNull: [
+                                    { $arrayElemAt: ["$productRating", 0] },
+                                    {
+                                        averageRating: 0,
+                                        totalReviews: 0
+                                    }
+                                ]
+
                             },
                         },
                     },
+
                     {
                         // project the required fields
                         $project: {
                             name: 1,
                             price: 1,
                             mainImage: 1,
-                            countProductRating: 1,
-                            averageRating: 1
+                            productRating: 1
                         }
                     },
                 ]
@@ -109,7 +127,6 @@ const getCart = async (userId) => {
         {
             $addFields: {
                 discountPercentage: { $first: "$coupon.discountPercentage" },
-                couponCode: { $first: "$coupon.couponCode" },
                 // calculate discount value and discounted total
                 discountValue: {
                     $ifNull: [

@@ -1,33 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LucideChevronsLeftRightEllipsis, Circle, CircleDot } from "lucide-react"
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getHeroBanners } from "../../features/admin/heroBanner/heroBannerSlice";
 
 const Hero: React.FC = () => {
 
-  const [imgIndex, setImgIndex] = useState(0)
-  const [imgUrls, setImgUrls] = useState([
-    "./66faf3950cda0b7a.webp",
-    "./66faf3950cda0b7a.webp",
-    "./66faf3950cda0b7a.webp",
-    // "./byteBazaar.png",
-    // "./66faf3950cda0b7a.webp",
-    // "./66faf3950cda0b7a.webp"
-  ])
+  const banners = useAppSelector(({ banner }) => banner.banners)
+  const loading = useAppSelector(({ banner }) => banner.loading)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    if (!banners?.length) dispatch(getHeroBanners())
+  }, [dispatch])
 
-  // setTimeout(() => {
-  //   showNextImage()
-  // }, 5000);
+  const [imgIndex, setImgIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      showNextImage();
+    }, 5000);
+
+    // Cleanup timer on component unmount or when imgIndex changes
+    return () => clearTimeout(timer);
+  }, [imgIndex, banners?.length]);
 
   const showNextImage = () => {
     setImgIndex(index => {
-      if (index === imgUrls.length - 1) return index = 0
+      if (banners?.length && index === banners.length - 1) return index = 0
       return index + 1
     })
   }
   const showPrevImage = () => {
     setImgIndex(index => {
-      if (index === 0) return imgUrls.length - 1
+      if (index === 0) return banners?.length && banners?.length - 1 || -1
       return index - 1
     })
+  }
+
+  if (loading === "pending") {
+    return (
+      <div className='flex items-center  w-full justify-center h-full'>
+        <h1>Loading...</h1>
+      </div>
+    )
   }
 
   return (
@@ -35,45 +49,63 @@ const Hero: React.FC = () => {
       {/* Hero Banner */}
       <div className=" w-full relative pb-4 px-2  bg-white  ">
         <div className="w-full h-full overflow-hidden flex">
-          {imgUrls.map(url => (
+          {banners?.map(banner => (
             <img
-              key={url}
-              src={url}
+              key={banner._id}
+              src={banner.image}
               alt="hero"
-              className="shrink-0 grow-0 transition ease-in-out duration-300 "
+              className="shrink-0 grow-0 transition ease-in-out duration-300 h-20 sm:h-44 lg:h-52 w-full "
               style={{ translate: `${-100 * imgIndex}%` }}
             />
           ))}
         </div>
         <button
-          className="absolute top-0 bottom-3 sm:bottom-0 left-10 cursor-pointer "
+          className="absolute top-0 bottom-3 sm:bottom-0 left-2 sm:left-5 cursor-pointer "
           onClick={showPrevImage}
           aria-label="View Previous Image"
         >
-          <LucideChevronsLeftRightEllipsis className="h-4 w-4 sm:h-auto sm:w-auto" />
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 group-hover:text-emerald-600 transition-colors duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
         <button
-          className="absolute top-0 bottom-3  sm:bottom-0 right-10 cursor-pointer"
+          className="absolute top-0 bottom-3 sm:bottom-0 right-2 sm:right-5 cursor-pointer"
           onClick={showNextImage}
           aria-label="View Next Image"
         >
-          <LucideChevronsLeftRightEllipsis className="h-4 w-4 sm:h-auto sm:w-auto" />
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 group-hover:text-emerald-600 transition-colors duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
-
-        <div className="text-center absolute bottom-1 sm:bottom-4 left-1/2 -translate-1/2
-         sm:space-x-2 ease-in-out">
-          {imgUrls.map((_, idx) => (
+        <div className="absolute bottom-1 sm:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2">
+          {banners?.map((_, idx) => (
             <button
-              className="w-2 h-2 focus:outline-none cursor-pointer"
+              key={idx}
               onClick={() => setImgIndex(idx)}
-              aria-label={`View Image ${idx}`}
+              className="group focus:outline-none"
+              aria-label={`View Image ${idx + 1}`}
             >
-              {idx === imgIndex ? <CircleDot 
-                className="h-2 w-2 sm:h-[20.5px] sm:w-[20.5px] stroke-white fill-black hover:scale-110 transition-transform duration-300"
-              /> : <Circle  className="h-2 w-2 sm:h-5 sm:w-5" />}
+              <div className={`
+        transition-all duration-500 ease-out
+        ${idx === imgIndex
+                  ? 'w-6 sm:w-8 h-1.5 sm:h-2 bg-white rounded-full shadow-lg shadow-white/50'
+                  : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/40 rounded-full hover:bg-white/70 hover:scale-110'
+                }
+      `} />
             </button>
           ))}
         </div>
+
       </div>
     </section>
   );
