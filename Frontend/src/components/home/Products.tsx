@@ -2,13 +2,13 @@ import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../lightswind/select"
 import { Link } from 'react-router-dom'
 import Product from '../products/Product'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../lightswind/pagination'
 
 const Products: React.FC = () => {
 
   // create products data array with name, prie, main image, category, average rating, rating count
   const products = [
     {
+      _id: "s",
       name: 'iPhone 13',
       price: 999,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -17,6 +17,7 @@ const Products: React.FC = () => {
       slug: 'iphone-13'
     },
     {
+      _id: "s",
       name: 'Samsung Galaxy S21',
       price: 899,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -25,6 +26,7 @@ const Products: React.FC = () => {
       slug: 'samsung-galaxy-s21'
     },
     {
+      _id: "s",
       name: 'Apple Watch Series 7',
       price: 399,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -33,6 +35,7 @@ const Products: React.FC = () => {
       slug: 'apple-watch-series-7'
     },
     {
+      _id: "s",
       name: 'Sony Alpha a7 III',
       price: 299,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -73,32 +76,6 @@ const Products: React.FC = () => {
             ))}
           </div>
         </div>
-      </div>
-      <div className='my-4 mx-auto w-full '>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                1
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">5</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </div>
     </section>
   )

@@ -186,7 +186,7 @@ const Navbar: React.FC = () => {
                       variant="ghost" className="w-full text-left cursor-pointer">
                       Logout
                     </Button>
-                    <Link to="/admin">
+                    <Link to="/admin/add-product">
                       <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
                         Admin
                       </Button>

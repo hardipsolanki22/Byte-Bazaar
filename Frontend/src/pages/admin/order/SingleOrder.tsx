@@ -124,7 +124,7 @@ const SingleOrder: React.FC = () => {
                         <PopoverContent>
                             <UpdatePaymentAndOrderStatus
                                 orderId={orderId}
-                                ispaymentdone={singleOrder.isPaymentDone}
+                                ispaymentdone={singleOrder.isPaymentDone ? "Paid" : "Unpaid"}
                                 status={singleOrder.status}
                             />
                         </PopoverContent>

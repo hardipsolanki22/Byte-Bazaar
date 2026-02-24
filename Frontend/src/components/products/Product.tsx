@@ -2,6 +2,7 @@ import { Star } from 'lucide-react';
 import React from 'react'
 
 type ProductProps = {
+    _id: string;
     name: string;
     price: number;
     mainImage: string;
@@ -11,6 +12,7 @@ type ProductProps = {
 }
 
 const Product = ({
+    _id,
     name,
     price,
     mainImage,
@@ -20,7 +22,9 @@ const Product = ({
     ...product
 }: ProductProps) => {
     return (
-        <div className='border border-slate-400 rounded-md p-4 h-full'>
+        <div
+            key={_id}
+            className='border border-slate-400 rounded-md p-4 h-full'>
             <img
                 src={mainImage}
                 alt={name}

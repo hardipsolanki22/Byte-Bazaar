@@ -80,7 +80,7 @@ router.route("/delete-sub-images/:slug")
         validate,
         deleteProductSubImages
     )
-router.route("/category/:slug")
+router.route("/category/:categorySlug")
     .get(getProductsByCategory)
 
 

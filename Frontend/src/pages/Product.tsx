@@ -11,6 +11,7 @@ const Product: React.FC = () => {
   const { slug } = useParams();
 
   const product = {
+
     name: 'iPhone 13',
     price: 999,
     mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -28,6 +29,7 @@ const Product: React.FC = () => {
 
   const products = [
     {
+      _id: "s",
       name: 'iPhone 13',
       price: 999,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -36,6 +38,7 @@ const Product: React.FC = () => {
       slug: 'iphone-13'
     },
     {
+      _id: "s",
       name: 'Samsung Galaxy S21',
       price: 899,
       mainImage: '/facebook-logo.png',
@@ -44,6 +47,7 @@ const Product: React.FC = () => {
       slug: 'samsung-galaxy-s21'
     },
     {
+      _id: "s",
       name: 'Apple Watch Series 7',
       price: 399,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',
@@ -52,6 +56,7 @@ const Product: React.FC = () => {
       slug: 'apple-watch-series-7'
     },
     {
+      _id: "s",
       name: 'Sony Alpha a7 III',
       price: 299,
       mainImage: 'https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D',

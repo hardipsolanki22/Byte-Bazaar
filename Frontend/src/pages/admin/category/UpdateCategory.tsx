@@ -7,6 +7,7 @@ import { getCategories } from "../../../features/admin/category/categorySlice";
 const UpdateCategory = () => {
     // dispath that perticular category if admin refresh the page and give to form
     const { slug } = useParams();
+    if (!slug) return
     const loading = useAppSelector(({ category }) => category.loading)
     const categories = useAppSelector(({ category }) => category.catagories)
     const category = categories?.find(ctg => ctg.slug === slug)
@@ -25,7 +26,7 @@ const UpdateCategory = () => {
         <div className='flex min-h-screen w-full items-center justify-center'>
             <div className='bg-white rounded-md lg:w-1/2 w-full sm:w-md'>
                 <CategoryForm
-                   {...category}
+                    {...category}
                 />
             </div>
         </div>

@@ -10,20 +10,22 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "../../../ui/sidebar"
-import { PlusCircle, Package, Users, Tag, PlusSquare, Inbox, BookPlus, CatIcon } from "lucide-react";
+import { PlusCircle, Package, Users, Tag, PlusSquare, Inbox, BookPlus, CatIcon, ImagePlusIcon, Image } from "lucide-react";
 import { Button } from "../../../lightswind/button";
 
 export function AppSidebar() {
 
     const navItems = [
-        { title: "Add Product", url: "/admin/add-product", icon: PlusCircle },
+        { title: "Create Product", url: "/admin/add-product", icon: PlusCircle },
         { title: "Products", url: "/admin/products", icon: Package },
         { title: "Users", url: "/admin/users", icon: Users },
-        { title: "Coupon", url: "/admin/coupon", icon: Tag },
         { title: "Create Coupon", url: "/admin/add-coupon", icon: PlusSquare },
+        { title: "Coupon", url: "/admin/coupon", icon: Tag },
         { title: "Category", url: "/admin/category", icon: CatIcon },
         { title: "Create Category", url: "/admin/add-category", icon: BookPlus },
         { title: "Orders", url: "/admin/order", icon: Inbox },
+        { title: "Create Banner", url: "/admin/add-banner", icon: ImagePlusIcon },
+        { title: "Banner", url: "/admin/banner", icon: Image },
     ];
     const navigate = useNavigate()
     return (

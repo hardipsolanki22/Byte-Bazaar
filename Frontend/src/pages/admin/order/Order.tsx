@@ -5,7 +5,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Badge } from '../../../components/lightswind/badge'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { getOrders } from '../../../features/admin/order/orderSlice'
+import { clearSingleOrder, getOrders } from '../../../features/admin/order/orderSlice'
 import type { FilterOrders } from '../../../types/order'
 
 const Order: React.FC = () => {
@@ -23,6 +23,7 @@ const Order: React.FC = () => {
         if (filters.status !== undefined || filters.ispaymentdone !== undefined) {
             dispatch(getOrders(filters))
         }
+        dispatch(clearSingleOrder())
     }, [dispatch, filters.ispaymentdone, filters.status])
 
     if (loading === 'pending' && !orders?.length) {

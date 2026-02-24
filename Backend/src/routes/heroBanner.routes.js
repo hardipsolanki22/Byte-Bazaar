@@ -16,14 +16,14 @@ router.route("/")
     .post(
         verifyJWT,
         verifyPermisson(userRole.ADMIN),
-        upload.single("heroBanners"),
+        upload.single("heroBanner"),
         createHeroBanners
     )
 router.route("/:id")
     .put(
         verifyJWT,
         verifyPermisson(userRole.ADMIN),
-        upload.single("heroBanners"),
+        upload.single("heroBanner"),
         updateHeroBanners
     )
     .delete(

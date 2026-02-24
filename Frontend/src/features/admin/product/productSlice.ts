@@ -71,6 +71,22 @@ export const getProducts = createAsyncThunk(
         }
     },
 )
+export const getProductsByCategory = createAsyncThunk(
+    'products/category/get',
+    async (categorySlug: string, { rejectWithValue }) => {
+        try {
+            const response = await getReq<GetProductsRes>(`/api/v1/products/category/${categorySlug}`)
+            return response.data
+        } catch (error: any) {
+            console.log('Error while fetch products by category: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
 export const getProduct = createAsyncThunk(
     'products/product/get',
     async (slug: string, { rejectWithValue }) => {
@@ -195,6 +211,24 @@ export const productSlice = createSlice({
                 state.totalProducts = payload.data.totalProducts
             })
             .addCase(getProducts.rejected, (state) => {
+                state.loading = 'failed'
+            })
+            // get products by category
+            .addCase(getProductsByCategory.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(getProductsByCategory.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                state.products = payload.data.products
+                state.hasNextPage = payload.data.hasNextPage
+                state.hasPrevPage = payload.data.hasNextPage
+                state.limit = payload.data.limit
+                state.page = payload.data.page
+                state.pagingCounter = payload.data.pagingCounter
+                state.totalPages = payload.data.totalPages
+                state.totalProducts = payload.data.totalProducts
+            })
+            .addCase(getProductsByCategory.rejected, (state) => {
                 state.loading = 'failed'
             })
 

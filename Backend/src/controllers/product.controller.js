@@ -322,7 +322,7 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         throw new APIError(400, "Category slug is required")
     }
 
-    const isCategotyExists = await Category.findOne({ categorySlug })
+    const isCategotyExists = await Category.findOne({ slug:categorySlug })
 
     if (!isCategotyExists) {
         throw new APIError(404, "Category does not exists")

@@ -8,6 +8,7 @@ import CouponForm from '../../../components/admin/CouponForm';
 const UpdateCoupon = () => {
     // dispath that perticular category if admin refresh the page and give to form
     const { couponId } = useParams();
+    if (!couponId) return
     const loading = useAppSelector(({ coupon }) => coupon.loading)
     const coupons = useAppSelector(({ coupon }) => coupon.coupons)
     const coupon = coupons?.find(ctg => ctg._id === couponId)

@@ -78,7 +78,7 @@ export const deleteCategory = createAsyncThunk(
     async (slug: string, { rejectWithValue }) => {
         try {
             const response = await deleteReq<DeleteCtgRes>(`/api/v1/categories/${slug}`)
-            return { ...response.data, slug: slug }
+            return { ...response.data, slug }
         } catch (error: any) {
             console.log('Error while delete category: ', error)
             return rejectWithValue({

@@ -85,7 +85,11 @@ const initialState: OrderState = {
 export const orderSlice = createSlice({
     name: 'order-admin',
     initialState,
-    reducers: {},
+    reducers: {
+        clearSingleOrder: (state) => {
+            state.singleOrder = null
+        }
+    },
     extraReducers: (builder) => {
         builder
 
@@ -136,5 +140,5 @@ export const orderSlice = createSlice({
     }
 
 })
-
+export const { clearSingleOrder } = orderSlice.actions
 export default orderSlice.reducer

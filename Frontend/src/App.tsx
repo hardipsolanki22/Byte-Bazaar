@@ -32,6 +32,9 @@ import Category from './pages/admin/category/Category'
 import UpdateCategory from './pages/admin/category/UpdateCategory'
 import UpdateProduct from './pages/admin/product/UpdateProduct'
 import UpdateCoupon from './pages/admin/coupon/UpdateCoupon'
+import AddHeroBanner from './pages/admin/heroBanner/AddHeroBanner'
+import HeroBanner from './pages/admin/heroBanner/HeroBanner'
+import UpdateHeroBanner from './pages/admin/heroBanner/UpdateHeroBanner'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -160,6 +163,15 @@ const App = () => {
           <Route element={
             <SingleOrderByAdmin />
           } path='/admin/order/:orderId' />
+          <Route element={
+            <AddHeroBanner />
+          } path='/admin/add-banner' />
+          <Route element={
+            <HeroBanner />
+          } path='/admin/banner' />
+          <Route element={
+            <UpdateHeroBanner />
+          } path='/admin/banner/:bannerId' />
 
         </Route>
 
