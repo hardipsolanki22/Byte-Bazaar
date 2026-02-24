@@ -34,7 +34,6 @@ router.route("/admin/:orderId")
         verifyPermisson(userRole.ADMIN),
         getSingleOrderByAdmin
     )
-
     .patch(
         verifyJWT,
         verifyPermisson(userRole.ADMIN),

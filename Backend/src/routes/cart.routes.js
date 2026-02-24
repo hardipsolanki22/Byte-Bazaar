@@ -7,7 +7,7 @@ const router = Router()
 
 router.route("/")
     .get(verifyJWT, getUserCart)
-router.route("/products/:productId")
+router.route("/products/:slug")
     .post(verifyJWT, addItemOrUpdateItemQuantity)
     .patch(verifyJWT, removeItem)
 router.route("/clear")

@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '../../../components/lightswind/button'
 import { LocationEdit, Pencil } from 'lucide-react'
 import { Badge } from '../../../components/lightswind/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '../../../components/lightswind/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/lightswind/popover'
 import UpdatePaymentAndOrderStatus from '../../../components/admin/UpdatePaymentAndOrderStatus'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { useParams } from 'react-router-dom'
+import { getSingleOrder } from '../../../features/admin/order/orderSlice'
 
 const SingleOrder: React.FC = () => {
     const data = [
@@ -61,6 +64,32 @@ const SingleOrder: React.FC = () => {
             "discountValue": 330.6
         }
     ]
+    const { orderId } = useParams()
+    if (!orderId) return
+    const loading = useAppSelector(({ order }) => order.loading)
+    const singleOrder = useAppSelector(({ order }) => order.singleOrder)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(getSingleOrder(orderId))
+    }, [dispatch, orderId])
+
+    if (!singleOrder && loading === "pending" || loading === "idle") {
+        return (
+            <div className='flex items-center  w-full justify-center h-full'>
+                <h1>Loading...</h1>
+            </div>
+        )
+    }
+    if (!singleOrder) {
+        return (
+            <div className='w-full flex items-center justify-center text-center h-full'>
+                <h2 className='text-2xl text-slate-600 font-semibold'>
+                    Order Not Found
+                </h2>
+            </div>
+        )
+    }
 
     return (
         <div className='flex flex-col gap-4 m-2 p-4 w-full'>
@@ -70,27 +99,34 @@ const SingleOrder: React.FC = () => {
                     <div className='flex flex-col md:flex-row md:justify-between justify-start w-full gap-2 my-2'>
                         <div className='flex flex-col md:flex-row gap-4 '>
                             <div className='flex gap-4'>
-                                <p>Order ID: </p> <span>#{data[0]._id}</span>
+                                <p>Order ID: </p> <span>#{singleOrder?._id}</span>
                             </div>
                             <div className='flex  gap-2'>
-                                <Badge variant={'warning'}>
-                                    Payment Pending
-                                </Badge>
-                                <Badge variant={'destructive'}>
+                                {singleOrder.status === "PENDING" && <Badge variant={'warning'}>
+                                    PENDING
+                                </Badge>}
+                                {singleOrder.status === "DELIVERED" && <Badge variant={'success'}>
+                                    DELIVERED
+                                </Badge>}
+                                {singleOrder.status === "CANCELLED" && <Badge variant={'destructive'}>
                                     CANCELLED
-                                </Badge>
+                                </Badge>}
                             </div>
                         </div>
                     </div>
-                    <Popover>
+                    <Popover closeOnOutsideClick={false}>
                         <PopoverTrigger asChild>
                             <Button variant='github' className='cursor-pointer'>
                                 Edit_
                                 <Pencil height={20} width={20} />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent >
-                            <UpdatePaymentAndOrderStatus />
+                        <PopoverContent>
+                            <UpdatePaymentAndOrderStatus
+                                orderId={orderId}
+                                ispaymentdone={singleOrder.isPaymentDone}
+                                status={singleOrder.status}
+                            />
                         </PopoverContent>
                     </Popover>
 
@@ -101,7 +137,7 @@ const SingleOrder: React.FC = () => {
                     <h2 className='sm:text-xl font-semibold text-start'>Products Details</h2>
                     <div className='md:p-4 flex flex-col gap-4 md:w-[80%]'>
                         {/* Product items will go here */}
-                        {data[0].order.map(({ product, quantity }) => (
+                        {singleOrder?.order.map(({ product, quantity }) => (
                             <div key={product._id} className='flex flex-col gap-4
                     border border-slate-200 rounded-lg p-4'>
                                 <div className='flex flex-col lg:flex-row'>
@@ -123,18 +159,20 @@ const SingleOrder: React.FC = () => {
                 </div>
                 <div className='md:col-span-4 border-t sm:border-l border-slate-200 p-2 '>
                     <div className='border-b border-slate-200 mb-4'>
-                        <p className='sm:text-xl font-semibold mb-4 mt-2'>Custome Details</p>
+                        <p className='sm:text-xl font-semibold mb-4 mt-2'>Customer Details</p>
                         <div className='flex flex-col items-center justify-center my-2 gap-2 w-full p-4'>
                             <div className='flex gap-4'>
                                 <Avatar>
-                                    <AvatarImage src={data[0].user.avatar} alt={data[0].user.fullName}
+                                    <AvatarImage
+                                        src={singleOrder.user.avatar}
+                                        alt={singleOrder.user.fullName}
                                     />
                                 </Avatar>
-                                <p className='font-semibold sm:text-lg'>{data[0].user.fullName}</p>
+                                <p className='font-semibold sm:text-lg'>{singleOrder.user.fullName}</p>
                             </div>
                             <div className=' flex items-center justify-center flex-col'>
-                                <p className='text-slate-400'>{data[0].user.email}</p>
-                                <p className='text-slate-400'>91 93135 54295</p>
+                                <p className='text-slate-400'>{singleOrder.user.email}</p>
+                                <p className='text-slate-400'>{singleOrder.user.phoneNumber}</p>
                             </div>
                         </div>
                     </div>
@@ -143,50 +181,41 @@ const SingleOrder: React.FC = () => {
                         <div className='flex flex-col gap-4 p-4'>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Payment Status:</p>
-                                <span className={`font-semibold ${data[0].isPaymentDone ? 'text-green-600' : 'text-red-600'}`}>
-                                    {data[0].isPaymentDone ? 'Completed' : 'Pending'}
+                                <span className={`font-semibold ${singleOrder.isPaymentDone ? 'text-green-600' : 'text-red-600'}`}>
+                                    {singleOrder.isPaymentDone ? 'Completed' : 'Pending'}
                                 </span>
                             </div>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Payment Method:</p>
-                                <span className='font-semibold text-slate-700'>{data[0].paymentType}</span>
+                                <span className='font-semibold text-slate-700'>{singleOrder.paymentType}</span>
                             </div>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Cart Total:</p>
-                                <span className='font-semibold text-slate-700'>${data[0].cartTotal}</span>
+                                <span className='font-semibold text-slate-700'>₹{singleOrder.cartTotal}</span>
                             </div>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Discount Applied:</p>
-                                <span className='font-semibold text-green-600'>${data[0].discountValue}</span>
+                                <span className='font-semibold text-green-600'>₹{singleOrder.discountValue}</span>
                             </div>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Order Price:</p>
-                                <span className='font-semibold text-slate-700'>${data[0].orderPrice}</span>
+                                <span className='font-semibold text-slate-700'>₹{singleOrder.orderPrice}</span>
                             </div>
                         </div>
                     </div>
-                    <div className='border-t border-slate-200 p-2'>
+                    {singleOrder.coupon && <div className='border-t border-slate-200 p-2'>
                         <h2 className='sm:text-xl font-semibold mb-4'>Coupon Details</h2>
                         <div className='flex flex-col gap-4 p-4'>
-
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Coupon Code</p>
-                                <span className='font-semibold text-slate-700'>{data[0].coupon.couponCode}</span>
+                                <span className='font-semibold text-slate-700'>{singleOrder.coupon.couponCode}</span>
                             </div>
                             <div className='flex items-center justify-between'>
                                 <p className='text-slate-700 font-medium'>Cart Total:</p>
-                                <span className='font-semibold text-slate-700'>{data[0].coupon.discountPercentage}%</span>
+                                <span className='font-semibold text-slate-700'>{singleOrder.coupon.discountPercentage}%</span>
                             </div>
-                            {/* <div className='flex items-center justify-between'>
-                                <p className='text-slate-700 font-medium'>Discount Applied:</p>
-                                <span className='font-semibold text-green-600'>${data[0].discountValue}</span>
-                            </div>
-                            <div className='flex items-center justify-between'>
-                                <p className='text-slate-700 font-medium'>Order Price:</p>
-                                <span className='font-semibold text-slate-700'>${data[0].orderPrice}</span>
-                            </div> */}
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </div>
             <div className='p-4 mt-4 border-t md:border border-slate-200 rounded-md w-full'>
@@ -195,9 +224,9 @@ const SingleOrder: React.FC = () => {
                     <h2 className='sm:text-xl font-semibold text-start'>Delivered Location</h2>
                 </div>
                 <div className='flex items-center space-x-2 p-2'>
-                    <p className="text-slate-700">{data[0].address.addressLine}</p>
-                    <p className="text-slate-700">{data[0].address.city},
-                        {data[0].address.state}, {data[0].address.country} - {data[0].address.pincode}
+                    <p className="text-slate-700">{singleOrder.address.addressLine}</p>
+                    <p className="text-slate-700">{singleOrder.address.city},
+                        {singleOrder.address.state}, {singleOrder.address.country} - {singleOrder.address.pincode}
                     </p>
                 </div>
             </div>

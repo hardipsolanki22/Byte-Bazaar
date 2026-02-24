@@ -28,7 +28,7 @@ const Product = ({
             />
             <div className='flex flex-col flex-grow'>
                 <h3 className='text-lg font-semibold text-slate-600'>{name}</h3>
-                <p className='text-slate-800 font-bold mt-2'>${price}</p>
+                <p className='text-slate-800 font-bold mt-2'>₹{price}</p>
                 {averageRating && ratingCount &&
                     <div className='flex items-center mt-2'>
                         <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-1'>

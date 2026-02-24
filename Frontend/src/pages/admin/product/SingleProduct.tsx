@@ -141,10 +141,10 @@ const SingleProduct: React.FC = () => {
                         <div className='flex flex-col justify-center p-4 rounded-md sm:border border-slate-200'>
                             <h2 className='text-3xl text-slate-700 font-bold mb-2 '>{product?.name}</h2>
                             <p className='text-slate-600 mb-2'>{product?.description}</p>
-                            <p className='text-xl font-semibold mb-2 text-slate-700'>{product?.price}</p>
+                            <p className='text-xl font-semibold mb-2 text-slate-700'>₹{product?.price}</p>
                             <div className='flex items-center mb-2'>
-                                {product?.stock && product?.stock > 5 ? <Badge variant={'success'}>In Stock</Badge>
-                                    : <Badge variant={'destructive'}>Low Stock</Badge>}
+                                {product?.stock && product?.stock > 5 ? <Badge variant={'success'}>In Stock {product.stock}</Badge>
+                                    : <Badge variant={'destructive'}>Low Stock {product.stock}</Badge>}
                             </div>
                             <div className='flex items-center'>
                                 <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-2'>

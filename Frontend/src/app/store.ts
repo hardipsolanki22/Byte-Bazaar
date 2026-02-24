@@ -6,6 +6,7 @@ import productSlice from '../features/admin/product/productSlice'
 import ratingSlice from '../features/rating/ratingSlice'
 import userSlice from '../features/admin/user/userSlice'
 import couponSlice from '../features/admin/coupon/couponSlice'
+import orderSlice from '../features/admin/order/orderSlice'
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     rating: ratingSlice,
     userList: userSlice,
     coupon: couponSlice,
+    order: orderSlice
   },
 })
 

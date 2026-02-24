@@ -172,15 +172,15 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
     // if item does not exists then push item to cart
 
 
-    const { productId } = req.params
+    const { slug } = req.params
     const { quantity } = req.body
 
 
-    if (!productId || !quantity) {
-        throw new APIError(400, "Product id and quantity are required")
+    if (!slug || !quantity) {
+        throw new APIError(400, "Product slug and quantity are required")
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findOne({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exists")
@@ -205,7 +205,7 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
             user: req.user._id,
             items: [
                 {
-                    product: productId,
+                    product: product._id,
                     quantity
                 }
             ]
@@ -217,7 +217,7 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
             )
     }
 
-    const isItemExist = cart.items.find(item => item.product.toString() === productId)
+    const isItemExist = cart.items.find(item => item.product.toString() === product._id.toString())
 
     if (isItemExist) {
         isItemExist.quantity = quantity
@@ -228,7 +228,7 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
 
     } else {
         cart.items.push({
-            product: productId,
+            product: product._id,
             quantity
         })
     }
@@ -254,13 +254,13 @@ const getUserCart = asyncHandler(async (req, res) => {
 })
 
 const removeItem = asyncHandler(async (req, res) => {
-    const { productId } = req.params
+    const { slug } = req.params
 
-    if (!productId) {
-        throw new APIError(400, "Product id is required")
+    if (!slug) {
+        throw new APIError(400, "Product slug is required")
     }
 
-    const product = await Product.findById(productId)
+    const product = await Product.findOne({ slug })
 
     if (!product) {
         throw new APIError(404, "Product does not exists")
@@ -276,7 +276,7 @@ const removeItem = asyncHandler(async (req, res) => {
             // and set coupon to null so that it will not be applied
             $pull: {
                 items: {
-                    product: productId
+                    product: product._id
                 }
             },
             $set: {

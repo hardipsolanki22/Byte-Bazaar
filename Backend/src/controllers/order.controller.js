@@ -122,9 +122,23 @@ const createOrder = asyncHandler(async (req, res) => {
                 quantity: item.quantity
             }
         })
+        const discounts = []
+        if (cart.coupon && cart.discountPercentage) {
+            const stripeCoupon = await stripe.coupons.create({
+                currency: "inr",
+                name: cart.couponCode,
+                amount_off: cart.discountValue * 100,
+                // percent_off: cart.discountPercentage,
+                duration: "once"
+
+            })
+            discounts.push({ coupon: stripeCoupon.id })
+        }
+
         const session = await stripe.checkout.sessions.create({
             line_items,
             mode: "payment",
+            ...(discounts.length > 0 && { discounts }),
             success_url: "http://localhost:5000/api/v1/order/stripe-payment-verify?success=true&session={CHECKOUT_SESSION_ID}",
             cancel_url: "http://localhost:5000/api/v1/order/stripe-payment-verify?success=false",
             metadata: {
@@ -207,7 +221,14 @@ const updateOrderStatusAndIsPaymentDone = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new APIResponse(200, order, "Order Updated Successfully")
+            new APIResponse(
+                200,
+                {
+                    status: order.status,
+                    isPaymentDone: order.isPaymentDone
+                },
+                "Order Updated Successfully"
+            )
         )
 
 })
@@ -216,8 +237,9 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
     const { status, ispaymentdone, page = 1, limit = 8 } = req.query
     const matchStage = {}
 
+
     if (status && ispaymentdone) {
-        matchStage.isPaymentDone = ispaymentdone === "true"
+        matchStage.isPaymentDone = ispaymentdone === "true" ? true : false
         availableOrderStatus.includes(status.toUpperCase())
             ? matchStage.status = status.toUpperCase()
             : matchStage
@@ -226,8 +248,7 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
             ? matchStage.status = status.toUpperCase()
             : matchStage
     else if (ispaymentdone)
-        matchStage.isPaymentDone = ispaymentdone === "true"
-
+        matchStage.isPaymentDone = ispaymentdone === "true" ? true : false
     const aggregation = Order.aggregate([
         {
             // match stage to filter orders based on status and isPaymentDone
@@ -464,7 +485,7 @@ const getSingleOrderByAdmin = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new APIResponse(200, order, "Order Fatched Successfully")
+            new APIResponse(200, order[0], "Order Fetched Successfully")
         )
 
 })
@@ -670,7 +691,7 @@ const getUserSingleOrder = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new APIResponse(200, order, "Order Fetched Successfully")
+            new APIResponse(200, order[0], "Order Fetched Successfully")
         )
 })
 
