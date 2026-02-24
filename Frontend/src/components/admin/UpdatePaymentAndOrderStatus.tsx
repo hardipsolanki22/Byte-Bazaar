@@ -2,26 +2,33 @@ import React, { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../lightswind/select'
 import { Button } from '../lightswind/button'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import type { FilterOrders } from '../../types/order'
 import { Spinner } from '../ui/spinner'
 import { updateOrderStatusAndIsPaymentDone } from '../../features/admin/order/orderSlice'
 import { toast } from 'sonner'
 
 interface UpdatePaymentAndOrderStatusProps {
     orderId: string,
-    ispaymentdone: boolean,
+    ispaymentdone: "Paid" | "Unpaid";
     status: "PENDING" | "DELIVERED" | "CANCELLED"
+}
+export interface FilterOrders {
+    status?: "PENDING" | "DELIVERED" | "CANCELLED";
+    ispaymentdone?: "Paid" | "Unpaid";
 }
 
 const UpdatePaymentAndOrderStatus = ({ orderId, ispaymentdone, status }: UpdatePaymentAndOrderStatusProps) => {
     const loading = useAppSelector(({ order }) => order.loading)
     const dispatch = useAppDispatch()
     const [updateData, setUpdateData] = useState<FilterOrders>({
-        ispaymentdone: ispaymentdone,
+        ispaymentdone: ispaymentdone ? "Paid" : "Unpaid",
         status: status
     })
     const handleOrderUpdate = () => {
-        dispatch(updateOrderStatusAndIsPaymentDone({ orderId, data: updateData }))
+
+        dispatch(updateOrderStatusAndIsPaymentDone({
+            orderId,
+            data: { ...updateData, isPaymentDone: ispaymentdone === "Paid" ? true : false }
+        }))
             .unwrap()
             .then((res) => {
                 toast.success(res.message)
@@ -37,17 +44,17 @@ const UpdatePaymentAndOrderStatus = ({ orderId, ispaymentdone, status }: UpdateP
                     <span className='text-sm sm:text-lg w-[90%] sm:w-auto'>Update Payment</span>
                     <div className='sm:mx-4 w-[70%] flex justify-center items-center'>
                         <Select
-                            value={updateData.ispaymentdone === true ? "true" : updateData.ispaymentdone === false ? "false" : undefined}
+                            value={updateData.ispaymentdone}
                             onValueChange={(value) => {
-                                setUpdateData(prev => ({ ...prev, ispaymentdone: value === "true" ? true : false }))
+                                setUpdateData(prev => ({ ...prev, ispaymentdone: value as any }))
                             }}
                         >
                             <SelectTrigger className="w-full mt-4 cursor-pointer">
                                 <SelectValue placeholder="Payment" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="true">Paid</SelectItem>
-                                <SelectItem value="false">Unpaid</SelectItem>
+                                <SelectItem value="Paid">Paid</SelectItem>
+                                <SelectItem value="Unpaid">Unpaid</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
