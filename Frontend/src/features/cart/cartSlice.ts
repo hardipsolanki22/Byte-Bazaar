@@ -1,9 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getReq, patchReq } from '../../config/configAxios';
+import { getReq, patchReq, postReq } from '../../config/configAxios';
 import type {
-    addItemOrUpdateItemQuantityReq,
+    AddItemOrUpdateItemQuantityReq,
+    AddItemOrUpdateItemQuantityRes,
     Cart,
-    GetCartRes
+    ClearCartRes,
+    GetCartRes,
+    RemoveItemFromCartRes
 } from '../../types/cartTypes';
 
 
@@ -32,13 +35,21 @@ export const getUserCart = createAsyncThunk(
 )
 export const addItemOrUpdateItemQuantity = createAsyncThunk(
     'cart/add-update-quantity',
-    async ({ productSlug, quantity }: addItemOrUpdateItemQuantityReq, { rejectWithValue }) => {
+    async ({ productSlug, quantity }: AddItemOrUpdateItemQuantityReq, { rejectWithValue }) => {
         try {
-            const response = await patchReq<{ quantity: number }, GetCartRes>(
+            const response = await postReq<{ quantity: number }, AddItemOrUpdateItemQuantityRes>(
                 `/api/v1/cart/products/${productSlug}`,
                 { quantity }
             )
-            return response.data
+            return {
+                data: {
+                    ...response.data.data,
+                    updatedProductItemslug: productSlug,
+                },
+                statusCode: response.data.statusCode,
+                message: response.data.message,
+                success: response.data.success
+            }
         } catch (error: any) {
             console.log('Error while add or update item from cart: ', error)
             return rejectWithValue({
@@ -53,10 +64,18 @@ export const removeItemFromCart = createAsyncThunk(
     'cart/remove-item',
     async (productSlug: string, { rejectWithValue }) => {
         try {
-            const response = await patchReq<{}, GetCartRes>(
+            const response = await patchReq<{}, RemoveItemFromCartRes>(
                 `/api/v1/cart/products/${productSlug}`,
             )
-            return response.data
+            return {
+                data: {
+                    ...response.data.data,
+                    productSlug,
+                },
+                statusCode: response.data.statusCode,
+                message: response.data.message,
+                success: response.data.success
+            }
         } catch (error: any) {
             console.log('Error while remove item from cart: ', error)
             return rejectWithValue({
@@ -71,7 +90,7 @@ export const clearCart = createAsyncThunk(
     'cart/clear',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await patchReq("/api/v1/cart/clear")
+            const response = await patchReq<{}, ClearCartRes>("/api/v1/cart/clear")
             return response.data
         } catch (error: any) {
             console.log('Error while clear cart: ', error)
@@ -109,6 +128,64 @@ export const cartSlice = createSlice({
                 state.loading = 'failed'
             })
 
+            // add or update item quantity from user cart
+            .addCase(addItemOrUpdateItemQuantity.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(addItemOrUpdateItemQuantity.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                console.log("payload: ", payload)
+                if (state.cart?.items.length) {
+                    const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.updatedProductItemslug)
+                    if (index !== -1) {
+                        const updatedItemIndex = payload.data.items.findIndex(item => item.product === state.cart?.items[index].product._id)
+                        if (updatedItemIndex !== -1) {
+                            state.cart?.items.splice(index, 1, { ...state.cart.items[index], quantity: payload.data.items[updatedItemIndex].quantity })
+                        }
+                    }
+                }
+            })
+            .addCase(addItemOrUpdateItemQuantity.rejected, (state) => {
+                state.loading = 'failed'
+            })
+
+            // remove item quantity from user cart
+            .addCase(removeItemFromCart.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(removeItemFromCart.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                console.log("payload: ", payload)
+                if (state.cart?.items.length) {
+                    const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.productSlug)
+                    if (index !== -1) {
+                        state.cart?.items.splice(index, 1)
+                    }
+                }
+            })
+            .addCase(removeItemFromCart.rejected, (state) => {
+                state.loading = 'failed'
+            })
+
+            // clear user cart
+            .addCase(clearCart.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(clearCart.fulfilled, (state) => {
+                state.loading = 'succeeded'
+                if (state.cart) {
+                    state.cart.items = []
+                    state.cart.cartTotal = 0
+                    state.cart.discountedTotal = 0
+                    state.cart.discountValue = 0
+                    state.cart._id = null;
+                    state.cart.coupon = null;
+                }
+
+            })
+            .addCase(clearCart.rejected, (state) => {
+                state.loading = 'failed'
+            })
     }
 
 })

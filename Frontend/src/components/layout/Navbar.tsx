@@ -200,6 +200,8 @@ const Navbar: React.FC = () => {
               variant="link"
               key={idx}
               className="cursor-pointer"
+              onClick={() => navigate(`/products?category=${category.slug}`)}
+
             >
               {category.name}
             </Button>

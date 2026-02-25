@@ -35,6 +35,7 @@ import UpdateCoupon from './pages/admin/coupon/UpdateCoupon'
 import AddHeroBanner from './pages/admin/heroBanner/AddHeroBanner'
 import HeroBanner from './pages/admin/heroBanner/HeroBanner'
 import UpdateHeroBanner from './pages/admin/heroBanner/UpdateHeroBanner'
+import ProductsByCategory from './pages/ProductsByCategory'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -79,6 +80,9 @@ const App = () => {
             <Account />
             // </AuthLayout>
           } path='/account' />
+          <Route element={
+            <ProductsByCategory />
+          } path='/products' />
           <Route element={
             <Product />
           } path='/products/:slug' />

@@ -71,7 +71,8 @@ const getCart = async (userId) => {
                             name: 1,
                             price: 1,
                             mainImage: 1,
-                            productRating: 1
+                            productRating: 1,
+                            slug: 1
                         }
                     },
                 ]
