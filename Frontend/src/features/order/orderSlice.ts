@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getReq, patchReq } from '../../../config/configAxios';
+import { getReq, patchReq, postReq } from '../../config/configAxios';
 import type {
+    CreateOrderReq,
+    CreateOrderRes,
     FilterOrders,
     GetOrdersRes,
     GetSingleOrderRes,
@@ -9,7 +11,7 @@ import type {
     UpdateOrderStatusAndIsPaymentDone,
     UpdateOrderStatusAndIsPaymentDoneReq,
     UpdateOrderStatusAndIsPaymentDoneRes
-} from '../../../types/orderTypes';
+} from '../../types/orderTypes';
 
 // Define a type for the slice state
 interface OrderState {
@@ -67,6 +69,26 @@ export const updateOrderStatusAndIsPaymentDone = createAsyncThunk(
             return response.data
         } catch (error: any) {
             console.log('Error while update order status and isPaymentDone: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    }
+)
+export const createOrder = createAsyncThunk(
+    'order/create-order',
+    async ({ addressId, paymentType }: CreateOrderReq, { rejectWithValue }) => {
+        try {
+            const response = await postReq<{ paymentType: "COD" | "STRIPE" }, CreateOrderRes>(
+                `/api/v1/order/${addressId}`,
+                { paymentType }
+
+            )
+            return response.data
+        } catch (error: any) {
+            console.log('Error while create order: ', error)
             return rejectWithValue({
                 message: error.data.message,
                 status: error.status,
@@ -135,6 +157,16 @@ export const orderSlice = createSlice({
                 }
             })
             .addCase(updateOrderStatusAndIsPaymentDone.rejected, (state) => {
+                state.loading = 'failed'
+            })
+            // create orders
+            .addCase(createOrder.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(createOrder.fulfilled, (state) => {
+                state.loading = 'succeeded'
+            })
+            .addCase(createOrder.rejected, (state) => {
                 state.loading = 'failed'
             })
     }

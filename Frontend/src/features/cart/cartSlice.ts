@@ -134,16 +134,16 @@ export const cartSlice = createSlice({
             })
             .addCase(addItemOrUpdateItemQuantity.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                console.log("payload: ", payload)
-                if (state.cart?.items.length) {
-                    const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.updatedProductItemslug)
-                    if (index !== -1) {
-                        const updatedItemIndex = payload.data.items.findIndex(item => item.product === state.cart?.items[index].product._id)
-                        if (updatedItemIndex !== -1) {
-                            state.cart?.items.splice(index, 1, { ...state.cart.items[index], quantity: payload.data.items[updatedItemIndex].quantity })
-                        }
-                    }
-                }
+                // console.log("payload: ", payload)
+                // if (state.cart?.items.length) {
+                //     const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.updatedProductItemslug)
+                //     if (index !== -1) {
+                //         const updatedItemIndex = payload.data.items.findIndex(item => item.product === state.cart?.items[index].product._id)
+                //         if (updatedItemIndex !== -1) {
+                //             state.cart?.items.splice(index, 1, { ...state.cart.items[index], quantity: payload.data.items[updatedItemIndex].quantity })
+                //         }
+                //     }
+                // }
             })
             .addCase(addItemOrUpdateItemQuantity.rejected, (state) => {
                 state.loading = 'failed'
@@ -155,13 +155,13 @@ export const cartSlice = createSlice({
             })
             .addCase(removeItemFromCart.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
-                console.log("payload: ", payload)
-                if (state.cart?.items.length) {
-                    const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.productSlug)
-                    if (index !== -1) {
-                        state.cart?.items.splice(index, 1)
-                    }
-                }
+                // console.log("payload: ", payload)
+                // if (state.cart?.items.length) {
+                //     const index = state.cart?.items.findIndex(item => item.product.slug === payload.data.productSlug)
+                //     if (index !== -1) {
+                //         state.cart?.items.splice(index, 1)
+                //     }
+                // }
             })
             .addCase(removeItemFromCart.rejected, (state) => {
                 state.loading = 'failed'

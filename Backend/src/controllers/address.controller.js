@@ -8,6 +8,15 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const createAddress = asyncHandler(async (req, res) => {
     const { addressLine, country, state, city, pincode, isPrimary } = req.body;
 
+    if (isPrimary) {
+        const isPrinaryAddressAvailable = await Address.findOne({ isPrimary: true })
+
+        if (isPrinaryAddressAvailable) {
+            isPrinaryAddressAvailable.isPrimary = false;
+            await isPrinaryAddressAvailable.save({ validateBeforeSave: false })
+        }
+    }
+
     const address = await Address.create({
         addressLine,
         country,
@@ -68,6 +77,15 @@ const updateAddress = asyncHandler(async (req, res) => {
 
     if (!addressId) {
         throw new APIError(400, "Address id is required")
+    }
+
+    if (isPrimary) {
+        const isPrinaryAddressAvailable = await Address.findOne({ isPrimary: true })
+
+        if (isPrinaryAddressAvailable) {
+            isPrinaryAddressAvailable.isPrimary = false;
+            await isPrinaryAddressAvailable.save({ validateBeforeSave: false })
+        }
     }
 
     const address = await Address.findByIdAndUpdate(addressId,

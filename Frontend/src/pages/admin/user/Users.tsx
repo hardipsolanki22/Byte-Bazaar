@@ -4,7 +4,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/lightswind/dialog'
 import { Button } from '../../../components/lightswind/button'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { assignRole, getUsersList } from '../../../features/admin/user/userSlice'
+import { assignRole, getUsersList } from '../../../features/user/userSlice'
 import { toast } from 'sonner'
 import { Spinner } from '../../../components/ui/spinner'
 

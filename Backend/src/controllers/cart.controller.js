@@ -72,6 +72,7 @@ const getCart = async (userId) => {
                             price: 1,
                             mainImage: 1,
                             productRating: 1,
+                            stock: 1,
                             slug: 1
                         }
                     },
@@ -128,6 +129,7 @@ const getCart = async (userId) => {
         {
             $addFields: {
                 discountPercentage: { $first: "$coupon.discountPercentage" },
+                coupon: { $first: "$coupon" },
                 // calculate discount value and discounted total
                 discountValue: {
                     $ifNull: [
@@ -240,6 +242,10 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
     if (isItemExist) {
         isItemExist.quantity = quantity
 
+        // user add new item to the cart then we need to null coupon bacaouse
+        // user may be decrease product quantity 
+        // user may be remove product so that we need to remove coupon
+        // and then based on cartTotal user will reuse coupon after proceesing of coupon apply
         if (cart.coupon) {
             cart.coupon = null
         }

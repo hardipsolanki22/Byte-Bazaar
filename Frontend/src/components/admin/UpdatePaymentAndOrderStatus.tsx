@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Button } from '../lightswind/button'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Spinner } from '../ui/spinner'
-import { updateOrderStatusAndIsPaymentDone } from '../../features/admin/order/orderSlice'
+import { updateOrderStatusAndIsPaymentDone } from '../../features/order/orderSlice'
 import { toast } from 'sonner'
 
 interface UpdatePaymentAndOrderStatusProps {

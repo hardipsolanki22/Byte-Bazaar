@@ -120,6 +120,12 @@ export const addressSlice = createSlice({
             })
             .addCase(addAddress.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
+                if (payload.data.isPrimary && state.addresses?.length) {
+                    const primaryAddressIndex = state.addresses?.findIndex(add => add.isPrimary === true)
+                    if (primaryAddressIndex !== -1) {
+                        state.addresses[primaryAddressIndex].isPrimary = false
+                    }
+                }
                 state.addresses?.push(payload.data)
             })
             .addCase(addAddress.rejected, (state) => {
@@ -132,6 +138,13 @@ export const addressSlice = createSlice({
             .addCase(updateAddress.fulfilled, (state, { payload }) => {
                 state.loading = 'succeeded'
                 if (state.addresses) {
+                    if (payload.data.isPrimary) {
+                        const primaryAddressIndex = state.addresses?.findIndex(add => add.isPrimary === true)
+                        if (primaryAddressIndex !== -1) {
+                            state.addresses[primaryAddressIndex].isPrimary = false
+                        }
+                    }
+
                     const findAddIndex = state.addresses?.findIndex(add => add._id === payload.data._id)
                     state.addresses.splice(findAddIndex, 1, payload.data)
                 }

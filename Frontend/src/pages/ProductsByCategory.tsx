@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getProductsByCategory } from '../features/admin/product/productSlice';
+import { getProductsByCategory } from '../features/product/productSlice';
 import Product from '../components/products/Product';
 
 const ProductsByCategory = () => {

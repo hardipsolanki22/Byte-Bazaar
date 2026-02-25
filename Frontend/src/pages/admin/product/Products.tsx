@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/lightswind/select'
 import Product from '../../../components/products/Product'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { clearSingleProduct, getProducts, getProductsByCategory } from '../../../features/admin/product/productSlice'
-import { getCategories } from '../../../features/admin/category/categorySlice'
+import { clearSingleProduct, getProducts, getProductsByCategory } from '../../../features/product/productSlice'
+import { getCategories } from '../../../features/category/categorySlice'
 
 const Products: React.FC = () => {
     const productLoading = useAppSelector(({ product }) => product.loading)

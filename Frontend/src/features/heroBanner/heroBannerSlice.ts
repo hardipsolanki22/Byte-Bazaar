@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { deleteReq, getReq, postReq, putReq } from '../../../config/configAxios';
+import { deleteReq, getReq, postReq, putReq } from '../../config/configAxios';
 import type {
     AddAndUpdateHeroBanner,
     AddHeroBannerRes,
@@ -8,7 +8,7 @@ import type {
     HeroBaner,
     UpdateHeroBannerReq,
     UpdateHeroBannerRes
-} from '../../../types/heroBannerTypes';
+} from '../../types/heroBannerTypes';
 
 
 // Define a type for the slice state

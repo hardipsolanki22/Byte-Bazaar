@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getHeroBanners } from '../../../features/admin/heroBanner/heroBannerSlice';
+import { getHeroBanners } from '../../../features/heroBanner/heroBannerSlice';
 import HeroBannerForm from '../../../components/admin/HeroBannerForm';
 
 const UpdateHeroBanner = () => {

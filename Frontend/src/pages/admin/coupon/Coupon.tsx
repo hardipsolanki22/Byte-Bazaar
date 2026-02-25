@@ -11,7 +11,7 @@ import {
 import { Button } from '../../../components/lightswind/button';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { deleteCoupon, getCoupons } from '../../../features/admin/coupon/couponSlice';
+import { deleteCoupon, getCoupons } from '../../../features/coupon/couponSlice';
 import { toast } from 'sonner';
 
 const Coupon: React.FC = () => {

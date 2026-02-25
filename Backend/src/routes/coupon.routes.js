@@ -25,6 +25,8 @@ router.route("/")
         validate,
         createCoupon
     )
+router.route("/apply-coupon").patch(verifyJWT, applyCoupon)
+
 router.route("/:couponId")
     .patch(
         verifyJWT,
@@ -34,6 +36,5 @@ router.route("/:couponId")
         updateCoupon
     )
     .delete(verifyJWT, verifyPermisson(userRole.ADMIN), deleteCoupon)
-router.route("/apply-coupon").get(verifyJWT, applyCoupon)
 
 export default router

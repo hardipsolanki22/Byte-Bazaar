@@ -90,3 +90,15 @@ export interface UpdateOrderStatusAndIsPaymentDoneRes {
     message: string;
     success: boolean
 }
+export interface CreateOrderReq {
+    addressId: string;
+    paymentType: "COD" | "STRIPE"
+}
+export interface CreateOrderRes {
+    data: {
+        url?: string
+    }
+    statusCode: number;
+    message: string;
+    success: boolean
+}

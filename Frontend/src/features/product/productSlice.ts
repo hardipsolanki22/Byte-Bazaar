@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { deleteReq, getReq, patchReq, postReq } from '../../../config/configAxios';
+import { deleteReq, getReq, patchReq, postReq } from '../../config/configAxios';
 
 import type {
     AddProductRes,
@@ -13,7 +13,7 @@ import type {
     SingleProduct,
     UpdateProductReq,
     UpdateProductRes
-} from '../../../types/productTypes';
+} from '../../types/productTypes';
 
 
 // Define a type for the slice state

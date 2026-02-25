@@ -139,15 +139,21 @@ const Account: React.FC = () => {
                                         className="p-4 border border-slate-400 rounded-md w-full flex justify-between">
                                         <div
                                             className="flex flex-col ">
-                                            <div className="flex items-center space-x-2 my-2">
-                                                <Checkbox id={`primary-${address._id}`} />
-                                                <label
-                                                    htmlFor={`primary-${address._id}`}
-                                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
+                                            {address.isPrimary &&
+                                                <div className="flex items-center space-x-2 my-2">
+                                                    <Checkbox
+                                                        checked={address.isPrimary}
+                                                        className="pointer-events-none"
+                                                        disabled
+                                                    />
+                                                    <label
+                                                        htmlFor={`primary-${address._id}`}
+                                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed 
                                             peer-disabled:opacity-70"
-                                                >Set as Primary
-                                                </label>
-                                            </div>
+                                                    >Primary Address
+                                                    </label>
+                                                </div>
+                                            }
                                             <p className="mt-2 text-lg">{address.addressLine}</p>
                                             <p className="text-lg">{address.country} </p>
                                             <p className="text-lg">{address.state} </p>

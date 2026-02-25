@@ -3,7 +3,7 @@ import { Button } from '../../../components/lightswind/button'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { Delete, PencilIcon } from 'lucide-react'
-import { deleteHeroBanner, getHeroBanners } from '../../../features/admin/heroBanner/heroBannerSlice'
+import { deleteHeroBanner, getHeroBanners } from '../../../features/heroBanner/heroBannerSlice'
 import { toast } from 'sonner'
 
 const HeroBanner = () => {

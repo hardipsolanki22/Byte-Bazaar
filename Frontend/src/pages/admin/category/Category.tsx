@@ -3,7 +3,7 @@ import { Button } from '../../../components/lightswind/button'
 import { Delete, PencilIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { deleteCategory, getCategories } from '../../../features/admin/category/categorySlice'
+import { deleteCategory, getCategories } from '../../../features/category/categorySlice'
 import { toast } from 'sonner'
 
 const Category = () => {

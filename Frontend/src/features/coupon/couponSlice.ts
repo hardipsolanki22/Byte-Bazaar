@@ -1,15 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { deleteReq, getReq, patchReq, postReq } from '../../../config/configAxios';
+import { deleteReq, getReq, patchReq, postReq } from '../../config/configAxios';
 import type {
     AddCouponReq,
     AddCouponRes,
+    ApplyCouponres,
     Coupon,
     DeleteCouponRes,
     GetCouponsRes,
     UpdateCoupon,
     UpdateCouponReq,
     UpdateCouponRes
-} from '../../../types/couponTypes';
+} from '../../types/couponTypes';
 
 
 // Define a type for the slice state
@@ -45,7 +46,30 @@ export const createCoupon = createAsyncThunk(
             )
             return response.data
         } catch (error: any) {
-            console.log('Error while coupon role: ', error)
+            console.log('Error while create coupon: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    }
+)
+export const applyCoupon = createAsyncThunk(
+    'admin/apply-coupon',
+    async (couponCode: string, { rejectWithValue }) => {
+        try {
+            const response = await patchReq<{ couponCode: string }, ApplyCouponres>(
+                "/api/v1/coupon/apply-coupon",
+                { couponCode }
+            )
+            return {
+                statusCode: response.data.statusCode,
+                message: response.data.message,
+                success: response.data.success
+            }
+        } catch (error: any) {
+            console.log('Error while apply coupon: ', error)
             return rejectWithValue({
                 message: error.data.message,
                 status: error.status,
@@ -154,6 +178,16 @@ export const couponSlice = createSlice({
                 }
             })
             .addCase(deleteCoupon.rejected, (state) => {
+                state.loading = 'failed'
+            })
+            // aply coupons
+            .addCase(applyCoupon.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(applyCoupon.fulfilled, (state) => {
+                state.loading = 'succeeded'
+            })
+            .addCase(applyCoupon.rejected, (state) => {
                 state.loading = 'failed'
             })
 

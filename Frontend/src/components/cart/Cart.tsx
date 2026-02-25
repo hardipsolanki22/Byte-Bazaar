@@ -1,17 +1,64 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '../lightswind/button'
-import { Plus } from 'lucide-react'
+import { Minus, Plus } from 'lucide-react'
+import { toast } from 'sonner';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { addItemOrUpdateItemQuantity, getUserCart } from '../../features/cart/cartSlice';
+import { Spinner } from '../ui/spinner';
 
-const Cart: React.FC = () => {
-
-    const item =
-    {
-        id: 1, name: `
-            M19/M10/T12/ULTRABUDS/EARPODS TWS Bluetooth Earbuds Wireless Bluetooth 5.1 Stereo IPX7 Waterproof bluetooth Headset
-             wireless earbuds ANC Earbuds which comes with 20 hour Battery Backup`
-        , price: 100, quantity: 2, mainImage: "https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dGVsZXZpc2lvbnxlbnwwfHwwfHx8MA%3D%3D"
-
+interface CartProps {
+    product: {
+        _id: string;
+        name: string;
+        price: number;
+        mainImage: string;
+        stock: number;
+        slug: string;
     }
+    quantity: number;
+
+}
+
+const Cart = ({
+    product,
+    quantity,
+    ...props
+}: CartProps) => {
+
+    const [quantityState, setQuantityState] = useState<number>(quantity)
+    const loading = useAppSelector(({ cart }) => cart.loading)
+    const dispatch = useAppDispatch()
+
+    const increaseQuantity = () => {
+        if (quantityState >= product.stock) {
+            toast.success(`Only ${product.stock} products are remaining.`)
+            return
+        }
+        setQuantityState(prev => prev + 1)
+    }
+    const decreaseQuantity = () => {
+        if (quantityState <= 1) {
+            setQuantityState(1)
+            return
+        }
+        setQuantityState(prev => prev - 1)
+    }
+
+    const handleUpdateQuantity = () => {
+        dispatch(addItemOrUpdateItemQuantity({ productSlug: product.slug, quantity: quantityState }))
+            .unwrap()
+            .then((data) => {
+                dispatch(getUserCart())
+                    .unwrap()
+                    .then(() => {
+                        toast.success(data.message)
+                    })
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
+    }
+
     return (
         <div>
             <div className='flex flex-col gap-4 w-full sm:w-[70vw] lg:w-[40vw]
@@ -19,37 +66,52 @@ const Cart: React.FC = () => {
                 <div className='flex flex-col  '>
                     <div className='flex flex-col justify-center gap-3'>
                         <div className='flex items-center m-2'>
-                            <img src={item.mainImage} alt={item.name} className='rounded-lg w-24 h-24 object-cover mr-4' />
+                            <img
+                                src={product.mainImage}
+                                alt={product.name}
+                                className='rounded-lg w-24 h-24 object-cover mr-4'
+                            />
                             <div className='flex flex-col gap-4'>
                                 <h2 className='text-lg font-semibold'>
-                                    {item.name.length > 50 ? `${item.name.substring(0, 50)}...` : item.name}
+                                    {product.name.length > 50 ?
+                                        `${product.name.substring(0, 50)}...` : product.name
+                                    }
                                 </h2>
-                                <p className='text-lg'>Price: ${item.price}</p>
+                                <p className='text-lg'>Price: ₹{product.price}</p>
                             </div>
                         </div>
                     </div>
                     <div className='flex gap-2 items-center justify-center mt-4 '>
                         <span>Qty</span>
-                        <Button variant='github'
+                        <Button
+                            onClick={increaseQuantity}
+                            variant='github'
                             className='p-2 cursor-pointer'>
                             <Plus />
                         </Button>
-                        <span className='text-center '>{item.quantity}</span>
-                        <Button variant='github'
+                        <span className='text-center '>{quantityState}</span>
+                        <Button
+                            onClick={decreaseQuantity}
+                            variant='github'
                             className='p-2 cursor-pointer'>
-                            <Plus />
+                            <Minus />
                         </Button>
                     </div>
                 </div>
                 <div className='flex justify-between items-center p-4 border-y border-slate-200'>
                     <p>Total Price</p>
-                    <p>${item.price * item.quantity}</p>
+                    <p>₹{product.price * quantityState}</p>
                 </div>
                 <div className='border-b border-slate-200 p-2'>
                     <Button
                         className='w-full cursor-pointer'
-                        >
-                        Update Quantity
+                        onClick={handleUpdateQuantity}
+                        disabled={loading === "pending"}
+                    >
+                        {loading === "pending" ?
+                            <Spinner data-icon="inline-start" />
+                            : "Update Quantity"
+                        }
                     </Button>
                 </div>
             </div>

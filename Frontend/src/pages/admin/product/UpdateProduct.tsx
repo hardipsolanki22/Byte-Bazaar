@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import ProductForm from '../../../components/admin/ProductForm'
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getProduct } from '../../../features/admin/product/productSlice';
+import { getProduct } from '../../../features/product/productSlice';
 
 const UpdateProduct = () => {
 

@@ -14,7 +14,8 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { toast } from 'sonner';
 import { logOutUser } from '../../features/auth/authSlice';
-import { getCategories } from '../../features/admin/category/categorySlice';
+import { getCategories } from '../../features/category/categorySlice';
+import { getUserCart } from '../../features/cart/cartSlice';
 
 
 type CategoriesType = {
@@ -31,6 +32,7 @@ const Navbar: React.FC = () => {
   const isAuthenticated = useAppSelector(({ users }) => users.isAuthenticated)
   const categories = useAppSelector(({ category }) => category.catagories)
   const categoryLoading = useAppSelector(({ category }) => category.loading)
+  const cartItems = useAppSelector(({ cart }) => cart.cart?.items)
   const user = useAppSelector(({ users }) => users.userData)
   const loading = useAppSelector(({ users }) => users.loading)
   const navigate = useNavigate()
@@ -39,6 +41,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     if (!categories?.length) dispatch(getCategories())
+    if (!cartItems?.length) dispatch(getUserCart())
   }, [dispatch])
 
 
@@ -81,7 +84,7 @@ const Navbar: React.FC = () => {
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
         <div className='gap-10 flex items-center justify-center w-[50%] lg:w-[60%] relative'>
           <Link to="/" className='flex items-center  '>
-            <img src="./byteBazaar.png" alt="logo"
+            <img src="/byteBazaar.png" alt="logo"
               className='w-24 h-24 cursor-pointer' />
           </Link>
           <Command className="rounded-lg border shadow-md w-full">
@@ -183,11 +186,13 @@ const Navbar: React.FC = () => {
               onClick={() => navigate("/checkout/cart")}
               variant='link'
               className='cursor-pointer'>
-              <img src="./shopping-cart.png" alt="cart"
+              <img src="/shopping-cart.png" alt="cart"
                 className="w-6 h-6 " />
             </Button>
             <span className="absolute top-0 right-0 bg-red-500 text-white
-             rounded-full w-5 h-5 flex items-center justify-center text-xs">1</span>
+             rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {cartItems?.length ?? 0}
+            </span>
           </li>
 
         </ul>
@@ -201,7 +206,6 @@ const Navbar: React.FC = () => {
               key={idx}
               className="cursor-pointer"
               onClick={() => navigate(`/products?category=${category.slug}`)}
-
             >
               {category.name}
             </Button>

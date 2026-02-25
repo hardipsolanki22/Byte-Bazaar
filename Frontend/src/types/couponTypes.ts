@@ -69,3 +69,8 @@ export interface DeleteCouponRes {
     status: number;
     success: boolean;
 }
+export interface ApplyCouponres {
+    message: string;
+    statusCode: number;
+    success: boolean;
+}

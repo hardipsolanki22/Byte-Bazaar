@@ -7,7 +7,7 @@ import type { HeroBanerFormData } from '../../types/heroBannerTypes'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom'
-import { addHeroBanner, updateHeroBanner } from '../../features/admin/heroBanner/heroBannerSlice'
+import { addHeroBanner, updateHeroBanner } from '../../features/heroBanner/heroBannerSlice'
 import { Spinner } from '../ui/spinner'
 
 interface HeroBanerProps {

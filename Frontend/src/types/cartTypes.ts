@@ -3,6 +3,7 @@ interface Product {
     name: string;
     price: number;
     mainImage: string;
+    stock: number;
     slug: string;
     productRating: {
         averageRating: number;

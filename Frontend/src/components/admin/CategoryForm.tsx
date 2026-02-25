@@ -6,7 +6,7 @@ import type { CategoryFormData } from '../../types/categoryTypes'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Spinner } from '../ui/spinner'
 import { useNavigate } from 'react-router-dom'
-import { addCategory, updateCategory } from '../../features/admin/category/categorySlice'
+import { addCategory, updateCategory } from '../../features/category/categorySlice'
 import { toast } from 'sonner'
 
 type Category = {

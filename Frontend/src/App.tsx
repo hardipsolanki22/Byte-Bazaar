@@ -36,6 +36,8 @@ import AddHeroBanner from './pages/admin/heroBanner/AddHeroBanner'
 import HeroBanner from './pages/admin/heroBanner/HeroBanner'
 import UpdateHeroBanner from './pages/admin/heroBanner/UpdateHeroBanner'
 import ProductsByCategory from './pages/ProductsByCategory'
+import OrderFailed from './pages/OrderFailed'
+import OrderSuccess from './pages/OrderSuccess'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -76,9 +78,7 @@ const App = () => {
           } path='/forgot-password/:forgotPasswordToken'
           />
           <Route element={
-            // <AuthLayout authentication>
             <Account />
-            // </AuthLayout>
           } path='/account' />
           <Route element={
             <ProductsByCategory />
@@ -87,25 +87,22 @@ const App = () => {
             <Product />
           } path='/products/:slug' />
           <Route element={
-            <AuthLayout authentication>
-              <Cart />
-            </AuthLayout>
+            <Cart />
           } path='/checkout/cart' />
-
           <Route element={
-            <AuthLayout authentication>
-              <Address />
-            </AuthLayout>
+            <Address />
           } path='/checkout/address' />
           <Route element={
-            <AuthLayout authentication>
-              <Payment />
-            </AuthLayout>
+            <Payment />
           } path='/checkout/payment' />
           <Route element={
-            <AuthLayout authentication>
-              <Order />
-            </AuthLayout>
+            <OrderFailed />
+          } path='/order-failed' />
+          <Route element={
+            <OrderSuccess />
+          } path='/order-success' />
+          <Route element={
+            <Order />
           } path='/my-orders' />
 
           <Route element={

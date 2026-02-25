@@ -214,7 +214,6 @@ const applyCoupon = asyncHandler(async (req, res) => {
     if (!couponCode) {
         throw new APIError(400, "Coupon code is required")
     }
-
     const coupon = await Coupon.findOne({
         couponCode,
         isActive: true,
@@ -228,8 +227,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
     }
 
     const cart = await getCart(req.user._id)
-
-    if (cart.couponCode) {
+    if (cart?.coupon?.couponCode) {
         throw new APIError(409, "You have already used this coupon")
     }
 

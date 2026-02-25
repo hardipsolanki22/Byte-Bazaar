@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LucideChevronsLeftRightEllipsis, Circle, CircleDot } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getHeroBanners } from "../../features/admin/heroBanner/heroBannerSlice";
+import { getHeroBanners } from "../../features/heroBanner/heroBannerSlice";
 
 const Hero: React.FC = () => {
 

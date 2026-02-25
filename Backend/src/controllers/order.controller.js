@@ -43,16 +43,16 @@ const updateProductQuantityAndClearCartHalper = async (req) => {
             items: [],
             coupon: null
         })
-
-        await sendEmail({
-            email: req.user.email,
-            subject: "Order Confirmed",
-            mailGenContent: orderConfirmationMailgenContent(
-                req.user.fullName,
-                userCart.items,
-                userCart.discountedTotal
-            )
-        })
+        
+        // await sendEmail({
+        //     email: req.user.email,
+        //     subject: "Order Confirmed",
+        //     mailGenContent: orderConfirmationMailgenContent(
+        //         req.user.fullName,
+        //         userCart.items,
+        //         userCart.discountedTotal
+        //     )
+        // })
     } catch (error) {
         throw new APIError(500, error.message || "Internal server error")
     }
@@ -123,10 +123,10 @@ const createOrder = asyncHandler(async (req, res) => {
             }
         })
         const discounts = []
-        if (cart.coupon && cart.discountPercentage) {
+        if (cart?.coupon?.couponCode && cart?.coupon?.discountPercentage) {
             const stripeCoupon = await stripe.coupons.create({
                 currency: "inr",
-                name: cart.couponCode,
+                name: cart.coupon.couponCode,
                 amount_off: cart.discountValue * 100,
                 // percent_off: cart.discountPercentage,
                 duration: "once"
@@ -149,7 +149,7 @@ const createOrder = asyncHandler(async (req, res) => {
         return res
             .status(201)
             .json(
-                new APIResponse(201, session, "Stripe Payment Initilized Successfully")
+                new APIResponse(201, { url: session.url }, "Stripe Payment Initilized Successfully")
             )
     }
 
@@ -176,12 +176,19 @@ const verifyStripePayment = asyncHandler(async (req, res) => {
 
         await updateProductQuantityAndClearCartHalper(req)
 
+        return res.
+            redirect(`${process.env.CLIENT_URL}/order-success`)
+
+        // for ony backend testing purpose
         return res
             .status(201)
             .json(
                 new APIResponse(201, order, "Order Create Successfully")
             )
     } else {
+        return res.
+            redirect(`${process.env.CLIENT_URL}/order-failed`)
+
         return res
             .status(200)
             .json(

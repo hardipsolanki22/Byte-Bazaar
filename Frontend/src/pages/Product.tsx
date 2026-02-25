@@ -5,9 +5,11 @@ import { Button } from '../components/lightswind/button';
 import RelatedProduct from '../components/products/Product';
 import { Badge } from '../components/lightswind/badge';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getProduct, getProductsByCategory } from '../features/admin/product/productSlice';
+import { getProduct, getProductsByCategory } from '../features/product/productSlice';
 import { getRating } from '../features/rating/ratingSlice';
 import { calRatingPercentage } from '../helpers/calRatingPercentage';
+import { addItemOrUpdateItemQuantity, getUserCart } from '../features/cart/cartSlice';
+import { toast } from 'sonner';
 
 const Product: React.FC = () => {
 
@@ -19,21 +21,32 @@ const Product: React.FC = () => {
   const productRating = useAppSelector(({ rating }) => rating.rating)
   const loading = useAppSelector(({ product }) => product.loading)
   const ratingLoading = useAppSelector(({ rating }) => rating.loading)
+  const cartLoading = useAppSelector(({ cart }) => cart.loading)
+  const cartItem = useAppSelector(({ cart }) => cart.cart?.items)
+  const categories = useAppSelector(({ category }) => category.catagories)
+  const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+
+  const category = categories?.find(cat => cat._id === product?.category)
+  const filtredProducts = products?.filter(product => product.slug !== slug)
+
 
   useEffect(() => {
     Promise.all([
       dispatch(getProduct(slug)),
-      dispatch(getRating(slug)),
-      product?.category && dispatch(getProductsByCategory(product?.category))
-
+      dispatch(getRating(slug))
     ])
   }, [dispatch, slug])
 
-  const [productMainImageUrl, setProductMainImageUrl] = useState<string>(product?.mainImage || "")
-  const filtredProducts = products?.filter(product => product.slug !== slug)
-  if ((!!!product) && loading === "pending" || loading === "idle"
+  useEffect(() => {
+    if (category)
+      dispatch(getProductsByCategory(category?.slug))
+  }, [category])
+
+  if (
+    (!!!product) && loading === "pending" || loading === "idle"
     || ratingLoading === 'pending' || ratingLoading == 'idle'
   ) {
     return (
@@ -50,6 +63,43 @@ const Product: React.FC = () => {
         </h2>
       </div>
     )
+  }
+
+
+
+  const handleAddToCartItem = (productSlug: string) => {
+
+    const productInCart = cartItem?.find((item) => item.product.slug === slug)
+    dispatch(addItemOrUpdateItemQuantity({
+      productSlug, quantity: productInCart?.quantity && productInCart?.quantity + 1 || 1
+    }))
+      .unwrap()
+      .then((data) => {
+        dispatch(getUserCart())
+          .unwrap()
+          .then(() => {
+            toast.success(data.message)
+          })
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      })
+  }
+
+  const handleBuytItem = (productSlug: string) => {
+    dispatch(addItemOrUpdateItemQuantity({ productSlug, quantity: 1 }))
+      .unwrap()
+      .then((data) => {
+        dispatch(getUserCart())
+          .unwrap()
+          .then(() => {
+            toast.success(data.message)
+            navigate("/checkout/cart")
+          })
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      })
   }
 
   return (
@@ -86,7 +136,7 @@ const Product: React.FC = () => {
             <div className='flex flex-col justify-center p-4 rounded-md sm:border border-slate-200'>
               <h2 className='text-3xl text-slate-700 font-bold mb-2 '>{product.name}</h2>
               <p className='text-slate-600 mb-2'>{product.description}</p>
-              <p className='text-xl font-semibold mb-2 text-slate-700'>${product.price}</p>
+              <p className='text-xl font-semibold mb-2 text-slate-700'>₹{product.price}</p>
               <div className='flex items-center mb-2'>
                 {product.stock > 5 ? <Badge variant={'success'}>In Stock {product.stock}</Badge>
                   : <Badge variant={'destructive'}>Low Stock {product.stock}</Badge>}
@@ -101,10 +151,18 @@ const Product: React.FC = () => {
             </div>
             <div className='flex gap-4 justify-evenly my-4 items-center sm:rounded-md  
             border-y border-slate-300 sm:border  sm:border-slate-200 p-4 sm:p-2'>
-              <Button variant='secondary' className='w-72 cursor-pointer'>
+              <Button
+                onClick={() => handleAddToCartItem(product.slug)}
+                variant='secondary'
+                className='w-72 cursor-pointer'
+                disabled={cartLoading === "pending"}
+              >
                 Add To Cart
               </Button>
-              <Button className='w-72 cursor-pointer'>
+              <Button
+                disabled={cartLoading === "pending"}
+                onClick={() => handleBuytItem(product.slug)}
+                className='w-72 cursor-pointer'>
                 Buy Now
               </Button>
 
@@ -233,19 +291,20 @@ const Product: React.FC = () => {
           )}
         </div>
       </div>
-      {products?.length && <div>
-        <h2 className='text-2xl font-semibold text-slate-700 mb-4 mx-4'>You may also like</h2>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4 mb-8'>
-          {filtredProducts?.map((prod, idx) => (
-            <Link key={idx} to={`/products/${prod.slug}`}>
-              <RelatedProduct {...prod} />
-            </Link>
-          ))}
+      {
+        !!products?.length && <div>
+          <h2 className='text-2xl font-semibold text-slate-700 mb-4 mx-4'>You may also like</h2>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4 mb-8'>
+            {filtredProducts?.map((prod, idx) => (
+              <Link key={idx} to={`/products/${prod.slug}`}>
+                <RelatedProduct {...prod} />
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
 
       }
-    </div>
+    </div >
   )
 }
 

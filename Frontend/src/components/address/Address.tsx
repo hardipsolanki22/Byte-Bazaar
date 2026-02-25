@@ -4,7 +4,7 @@ import { Input } from '../lightswind/input'
 import { Label } from '../lightswind/label'
 import { Checkbox } from '../lightswind/checkbox'
 import type { AddAddressReq, Address as AddressType } from '../../types/addressTypes'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useNavigate } from 'react-router-dom'
 import { addAddress, updateAddress } from '../../features/address/addressSlice'
@@ -21,6 +21,7 @@ const Address = ({ address }: AddressProps) => {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
     } = useForm<AddAddressReq>({
         defaultValues: {
@@ -122,7 +123,7 @@ const Address = ({ address }: AddressProps) => {
                         <Label htmlFor="pincode">Pincode</Label>
                         <Input
                             id="pincode"
-                            type="text"
+                            type="number"
                             placeholder="Pincode"
                             className="focus:outline-none mt-2"
                             {...register("pincode", { required: "Pincode is required" })}
@@ -132,15 +133,19 @@ const Address = ({ address }: AddressProps) => {
 
                     </div>
                     <div className="flex items-center space-x-2 my-2">
-                        <Checkbox
-                            {...register("isPrimary")}
-                            id={"primary-check"} />
-                        <Label
-                            htmlFor="primary-check"
-                        >Set as Primary
-                        </Label>
-                        {/* {errors.isPrimary && <span className="text-red-500 m-2">{errors.isPrimary.message}</span>} */}
-
+                        <Controller
+                            control={control}
+                            name="isPrimary"
+                            defaultValue={false}
+                            render={({ field }) => (
+                                <Checkbox
+                                    id="primary-check"
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            )}
+                        />
+                        <Label htmlFor="primary-check">Set as Primary</Label>
                     </div>
                 </div>
                 <Button className="cursor-pointer">

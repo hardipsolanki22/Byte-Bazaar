@@ -1,14 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authSlice from "../features/auth/authSlice"
 import addressReducer from "../features/address/addressSlice"
-import categorySlice from "../features/admin/category/categorySlice"
-import productSlice from '../features/admin/product/productSlice'
+import categorySlice from "../features/category/categorySlice"
+import productSlice from '../features/product/productSlice'
 import ratingSlice from '../features/rating/ratingSlice'
-import userSlice from '../features/admin/user/userSlice'
-import couponSlice from '../features/admin/coupon/couponSlice'
-import orderSlice from '../features/admin/order/orderSlice'
-import bannerSlice from '../features/admin/heroBanner/heroBannerSlice'
+import userSlice from '../features/user/userSlice'
+import couponSlice from '../features/coupon/couponSlice'
+import orderSlice from '../features/order/orderSlice'
+import bannerSlice from '../features/heroBanner/heroBannerSlice'
 import cartSlice from '../features/cart/cartSlice'
+import checkoutSlice from '../features/checkout/checkoutSlice'
 
 export const store = configureStore({
   reducer: {
@@ -21,7 +22,8 @@ export const store = configureStore({
     coupon: couponSlice,
     order: orderSlice,
     banner: bannerSlice,
-    cart: cartSlice
+    cart: cartSlice,
+    checkout: checkoutSlice
   },
 })
 

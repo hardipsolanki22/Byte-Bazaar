@@ -11,3 +11,17 @@ export const userRole = {
     USER: "USER",
     ADMIN: "ADMIN"
 }
+
+
+export const availablePaymentMethods = [
+    {
+        id: "COD",
+        method: "Cash on Delivery",
+        description: "Pay with cash upon delivery.",
+    },
+    {
+        id: "STRIPE",
+        method: "Pay Online - Credit/Debit Card",
+        description: "Pay securely using Stripe.",
+    }
+]

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { deleteReq, getReq, patchReq, postReq } from '../../../config/configAxios';
+import { deleteReq, getReq, patchReq, postReq } from '../../config/configAxios';
 import type {
     AddCtgReq,
     AddCtgRes,
@@ -9,7 +9,7 @@ import type {
     UpdateCtg,
     UpdateCtgReq,
     UpdateCtgRes
-} from '../../../types/categoryTypes';
+} from '../../types/categoryTypes';
 
 
 // Define a type for the slice state

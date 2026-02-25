@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import CategoryForm from "../../../components/admin/CategoryForm"
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { getCategories } from "../../../features/admin/category/categorySlice";
+import { getCategories } from "../../../features/category/categorySlice";
 
 const UpdateCategory = () => {
     // dispath that perticular category if admin refresh the page and give to form

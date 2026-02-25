@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../components/lig
 import UpdatePaymentAndOrderStatus from '../../../components/admin/UpdatePaymentAndOrderStatus'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { useParams } from 'react-router-dom'
-import { getSingleOrder } from '../../../features/admin/order/orderSlice'
+import { getSingleOrder } from '../../../features/order/orderSlice'
 
 const SingleOrder: React.FC = () => {
     const data = [

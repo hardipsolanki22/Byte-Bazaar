@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getCoupons } from '../../../features/admin/coupon/couponSlice';
+import { getCoupons } from '../../../features/coupon/couponSlice';
 import CategoryForm from '../../../components/admin/CategoryForm';
 import CouponForm from '../../../components/admin/CouponForm';
 
