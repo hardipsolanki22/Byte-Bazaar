@@ -135,7 +135,10 @@ const Product: React.FC = () => {
         <div className='lg:col-span-6 lg:max-h-screen lg:overflow-y-auto'>
           <div className='flex flex-col-reverse lg:flex-col mb-4 border-b border-slate-300 sm:border-none'>
             <div className='flex flex-col justify-center p-4 rounded-md sm:border border-slate-200'>
-              <h2 className='text-3xl text-slate-700 font-bold mb-2 '>{product.name}</h2>
+              {/* <h2 className='text-3xl text-slate-700 font-bold mb-2 '>{product.name}</h2> */}
+              <h2 className='text-xl sm:text-2xl md:text-3xl text-slate-700 font-bold mb-2 break-words'>
+                {product.name}
+              </h2>
               <p className='text-slate-600 mb-2'>{product.description}</p>
               <p className='text-xl font-semibold mb-2 text-slate-700'>₹{product.price}</p>
               <div className='flex items-center mb-2'>

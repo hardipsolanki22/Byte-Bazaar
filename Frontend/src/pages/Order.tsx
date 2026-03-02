@@ -65,7 +65,13 @@ const Order: React.FC = () => {
                     <img src={product.mainImage} alt={product.name}
                       className='w-24 h-24 object-cover rounded-md' />
                     <div className='mt-3'>
-                      <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span>
+                      <span className='sm:hidden inline-block'>
+                        {product.name.length > 20
+                          ? `${product.name.slice(0, 20)}...`
+                          : product.name
+                        }
+                      </span>
+                      {/* <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span> */}
                       <span className='hidden sm:inline-block'>{product.name}</span>
                     </div>
                   </div>

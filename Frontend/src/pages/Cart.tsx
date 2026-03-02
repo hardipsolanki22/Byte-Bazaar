@@ -9,7 +9,7 @@ import { getUserCart, removeItemFromCart } from '../features/cart/cartSlice'
 import { toast } from 'sonner'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { applyCoupon } from '../features/coupon/couponSlice'
-import EmptyCart from '../assets/Emptycart'
+import EmptyCart from '../assets/EmptyCart'
 
 type Input = {
     couponCode: string;
