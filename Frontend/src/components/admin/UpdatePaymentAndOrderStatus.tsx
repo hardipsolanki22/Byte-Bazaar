@@ -20,21 +20,19 @@ const UpdatePaymentAndOrderStatus = ({ orderId, ispaymentdone, status }: UpdateP
     const loading = useAppSelector(({ order }) => order.loading)
     const dispatch = useAppDispatch()
     const [updateData, setUpdateData] = useState<FilterOrders>({
-        ispaymentdone: ispaymentdone ? "Paid" : "Unpaid",
+        ispaymentdone: ispaymentdone,
         status: status
     })
     const handleOrderUpdate = () => {
-
         dispatch(updateOrderStatusAndIsPaymentDone({
             orderId,
-            data: { ...updateData, isPaymentDone: ispaymentdone === "Paid" ? true : false }
+            data: { ...updateData, isPaymentDone: updateData.ispaymentdone === "Paid" ? true : false }
         }))
             .unwrap()
             .then((res) => {
                 toast.success(res.message)
             })
     }
-    console.log(updateData)
 
     return (
         <div className='flex flex-col  p-4 

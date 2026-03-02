@@ -11,7 +11,7 @@ export interface Order {
         fullName: string;
         avatar: string;
     };
-    paymentType: "COD" | "ONLINE";
+    paymentType: "COD" | "STRIPE";
     status: string;
     isPaymentDone: boolean;
     createdAt: string;
@@ -31,7 +31,7 @@ export interface SingleOrder {
         }
     ],
     isPaymentDone: boolean;
-    paymentType: "COD" | "ONLINE";
+    paymentType: "COD" | "STRIPE";
     address: {
         _id: string;
         addressLine: string;
@@ -98,6 +98,68 @@ export interface CreateOrderRes {
     data: {
         url?: string
     }
+    statusCode: number;
+    message: string;
+    success: boolean
+}
+export interface UserOrder {
+    _id: string;
+    status: "PENDING" | "DELIVERED" | "CANCELLED";
+    totalItems: number;
+    products: [
+        {
+            _id: string;
+            name: string;
+            mainImage: string;
+        }
+    ]
+}
+export interface UserSingleOrder {
+    _id: string;
+    order: [
+        {
+            product: {
+                _id: string;
+                name: string;
+                mainImage: string;
+                price: number;
+            },
+            quantity: number;
+        }
+    ],
+    isPaymentDone: boolean;
+    paymentType: "COD" | "STRIPE";
+    status: "PENDING" | "DELIVERED" | "CANCELLED";
+    orderPrice: number;
+    cartTotal: number;
+    address: {
+        _id: string;
+        addressLine: string;
+        country: string;
+        state: string;
+        city: string;
+        pincode: string;
+        isPrimary: boolean;
+    },
+    coupon: {
+        _id: string;
+        couponCode: string;
+        discountPercentage: number;
+    },
+    discountValue: number
+}
+
+export interface GetUserOrdersRes {
+    statusCode: number;
+    message: string;
+    success: boolean;
+    data: {
+        orders: UserOrder[]
+    }
+
+}
+export interface GetUserSingleOrderRes {
+    data: UserSingleOrder
     statusCode: number;
     message: string;
     success: boolean

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" fill="none">
+  <!-- Background -->
+  <circle cx="200" cy="155" r="125" fill="#FFF1F2" opacity="0.7"/>
+
+  <!-- Map pin body -->
+  <path d="M200 60 C170 60 148 82 148 112 C148 150 200 210 200 210 C200 210 252 150 252 112 C252 82 230 60 200 60 Z" fill="#FECDD3" stroke="#FB7185" stroke-width="2.5"/>
+
+  <!-- Pin inner circle -->
+  <circle cx="200" cy="112" r="24" fill="white" stroke="#FDA4AF" stroke-width="2"/>
+
+  <!-- Sad face inside pin -->
+  <circle cx="193" cy="108" r="2.5" fill="#FB7185"/>
+  <circle cx="207" cy="108" r="2.5" fill="#FB7185"/>
+  <path d="M193 120 Q200 115 207 120" stroke="#FB7185" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Shadow under pin -->
+  <ellipse cx="200" cy="218" rx="30" ry="8" fill="#FDA4AF" opacity="0.3"/>
+
+  <!-- Dashed circle - location not found -->
+  <circle cx="200" cy="112" r="55" stroke="#FDA4AF" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.5"/>
+
+  <!-- X marks around -->
+  <g opacity="0.6">
+    <line x1="118" y1="75" x2="126" y2="83" stroke="#FB7185" stroke-width="2" stroke-linecap="round"/>
+    <line x1="126" y1="75" x2="118" y2="83" stroke="#FB7185" stroke-width="2" stroke-linecap="round"/>
+
+    <line x1="274" y1="75" x2="282" y2="83" stroke="#FB7185" stroke-width="2" stroke-linecap="round"/>
+    <line x1="282" y1="75" x2="274" y2="83" stroke="#FB7185" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Floating dots -->
+  <circle cx="88" cy="145" r="5" fill="#FB7185" opacity="0.3"/>
+  <circle cx="312" cy="145" r="5" fill="#FB7185" opacity="0.3"/>
+  <circle cx="100" cy="190" r="4" fill="#FECDD3" opacity="0.7"/>
+  <circle cx="300" cy="190" r="4" fill="#FECDD3" opacity="0.7"/>
+
+  <!-- Sparkles -->
+  <path d="M320 80 L322 86 L328 88 L322 90 L320 96 L318 90 L312 88 L318 86 Z" fill="#FDA4AF"/>
+  <path d="M75 100 L77 104 L81 106 L77 108 L75 112 L73 108 L69 106 L73 104 Z" fill="#FB7185" opacity="0.5"/>
+
+  <!-- Small road lines at bottom -->
+  <line x1="155" y1="270" x2="245" y2="270" stroke="#FECDD3" stroke-width="3" stroke-linecap="round"/>
+  <line x1="170" y1="282" x2="230" y2="282" stroke="#FECDD3" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+</svg>

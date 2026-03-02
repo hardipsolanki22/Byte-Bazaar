@@ -1,16 +1,20 @@
 const aggregatePaginateOption = ({
     page,
     limit,
-    customLabels
+    customLabels,
+    paginate = true
 }) => {
     return {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
-        pagination: true,
+        ...(paginate && {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+        }
+        ),
+        pagination: paginate,
         customLabels: {
             ...customLabels
         }
     }
 }
 
-export {aggregatePaginateOption}
+export { aggregatePaginateOption }

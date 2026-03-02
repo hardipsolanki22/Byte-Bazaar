@@ -47,7 +47,7 @@ const sendEmail = async (options) => {
 }
 
 // verification mail conent
-const emailVerificationMailGenContent = (fullName, emailVerificationUrl                                                                                                      ) => {
+const emailVerificationMailGenContent = (fullName, emailVerificationUrl) => {
     const content = {
         body: {
             name: fullName,
@@ -87,37 +87,37 @@ const forgotPasswordMailContent = (fullName, resetPasswordUrl) => {
 const orderConfirmationMailgenContent = (fullName, items, totalCost) => {
     return {
         body: {
-          name: fullName,
-          intro: "Your order has been processed successfully.",
-          table: {
-            data: items?.map((item) => {
-              return {
-                item: item.product.name,
-                price: "INR " + item.product.price + "/-",
-                quantity: item.quantity,
-              };
-            }),
-            columns: {
-              // Optionally, customize the column widths
-              customWidth: {
-                item: "30%",
-                price: "15%",
-                quantity: "15%",
-              },
-              // Optionally, change column text alignment
-              customAlignment: {
-                price: "right",
-                quantity: "right",
-              },
+            name: fullName,
+            intro: "Your order has been processed successfully.",
+            table: {
+                data: items?.map((item) => {
+                    return {
+                        item: item.product.name,
+                        price: "INR " + item.product.price + "/-",
+                        quantity: item.quantity,
+                    };
+                }),
+                columns: {
+                    // Optionally, customize the column widths
+                    customWidth: {
+                        item: "30%",
+                        price: "15%",
+                        quantity: "15%",
+                    },
+                    // Optionally, change column text alignment
+                    customAlignment: {
+                        price: "right",
+                        quantity: "right",
+                    },
+                },
             },
-          },
-          outro: [
-            `Total order cost: INR ${totalCost}/-`,
-            "You can check the status of your order and more in your order history",
-            "We thank you for your purchase."
-          ],
+            outro: [
+                `Total order cost: INR ${totalCost}/-`,
+                "You can check the status of your order and more in your order history",
+                "We thank you for your purchase."
+            ],
         },
-      };
+    };
 };
 
 const orderStatusUpdateMailgenContent = (fullName, orderId, orderStatus) => {

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" fill="none">
+  <!-- Background -->
+  <circle cx="200" cy="155" r="125" fill="#F0FDF4" opacity="0.7"/>
+
+  <!-- Receipt/document body -->
+  <rect x="130" y="80" width="140" height="180" rx="10" fill="white" stroke="#86EFAC" stroke-width="2.5"/>
+
+  <!-- Receipt torn bottom -->
+  <path d="M130 240 Q145 255 160 240 Q175 225 190 240 Q205 255 220 240 Q235 225 250 240 Q265 255 270 240 L270 260 Q255 260 240 260 Q225 260 210 260 Q195 260 180 260 Q165 260 150 260 Q135 260 130 260 Z" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+
+  <!-- Lines on receipt -->
+  <line x1="150" y1="115" x2="250" y2="115" stroke="#BBF7D0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="150" y1="135" x2="230" y2="135" stroke="#BBF7D0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="150" y1="155" x2="240" y2="155" stroke="#BBF7D0" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Sad face -->
+  <circle cx="200" cy="200" r="26" fill="#DCFCE7" stroke="#86EFAC" stroke-width="2"/>
+  <circle cx="191" cy="195" r="3" fill="#22C55E"/>
+  <circle cx="209" cy="195" r="3" fill="#22C55E"/>
+  <path d="M191 210 Q200 204 209 210" stroke="#22C55E" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Magnifier - searching -->
+  <circle cx="310" cy="95" r="22" fill="white" stroke="#86EFAC" stroke-width="2.5"/>
+  <circle cx="310" cy="95" r="13" fill="#DCFCE7" stroke="#86EFAC" stroke-width="2"/>
+  <line x1="319" y1="104" x2="330" y2="115" stroke="#22C55E" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Question mark inside magnifier -->
+  <text x="305" y="101" font-family="Arial" font-size="14" font-weight="bold" fill="#22C55E">?</text>
+
+  <!-- Floating elements -->
+  <circle cx="90" cy="110" r="5" fill="#86EFAC" opacity="0.5"/>
+  <circle cx="320" cy="210" r="4" fill="#BBF7D0" opacity="0.8"/>
+  <circle cx="82" cy="210" r="6" fill="#86EFAC" opacity="0.3"/>
+
+  <!-- Sparkles -->
+  <path d="M75 155 L77 160 L82 162 L77 164 L75 169 L73 164 L68 162 L73 160 Z" fill="#86EFAC"/>
+  <path d="M330 155 L332 159 L336 161 L332 163 L330 167 L328 163 L324 161 L328 159 Z" fill="#BBF7D0"/>
+</svg>

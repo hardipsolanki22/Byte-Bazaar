@@ -6,17 +6,23 @@ import type {
     FilterOrders,
     GetOrdersRes,
     GetSingleOrderRes,
+    GetUserOrdersRes,
+    GetUserSingleOrderRes,
     Order,
     SingleOrder,
     UpdateOrderStatusAndIsPaymentDone,
     UpdateOrderStatusAndIsPaymentDoneReq,
-    UpdateOrderStatusAndIsPaymentDoneRes
+    UpdateOrderStatusAndIsPaymentDoneRes,
+    UserOrder,
+    UserSingleOrder
 } from '../../types/orderTypes';
 
 // Define a type for the slice state
 interface OrderState {
     orders: Order[] | null;
-    singleOrder?: SingleOrder | null;
+    singleOrder: SingleOrder | null;
+    userOrders: UserOrder[] | null
+    userSingleOrder: UserSingleOrder | null
     loading: 'idle' | 'pending' | 'succeeded' | 'failed',
 }
 
@@ -48,6 +54,39 @@ export const getSingleOrder = createAsyncThunk(
             return response.data
         } catch (error: any) {
             console.log('Error while fetch single order: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+export const getUserOrders = createAsyncThunk(
+    'order/users/get',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await getReq<GetUserOrdersRes>("/api/v1/order/user-orders")
+
+            return response.data
+        } catch (error: any) {
+            console.log('Error while get user orders: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+export const getUserSingleOrder = createAsyncThunk(
+    'order/user/getSingle',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await getReq<GetUserSingleOrderRes>(`/api/v1/order/user-orders/${orderId}`)
+            return response.data
+        } catch (error: any) {
+            console.log('Error while fetch user single order: ', error)
             return rejectWithValue({
                 message: error.data.message,
                 status: error.status,
@@ -101,6 +140,9 @@ export const createOrder = createAsyncThunk(
 // Define the initial state using that type
 const initialState: OrderState = {
     orders: [],
+    singleOrder: null,
+    userOrders: [],
+    userSingleOrder: null,
     loading: 'idle'
 }
 
@@ -110,6 +152,9 @@ export const orderSlice = createSlice({
     reducers: {
         clearSingleOrder: (state) => {
             state.singleOrder = null
+        },
+        clearUserSingleOrder: (state) => {
+            state.userSingleOrder = null
         }
     },
     extraReducers: (builder) => {
@@ -169,8 +214,31 @@ export const orderSlice = createSlice({
             .addCase(createOrder.rejected, (state) => {
                 state.loading = 'failed'
             })
+
+            // get user orders
+            .addCase(getUserOrders.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(getUserOrders.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                state.userOrders = payload.data.orders
+            })
+            .addCase(getUserOrders.rejected, (state) => {
+                state.loading = 'failed'
+            })
+            // get single order
+            .addCase(getUserSingleOrder.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(getUserSingleOrder.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                state.userSingleOrder = payload.data
+            })
+            .addCase(getUserSingleOrder.rejected, (state) => {
+                state.loading = 'failed'
+            })
     }
 
 })
-export const { clearSingleOrder } = orderSlice.actions
+export const { clearSingleOrder, clearUserSingleOrder } = orderSlice.actions
 export default orderSlice.reducer

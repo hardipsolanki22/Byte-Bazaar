@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" fill="none">
+  <!-- Background circle -->
+  <circle cx="200" cy="155" r="125" fill="#FFF7ED" opacity="0.7"/>
+
+  <!-- Package box body -->
+  <rect x="125" y="130" width="150" height="120" rx="10" fill="#FED7AA" stroke="#FB923C" stroke-width="2.5"/>
+
+  <!-- Package box top flap left -->
+  <path d="M125 130 L125 105 L200 105" stroke="#FB923C" stroke-width="2.5" fill="#FFEDD5" stroke-linejoin="round"/>
+  <!-- Package box top flap right -->
+  <path d="M275 130 L275 105 L200 105" stroke="#FB923C" stroke-width="2.5" fill="#FED7AA" stroke-linejoin="round"/>
+
+  <!-- Tape strip on box -->
+  <rect x="185" y="105" width="30" height="50" rx="3" fill="#FCA06A" opacity="0.5"/>
+
+  <!-- Sad face on box -->
+  <circle cx="200" cy="180" r="28" fill="white" stroke="#FDBA74" stroke-width="2"/>
+  <circle cx="191" cy="174" r="3" fill="#FB923C"/>
+  <circle cx="209" cy="174" r="3" fill="#FB923C"/>
+  <path d="M191 189 Q200 183 209 189" stroke="#FB923C" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- X mark - no orders -->
+  <circle cx="290" cy="100" r="18" fill="#FEE2E2" stroke="#FCA5A5" stroke-width="2"/>
+  <line x1="283" y1="93" x2="297" y2="107" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="297" y1="93" x2="283" y2="107" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Floating dots -->
+  <circle cx="95" cy="120" r="5" fill="#FB923C" opacity="0.4"/>
+  <circle cx="310" cy="200" r="4" fill="#FED7AA" opacity="0.8"/>
+  <circle cx="85" cy="200" r="6" fill="#FB923C" opacity="0.3"/>
+
+  <!-- Sparkles -->
+  <path d="M315 70 L317 76 L323 78 L317 80 L315 86 L313 80 L307 78 L313 76 Z" fill="#FDBA74"/>
+  <path d="M78 155 L80 159 L84 161 L80 163 L78 167 L76 163 L72 161 L76 159 Z" fill="#FB923C" opacity="0.5"/>
+
+  <!-- Dashed lines on box -->
+  <line x1="145" y1="165" x2="185" y2="165" stroke="#FDBA74" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="215" y1="165" x2="255" y2="165" stroke="#FDBA74" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="145" y1="215" x2="255" y2="215" stroke="#FDBA74" stroke-width="1.5" stroke-dasharray="4 3"/>
+</svg>

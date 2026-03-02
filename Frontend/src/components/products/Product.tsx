@@ -31,7 +31,7 @@ const Product = ({
                 className='w-full h-48 object-cover mb-4 rounded-md'
             />
             <div className='flex flex-col flex-grow'>
-                <h3 className='text-lg font-semibold text-slate-600'>{name}</h3>
+                <h3 className='line-clamp-2 text-sm font-semibold text-slate-600'>{name}</h3>
                 <p className='text-slate-800 font-bold mt-2'>₹{price}</p>
                 {averageRating && ratingCount &&
                     <div className='flex items-center mt-2'>

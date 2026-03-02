@@ -11,17 +11,28 @@ import { orderConfirmationMailgenContent, orderStatusUpdateMailgenContent, sendE
 import Stripe from "stripe"
 import { aggregatePaginateOption } from "../utils/helpers.js";
 import mongoose, { mongo } from "mongoose";
+import { User } from "../models/user.model.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-const updateProductQuantityAndClearCartHalper = async (req) => {
+const updateProductQuantityAndClearCartHalper = async (req, userId) => {
     // get user cart
     // update product quantity by items inside quantity
     // send mail
     // clear cart
 
     try {
-        const userCart = await getCart(req.user._id)
+        let userCart;
+        if (userId) {
+            const user = await User.findById(new mongoose.Types.ObjectId(userId))
+            if (!user) {
+                throw new APIError(404, "User not found")
+            }
+            req.user = user;
+            userCart = await getCart(req.user._id)
+        } else {
+            userCart = await getCart(req.user._id)
+        }
 
         const bulkStockUpdates = userCart.items.map((item) => {
             return {
@@ -43,16 +54,16 @@ const updateProductQuantityAndClearCartHalper = async (req) => {
             items: [],
             coupon: null
         })
-        
-        // await sendEmail({
-        //     email: req.user.email,
-        //     subject: "Order Confirmed",
-        //     mailGenContent: orderConfirmationMailgenContent(
-        //         req.user.fullName,
-        //         userCart.items,
-        //         userCart.discountedTotal
-        //     )
-        // })
+
+        await sendEmail({
+            email: req.user.email,
+            subject: "Order Confirmed",
+            mailGenContent: orderConfirmationMailgenContent(
+                req.user.fullName,
+                userCart.items,
+                userCart.discountedTotal
+            )
+        })
     } catch (error) {
         throw new APIError(500, error.message || "Internal server error")
     }
@@ -142,7 +153,8 @@ const createOrder = asyncHandler(async (req, res) => {
             success_url: "http://localhost:5000/api/v1/order/stripe-payment-verify?success=true&session={CHECKOUT_SESSION_ID}",
             cancel_url: "http://localhost:5000/api/v1/order/stripe-payment-verify?success=false",
             metadata: {
-                addressId
+                addressId,
+                userId: req.user._id.toString()
             }
         })
 
@@ -158,23 +170,25 @@ const createOrder = asyncHandler(async (req, res) => {
 const verifyStripePayment = asyncHandler(async (req, res) => {
     const { success, session: sessionId } = req.query
 
+    if (!sessionId) {
+        return res.redirect(`${process.env.CLIENT_URL}/order-failed`)
+    }
     if (success === "true") {
-
         const session = await stripe.checkout.sessions.retrieve(sessionId)
-        const cart = await getCart(req.user._id)
+        const cart = await getCart(session.metadata.userId)
 
         const order = await Order.create({
             orderPrice: cart.discountedTotal,
             address: session.metadata.addressId,
             items: cart.items,
             coupon: cart.items[0].coupon,
-            user: req.user._id,
+            user: session.metadata.userId,
             paymentType: "STRIPE",
             paymentId: session.payment_intent,
             isPaymentDone: true
         })
 
-        await updateProductQuantityAndClearCartHalper(req)
+        await updateProductQuantityAndClearCartHalper(req, session.metadata.userId)
 
         return res.
             redirect(`${process.env.CLIENT_URL}/order-success`)
@@ -209,7 +223,7 @@ const updateOrderStatusAndIsPaymentDone = asyncHandler(async (req, res) => {
             }
         },
         { new: true }
-    )
+    ).populate("user")
 
     if (!order) {
         throw new APIError(404, "Order does not exists")
@@ -218,11 +232,11 @@ const updateOrderStatusAndIsPaymentDone = asyncHandler(async (req, res) => {
     await sendEmail({
         email: order.user.email,
         subject: "Order Status Updated",
-        mailGenContent: orderStatusUpdateMailgenContent({
-            fullName: req.user.fullName,
-            orderId: order._id,
-            orderStatus: order.status
-        })
+        mailGenContent: orderStatusUpdateMailgenContent(
+            req.user.fullName,
+            order._id,
+            order.status
+        )
     })
 
     return res
@@ -241,7 +255,7 @@ const updateOrderStatusAndIsPaymentDone = asyncHandler(async (req, res) => {
 })
 
 const getOrdersByAdmin = asyncHandler(async (req, res) => {
-    const { status, ispaymentdone, page = 1, limit = 8 } = req.query
+    const { status, ispaymentdone, page, limit } = req.query
     const matchStage = {}
 
 
@@ -315,7 +329,8 @@ const getOrdersByAdmin = asyncHandler(async (req, res) => {
             customLabels: {
                 totalDocs: "totalOrders",
                 docs: "orders"
-            }
+            },
+            paginate: false
         })
     )
 
@@ -506,6 +521,15 @@ const getUserOrders = asyncHandler(async (req, res) => {
             }
         },
         {
+            $addFields: {
+                totalItems: { $size: "$items" }
+            }
+        },
+        {
+            $unwind: "$items"
+        },
+
+        {
             // lookup to get product details
             $lookup: {
                 from: "products",
@@ -528,18 +552,25 @@ const getUserOrders = asyncHandler(async (req, res) => {
                 "items.product": {
                     $first: "$product"
                 },
-                // calculate total items in the order
-                totalItems: { $size: "$items" }
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                status: { $first: "$status" },
+                totalItems: { $first: "$totalItems" },
+                products: { $push: "$items.product" }
             }
         },
         {
             // project stage to select required fields
             $project: {
-                "products": "$items.product",
                 status: 1,
-                totalItems: 1
+                totalItems: 1,
+                products: 1
             }
         }
+
     ])
 
     // paginate the aggregation result
@@ -549,7 +580,8 @@ const getUserOrders = asyncHandler(async (req, res) => {
         customLabels: {
             totalDocs: "totalOrders",
             docs: "orders"
-        }
+        },
+        paginate: false
     }))
 
     return res

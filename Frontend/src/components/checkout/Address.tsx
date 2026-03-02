@@ -49,7 +49,7 @@ const Address: React.FC = () => {
 
             <div className='grid md:grid-cols-12 gap-4 w-full'>
                 <div className='md:col-span-8 p-4 flex flex-col gap-4'>
-                    {!addresses?.length || addressLoading === "pending" ? (
+                    {!addresses?.length && addressLoading === "succeeded" ? (
                         <div className='p-4 mt-4 bg-white rounded-md w-full flex items-center justify-center '>
                             <CreatedAddress />
                         </div>

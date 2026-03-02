@@ -9,6 +9,7 @@ import { getUserCart, removeItemFromCart } from '../features/cart/cartSlice'
 import { toast } from 'sonner'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { applyCoupon } from '../features/coupon/couponSlice'
+import EmptyCart from '../assets/Emptycart'
 
 type Input = {
     couponCode: string;
@@ -23,7 +24,6 @@ const Cart: React.FC = () => {
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm<Input>()
 
@@ -38,15 +38,7 @@ const Cart: React.FC = () => {
             </div>
         )
     }
-    if (!cart?.items.length) {
-        return (
-            <div className='w-full flex items-center justify-center text-center min-h-screen'>
-                <h2 className='text-2xl text-slate-600 font-semibold'>
-                    Cart is empty
-                </h2>
-            </div>
-        )
-    }
+    if (!cart?.items.length) return (<EmptyCart />)
 
     const handleremoveItemFromCart = (slug: string) => {
         dispatch(removeItemFromCart(slug))
@@ -78,7 +70,6 @@ const Cart: React.FC = () => {
                             position: "top-center"
                         })
                     })
-                reset()
             })
             .catch((error) => {
                 toast.error(error.message, {
@@ -110,8 +101,11 @@ const Cart: React.FC = () => {
                                                 className='rounded-lg w-24 h-24 object-cover mr-4'
                                             />
                                             <div className='flex flex-col m-2'>
-                                                <h2 className='text-lg font-semibold'>
-                                                    {item.product.name}
+                                                <h2 className='font-medium'>
+                                                    {item.product.name.length > 20
+                                                        ? `${item.product.name.slice(0, 20)}...`
+                                                        : item.product.name
+                                                    }
                                                 </h2>
                                                 <p className='text-gray-600'>
                                                     Quantity:
@@ -198,18 +192,17 @@ const Cart: React.FC = () => {
                             <Input
                                 type='text'
                                 placeholder='Apply Coupon'
-                                {...register("couponCode", { required: "Coupon code is required" })}
+                                {...register("couponCode")}
                             />
                             <Button
-                                disabled={couponLoading === "pending"}
                                 type='submit'
+                                disabled={couponLoading === "pending"}
                                 variant='github'
                                 className='cursor-pointer'
                             >
                                 Apply
                             </Button>
                         </div>
-
                         {errors.couponCode && <span className="text-red-500 m-2">{errors.couponCode.message}</span>}
                     </form>
                     <Button

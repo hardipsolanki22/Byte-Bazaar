@@ -6,7 +6,7 @@ import { Label } from '../lightswind/label';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getUserCart } from '../../features/cart/cartSlice';
 import { availablePaymentMethods } from '../../config/constants';
-import { createOrder } from '../../features/order/orderSlice';
+import { createOrder, getUserOrders } from '../../features/order/orderSlice';
 import { toast } from 'sonner';
 import { Spinner } from '../ui/spinner';
 import { clearCheckout } from '../../features/checkout/checkoutSlice';
@@ -41,18 +41,24 @@ const Payment: React.FC = () => {
                 }))
                 .unwrap()
                 .then((res) => {
-                    if (res.data.url) window.location.href = res.data.url
-                    else {
-                        dispatch(getUserCart())
-                            .unwrap()
-                            .then(() => {
-                                dispatch(clearCheckout())
-                                toast.success(res.message, {
-                                    position: "top-center"
-                                })
-                                navigate("/my-orders")
-                            })
+                    dispatch(clearCheckout())
+                    if (res.data.url) {
+                        window.open(res.data.url)
+                        return
                     }
+                    dispatch(getUserCart())
+                        .unwrap()
+                        .then(() => {
+                            toast.success(res.message, {
+                                position: "top-center"
+                            })
+                        }).finally(() => {
+                            dispatch(getUserOrders())
+                                .unwrap()
+                                .then(() => {
+                                    navigate("/my-orders")
+                                })
+                        })
                 })
                 .catch((error) => {
                     toast.error(error.message)
@@ -158,7 +164,7 @@ const Payment: React.FC = () => {
                         disabled={!selectedPayment || orderLoading === "pending"}
                         onClick={handlePlaceOrder}
                         className='w-full mt-6 cursor-pointer'>
-                        {orderLoading === "pending" ?
+                        {orderLoading === "pending" || cartLoading === "pending" ?
                             <Spinner data-icon="inline-start" />
                             : "Place Order"
                         }

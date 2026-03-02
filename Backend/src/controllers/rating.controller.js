@@ -215,7 +215,9 @@ const getAllRating = asyncHandler(async (req, res) => {
             customLabels: {
                 docs: "ratings",
                 totalDocs: "totalRatings",
-            }
+            },
+            paginate: false
+
         })
     )
 

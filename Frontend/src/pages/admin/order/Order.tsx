@@ -74,7 +74,6 @@ const Order: React.FC = () => {
             </div>
             {orders?.length === 0 ? (
                 <div className='w-full flex items-center justify-center text-center h-full'>
-
                     <h2 className='text-2xl text-slate-600 font-semibold'>
                         No Orders Found
                     </h2>

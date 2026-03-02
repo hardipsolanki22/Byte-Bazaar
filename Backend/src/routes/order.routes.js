@@ -23,7 +23,7 @@ router.route("/:addressId")
     .post(verifyJWT, createOrderValidator(), validate, createOrder)
 
 router.route("/stripe-payment-verify")
-    .get(verifyJWT, verifyStripePayment)
+    .get(verifyStripePayment)
 
 router.route("/admin")
     .get(verifyJWT, verifyPermisson(userRole.ADMIN), getOrdersByAdmin)

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" fill="none">
+  <!-- Background -->
+  <circle cx="200" cy="155" r="125" fill="#FEFCE8" opacity="0.7"/>
+
+  <!-- 5 stars - all empty/outline -->
+  <!-- Star 1 -->
+  <path d="M108 150 L113 136 L118 150 L133 150 L121 159 L126 173 L113 164 L100 173 L105 159 L93 150 Z" fill="#FEF9C3" stroke="#FDE047" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Star 2 -->
+  <path d="M148 150 L153 136 L158 150 L173 150 L161 159 L166 173 L153 164 L140 173 L145 159 L133 150 Z" fill="#FEF9C3" stroke="#FDE047" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Star 3 - center, slightly bigger -->
+  <path d="M191 145 L197 128 L203 145 L221 145 L207 156 L213 173 L197 162 L181 173 L187 156 L173 145 Z" fill="#FEF9C3" stroke="#FACC15" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Star 4 -->
+  <path d="M242 150 L247 136 L252 150 L267 150 L255 159 L260 173 L247 164 L234 173 L239 159 L227 150 Z" fill="#FEF9C3" stroke="#FDE047" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Star 5 -->
+  <path d="M282 150 L287 136 L292 150 L307 150 L295 159 L300 173 L287 164 L274 173 L279 159 L267 150 Z" fill="#FEF9C3" stroke="#FDE047" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- Pencil writing - no review yet -->
+  <g transform="translate(165, 195) rotate(-30)">
+    <rect x="0" y="0" width="14" height="55" rx="3" fill="#FDE047" stroke="#FACC15" stroke-width="1.5"/>
+    <path d="M0 50 L7 65 L14 50 Z" fill="#FEF9C3" stroke="#FACC15" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="0" y="0" width="14" height="10" rx="3" fill="#D97706"/>
+    <line x1="0" y1="48" x2="14" y2="48" stroke="#FACC15" stroke-width="1.5"/>
+  </g>
+
+  <!-- Speech bubble - empty -->
+  <rect x="200" y="190" width="75" height="50" rx="10" fill="white" stroke="#FDE047" stroke-width="2"/>
+  <path d="M215 240 L210 255 L225 240 Z" fill="white" stroke="#FDE047" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- Dots inside bubble - no text -->
+  <circle cx="220" cy="215" r="3" fill="#FDE047"/>
+  <circle cx="237" cy="215" r="3" fill="#FDE047"/>
+  <circle cx="254" cy="215" r="3" fill="#FDE047"/>
+
+  <!-- Sad face under stars -->
+  <circle cx="113" cy="220" r="16" fill="#FEF9C3" stroke="#FDE047" stroke-width="1.5"/>
+  <circle cx="108" cy="216" r="2" fill="#FACC15"/>
+  <circle cx="118" cy="216" r="2" fill="#FACC15"/>
+  <path d="M108 226 Q113 221 118 226" stroke="#FACC15" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Floating sparkles -->
+  <path d="M75 120 L77 126 L83 128 L77 130 L75 136 L73 130 L67 128 L73 126 Z" fill="#FDE047" opacity="0.6"/>
+  <path d="M330 110 L332 115 L337 117 L332 119 L330 124 L328 119 L323 117 L328 115 Z" fill="#FACC15" opacity="0.5"/>
+  <circle cx="325" cy="220" r="5" fill="#FEF9C3" stroke="#FDE047" stroke-width="1.5"/>
+  <circle cx="80" cy="200" r="4" fill="#FDE047" opacity="0.4"/>
+</svg>

@@ -72,9 +72,10 @@ const Cart = ({
                                 className='rounded-lg w-24 h-24 object-cover mr-4'
                             />
                             <div className='flex flex-col gap-4'>
-                                <h2 className='text-lg font-semibold'>
-                                    {product.name.length > 50 ?
-                                        `${product.name.substring(0, 50)}...` : product.name
+                                <h2 className='font-medium truncate '>
+                                    {product.name.length > 20
+                                        ? `${product.name.slice(0, 20)}...`
+                                        : product.name
                                     }
                                 </h2>
                                 <p className='text-lg'>Price: ₹{product.price}</p>

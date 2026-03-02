@@ -106,9 +106,7 @@ const App = () => {
           } path='/my-orders' />
 
           <Route element={
-            <AuthLayout authentication>
               <SingleOrder />
-            </AuthLayout>
           } path='/my-orders/:orderId' />
           <Route element={
             <AuthLayout authentication>

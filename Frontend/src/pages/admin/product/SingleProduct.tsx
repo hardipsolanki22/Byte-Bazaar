@@ -142,8 +142,13 @@ const SingleProduct: React.FC = () => {
                             <p className='text-slate-600 mb-2'>{product?.description}</p>
                             <p className='text-xl font-semibold mb-2 text-slate-700'>₹{product?.price}</p>
                             <div className='flex items-center mb-2'>
-                                {product?.stock && product?.stock > 5 ? <Badge variant={'success'}>In Stock {product.stock}</Badge>
-                                    : <Badge variant={'destructive'}>Low Stock {product.stock}</Badge>}
+                                {product?.stock && product?.stock !== 0 ? (
+                                    <>
+                                        <Badge variant={'success'}>In Stock</Badge>
+                                        <span className='ml-2 text-lg text-slate-600'>{product.stock}</span>
+                                    </>
+                                )
+                                    : <Badge variant={'destructive'}>Out Of Stock</Badge>}
                             </div>
                             <div className='flex items-center'>
                                 <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-2'>

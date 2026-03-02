@@ -10,6 +10,7 @@ import { getRating } from '../features/rating/ratingSlice';
 import { calRatingPercentage } from '../helpers/calRatingPercentage';
 import { addItemOrUpdateItemQuantity, getUserCart } from '../features/cart/cartSlice';
 import { toast } from 'sonner';
+import emptyRatings from "../assets/svg/empty-ratings.svg"
 
 const Product: React.FC = () => {
 
@@ -138,8 +139,13 @@ const Product: React.FC = () => {
               <p className='text-slate-600 mb-2'>{product.description}</p>
               <p className='text-xl font-semibold mb-2 text-slate-700'>₹{product.price}</p>
               <div className='flex items-center mb-2'>
-                {product.stock > 5 ? <Badge variant={'success'}>In Stock {product.stock}</Badge>
-                  : <Badge variant={'destructive'}>Low Stock {product.stock}</Badge>}
+                {product?.stock && product?.stock !== 0 ? (
+                  <>
+                    <Badge variant={'success'}>In Stock</Badge>
+                    <span className='ml-2 text-lg text-slate-600'>{product.stock}</span>
+                  </>
+                )
+                  : <Badge variant={'destructive'}>Out Of Stock</Badge>}
               </div>
               <div className='flex items-center'>
                 <div className='bg-blue-600 px-2 py-1 rounded-lg flex items-center gap-1 mr-2'>
@@ -170,10 +176,8 @@ const Product: React.FC = () => {
           </div>
           {/* Rating Section */}
           {!!!productRating ? (
-            <div className='flex w-full justify-center items-center h-full'>
-              <h2 className='text-2xl text-slate-600 font-semibold'>
-                No Rating Available
-              </h2>
+            <div className='flex w-full justify-center items-start h-full'>
+              <img src={emptyRatings} alt="No orders" className="w-48 sm:w-64 md:w-72" />
             </div>
           ) : (
             <div className='sm:border rounded-md border-slate-200 p-4 flex sm:items-start

@@ -176,7 +176,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
             customLabels: {
                 totalDocs: "totalProducts",
                 docs: "products"
-            }
+            },
+            paginate: false
         })
     )
 
@@ -374,7 +375,8 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         customLabels: {
             totalDocs: "totalProducts",
             docs: "products"
-        }
+        },
+        paginate: false
     }))
 
     return res

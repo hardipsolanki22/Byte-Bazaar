@@ -576,7 +576,8 @@ const getUsersListsByAdmin = asyncHandler(async (req, res) => {
             customLabels: {
                 totalDocs: "totalUsres",
                 docs: "users"
-            }
+            },
+            paginate: false
         }))
 
     return res

@@ -138,6 +138,7 @@ const ProductForm = ({
             dispatch(updateProduct({ slug, data: formData }))
                 .unwrap()
                 .then((productData) => {
+                    dispatch(getProducts())
                     navigate(`/admin/products/${productData.data.slug}`)
                     toast.success(productData.message)
                 })
@@ -211,7 +212,17 @@ const ProductForm = ({
                             type="text"
                             placeholder="product name"
                             className="focus:outline-none mt-2"
-                            {...register("name", { required: "Product name is required" })}
+                            {...register("name", {
+                                required: "Product name is required",
+                                minLength: {
+                                    value: 3,
+                                    message: "Name must be at least 3 characters"
+                                },
+                                maxLength: {
+                                    value: 100,
+                                    message: "Name must not exceed 100 characters"
+                                }
+                            })}
                         />
                         {errors.name && <span className="text-red-500 m-2">{errors.name.message}</span>}
                     </div>

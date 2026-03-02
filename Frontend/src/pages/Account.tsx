@@ -32,21 +32,6 @@ const Account: React.FC = () => {
         if (!addresses?.length) dispatch(getAddresses())
     }, [])
 
-    // const addresses = [
-    //     {
-    //         line1: "123 Main Street, Apt 4B",
-    //         city: "New York",
-    //         country: "United States",
-    //         pincode: "10001"
-    //     },
-    //     {
-    //         line1: "456 Elm Street, Suite 12",
-    //         city: "Los Angeles",
-    //         country: "United States",
-    //         pincode: "90001"
-    //     }
-    // ]
-
     const logoutHandler = () => {
         dispatch(logOutUser())
             .unwrap()
@@ -72,10 +57,13 @@ const Account: React.FC = () => {
         <div className="flex flex-col justify-center my-5">
             <div className="w-full flex items-center justify-center  rounded-md p-4">
                 <Tabs defaultValue="account" className="flex flex-col items-center justify-center gap-4" >
-                    <TabsList className="gap-10 bg-white p-5" >
-                        <TabsTrigger value="account">Account</TabsTrigger>
-                        <TabsTrigger value="addresses">Addresses</TabsTrigger>
-                        <TabsTrigger value="security">Security</TabsTrigger>
+                    <TabsList className="gap-10 bg-white p-5 " >
+                        <TabsTrigger value="account"
+                            className="cursor-pointer">Account</TabsTrigger>
+                        <TabsTrigger value="addresses"
+                            className="cursor-pointer">Addresses</TabsTrigger>
+                        <TabsTrigger value="security"
+                            className="cursor-pointer">Security</TabsTrigger>
                     </TabsList>
                     <TabsContent value="account" className=" ">
                         <div className="bg-white p-4 rounded-md w-full flex flex-col justify-center 

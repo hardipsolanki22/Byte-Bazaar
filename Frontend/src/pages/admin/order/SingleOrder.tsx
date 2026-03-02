@@ -10,60 +10,7 @@ import { useParams } from 'react-router-dom'
 import { getSingleOrder } from '../../../features/order/orderSlice'
 
 const SingleOrder: React.FC = () => {
-    const data = [
-        {
-            "_id": "68411a5be6e847970290a462",
-            "order": [
-                {
-                    "product": {
-                        "_id": "67fbe9a0c3fabf6bcd4d2474",
-                        "name": "Scotlon_Geometry_All Panel_Laptop Skin-28",
-                        "price": 159,
-                        "mainImage": "http://res.cloudinary.com/dtbi6egyj/image/upload/v1746938110/uufcj9b2tht0cgjepgqx.webp"
-                    },
-                    "quantity": 2
-                },
-                {
-                    "product": {
-                        "_id": "680201fd605c71e922199199",
-                        "name": "Wireless Bluetooth Earbuds",
-                        "price": 1494,
-                        "mainImage": "http://res.cloudinary.com/dtbi6egyj/image/upload/v1744963628/yapv9c4sbdmans9peppv.webp"
-                    },
-                    "quantity": 2
-                }
-            ],
-            "isPaymentDone": false,
-            "paymentType": "COD",
-            "address": {
-                "_id": "67ff26257b71423bf61e7c1c",
-                "addressLine": "123 Main Street, Apt 4B",
-                "country": "India",
-                "state": "Gujarat",
-                "city": "Rajkot",
-                "pincode": "362560",
-                "user": "67f8ca66dfb160acdf5940b3",
-                "createdAt": "2025-04-16T03:38:13.480Z",
-                "updatedAt": "2025-04-16T03:40:56.009Z",
-                "__v": 0
-            },
-            "user": {
-                "_id": "67f8ca66dfb160acdf5940b3",
-                "fullName": "Hardip Solanki",
-                "email": "hardipsolanki28@gmail.com",
-                "avatar": "http://res.cloudinary.com/dtbi6egyj/image/upload/v1744362142/ctmjkwvfpfwhvwoxmiyy.jpg"
-            },
-            "status": "PENDING",
-            "coupon": {
-                "_id": "68411968e6e847970290a445",
-                "couponCode": "Hitesh.AI781",
-                "discountPercentage": 10
-            },
-            "orderPrice": 2975.4,
-            "cartTotal": 3306,
-            "discountValue": 330.6
-        }
-    ]
+   
     const { orderId } = useParams()
     if (!orderId) return
     const loading = useAppSelector(({ order }) => order.loading)
@@ -149,7 +96,7 @@ const SingleOrder: React.FC = () => {
                                             </h2>
                                             <h2 className='text-lg font-semibold hidden sm:inline-block'>{product.name}</h2>
                                             <p className='text-gray-600'>Quantity: {quantity}</p>
-                                            <p className='text-lg'>Price: ${product.price}</p>
+                                            <p className='text-lg'>Price: ₹{product.price}</p>
                                         </div>
                                     </div>
                                 </div>
