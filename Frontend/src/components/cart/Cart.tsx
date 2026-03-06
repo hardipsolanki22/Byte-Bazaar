@@ -30,7 +30,9 @@ const Cart = ({
 
     const increaseQuantity = () => {
         if (quantityState >= product.stock) {
-            toast.success(`Only ${product.stock} products are remaining.`)
+            toast.success(`Only ${product.stock} products are remaining.`, {
+                position: "top-center"
+            })
             return
         }
         setQuantityState(prev => prev + 1)
