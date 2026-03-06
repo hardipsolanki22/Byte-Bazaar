@@ -75,11 +75,15 @@ const Product: React.FC = () => {
         dispatch(getUserCart())
           .unwrap()
           .then(() => {
-            toast.success(data.message)
+            toast.success(data.message, {
+              position: "top-center"
+            })
           })
       })
       .catch((error) => {
-        toast.error(error.message)
+        toast.error(error.message, {
+          position: "top-center"
+        })
       })
   }
 

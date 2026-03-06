@@ -68,7 +68,7 @@ const Payment: React.FC = () => {
 
     return (
         <div>
-            <div className='grid md:grid-cols-12 gap-4 w-full'>
+            <div className='grid md:grid-cols-12 gap-4 w-full pb-20 md:p-0'>
                 <div className='md:col-span-8 p-4 flex flex-col gap-4'>
                     <h2 className='sm:text-xl font-semibold text-start'>Select Payment Method</h2>
                     <div className='md:p-4 flex flex-col gap-4 md:w-[80%]'>

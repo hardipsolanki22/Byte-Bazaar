@@ -42,8 +42,7 @@ const Address: React.FC = () => {
         }
     }
     return (
-        <div className='w-full'>
-
+        <div className='w-full pb-20 md:p-0'>
             <div className='grid md:grid-cols-12 gap-4 w-full'>
                 <div className='md:col-span-8 p-4 flex flex-col gap-4'>
                     {!addresses?.length && addressLoading === "succeeded" ? (
