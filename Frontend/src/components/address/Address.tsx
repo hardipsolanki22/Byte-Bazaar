@@ -40,7 +40,9 @@ const Address = ({ address }: AddressProps) => {
             dispatch(updateAddress({ addressId: address._id, data }))
                 .unwrap()
                 .then((userData) => {
-                    toast.success(userData.message)
+                    toast.success(userData.message, {
+                        position: "top-center"
+                    })
                     reset()
                 })
         }
@@ -48,11 +50,15 @@ const Address = ({ address }: AddressProps) => {
             dispatch(addAddress(data))
                 .unwrap()
                 .then((userData) => {
-                    toast.success(userData.message)
+                    toast.success(userData.message, {
+                        position: "top-center"
+                    })
                     reset()
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }

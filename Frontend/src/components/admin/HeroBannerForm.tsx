@@ -36,20 +36,28 @@ const HeroBannerForm = ({
                 .unwrap()
                 .then((data) => {
                     navigate("/admin/banner")
-                    toast.success(data.message)
+                    toast.success(data.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.success(error.message)
+                    toast.success(error.message, {
+                        position: "top-center"
+                    })
                 })
         } else {
             dispatch(addHeroBanner({ heroBanner }))
                 .unwrap()
                 .then((data) => {
                     navigate("/admin/banner")
-                    toast.success(data.message)
+                    toast.success(data.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }

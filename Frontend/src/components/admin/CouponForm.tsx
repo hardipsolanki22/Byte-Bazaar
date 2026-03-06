@@ -74,20 +74,28 @@ const CouponForm = ({
                 .unwrap()
                 .then((couponData) => {
                     navigate("/admin/coupon")
-                    toast.success(couponData.message)
+                    toast.success(couponData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         } else {
             dispatch(createCoupon(couonData))
                 .unwrap()
                 .then((couponData) => {
                     navigate("/admin/coupon")
-                    toast.success(couponData.message)
+                    toast.success(couponData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }

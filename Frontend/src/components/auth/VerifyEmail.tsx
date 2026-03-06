@@ -20,12 +20,16 @@ const VerifyEmail = () => {
             dispatch(verifyEmail(verificationToken))
                 .unwrap()
                 .then((data) => {
-                    toast.success(data.message)
+                    toast.success(data.message, {
+                        position: "top-center"
+                    })
                     setSuccessMsg(data.message)
                     navigate("/signin")
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                     setErrorMsg(error.message)
                 })
         }

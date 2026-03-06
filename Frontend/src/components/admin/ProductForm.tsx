@@ -140,10 +140,14 @@ const ProductForm = ({
                 .then((productData) => {
                     dispatch(getProducts())
                     navigate(`/admin/products/${productData.data.slug}`)
-                    toast.success(productData.message)
+                    toast.success(productData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         } else {
             const categoryTobeSelected = categories?.find((cat) => {
@@ -173,10 +177,14 @@ const ProductForm = ({
                 .then((productData) => {
                     dispatch(getProducts())
                     navigate("/admin/products")
-                    toast.success(productData.message)
+                    toast.success(productData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }

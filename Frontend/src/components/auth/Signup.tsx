@@ -35,10 +35,14 @@ const SignUp: React.FC = () => {
             .unwrap()
             .then((userData) => {
                 navigate("/signin")
-                toast.success(userData.message)
+                toast.success(userData.message, {
+                    position: "top-center"
+                })
             })
             .catch((error) => {
-                toast.error(error.message)
+                toast.error(error.message, {
+                    position: "top-center"
+                })
             })
     }
 

@@ -30,7 +30,9 @@ const UpdatePaymentAndOrderStatus = ({ orderId, ispaymentdone, status }: UpdateP
         }))
             .unwrap()
             .then((res) => {
-                toast.success(res.message)
+                toast.success(res.message, {
+                    position: "top-center"
+                })
             })
     }
 

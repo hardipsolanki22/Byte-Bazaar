@@ -35,19 +35,27 @@ const Profile = () => {
             dispatch(updateAvatar({ avatar: data.avatar[0] }))
                 .unwrap()
                 .then((userData) => {
-                    toast.success(userData.message)
+                    toast.success(userData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         } else {
             dispatch(updateDetails(data))
                 .unwrap()
                 .then((userData) => {
-                    toast.success(userData.message)
+                    toast.success(userData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }

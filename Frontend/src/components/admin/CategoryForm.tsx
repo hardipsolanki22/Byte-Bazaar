@@ -35,20 +35,28 @@ const CategoryForm = ({ name, slug }: Category) => {
                 .unwrap()
                 .then((ctgData) => {
                     navigate("/admin/category")
-                    toast.success(ctgData.message)
+                    toast.success(ctgData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.success(error.message)
+                    toast.success(error.message, {
+                        position: "top-center"
+                    })
                 })
         } else {
             dispatch(addCategory(data))
                 .unwrap()
                 .then((ctgData) => {
                     navigate("/admin/category")
-                    toast.success(ctgData.message)
+                    toast.success(ctgData.message, {
+                        position: "top-center"
+                    })
                 })
                 .catch((error) => {
-                    toast.error(error.message)
+                    toast.error(error.message, {
+                        position: "top-center"
+                    })
                 })
         }
     }
