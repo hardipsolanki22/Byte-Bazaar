@@ -8,6 +8,7 @@ import UpdatePaymentAndOrderStatus from '../../../components/admin/UpdatePayment
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { useParams } from 'react-router-dom'
 import { getSingleOrder } from '../../../features/order/orderSlice'
+import { OrderDetailSkeleton } from '../../../components/skeleton/singleOrderSkeleton'
 
 const SingleOrder: React.FC = () => {
    
@@ -22,11 +23,8 @@ const SingleOrder: React.FC = () => {
     }, [dispatch, orderId])
 
     if (!singleOrder && loading === "pending" || loading === "idle") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <OrderDetailSkeleton />
+        
     }
     if (!singleOrder) {
         return (
