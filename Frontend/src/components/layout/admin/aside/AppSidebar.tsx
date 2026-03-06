@@ -10,7 +10,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "../../../ui/sidebar"
-import { PlusCircle, Package, Users, Tag, PlusSquare, Inbox, BookPlus, CatIcon, ImagePlusIcon, Image } from "lucide-react";
+import { PlusCircle, Package, Users, Tag, PlusSquare, Inbox, BookPlus, CatIcon, ImagePlusIcon, Image, Home } from "lucide-react";
 import { Button } from "../../../lightswind/button";
 
 export function AppSidebar() {
@@ -26,6 +26,7 @@ export function AppSidebar() {
         { title: "Orders", url: "/admin/order", icon: Inbox },
         { title: "Create Banner", url: "/admin/add-banner", icon: ImagePlusIcon },
         { title: "Banner", url: "/admin/banner", icon: Image },
+        { title: "Home", url: "/", icon: Home }
     ];
     const navigate = useNavigate()
     return (

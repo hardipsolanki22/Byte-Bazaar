@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getUserSingleOrder } from '../../features/order/orderSlice'
 import emptyOrders from "../../assets/svg/empty-orders.svg"
+import { OrderDetailSkeleton } from '../skeleton/singleOrderSkeleton'
 
 <img src={emptyOrders} alt="No orders" className="w-48 sm:w-64 md:w-72" />
 const SingleOrder: React.FC = () => {
@@ -19,12 +20,8 @@ const SingleOrder: React.FC = () => {
         dispatch(getUserSingleOrder(orderId))
     }, [dispatch, orderId])
 
-    if (!singleOrder && loading === "pending" || loading === "idle") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if (!singleOrder && (loading === "pending" || loading === "idle")) {
+        return <OrderDetailSkeleton />
     }
     if (!singleOrder) {
         return (
@@ -55,11 +52,11 @@ const SingleOrder: React.FC = () => {
                                         <div className='flex flex-col m-2'>
                                             <h2 className='text-lg font-semibold inline-block sm:hidden'>
                                                 {product.name.substring(0, 20)}{product.name.length > 20 ? '...' : ''}
-                                            </h2> 
-                                            <h2 className='text-lg font-semibold hidden sm:inline-block break-words line-clamp-2'>
-                                                 {product.name.substring(0, 50)}{product.name.length > 50 ? '...' : ''}
                                             </h2>
-                                            
+                                            <h2 className='text-lg font-semibold hidden sm:inline-block break-words line-clamp-2'>
+                                                {product.name.substring(0, 50)}{product.name.length > 50 ? '...' : ''}
+                                            </h2>
+
                                             <p className='text-gray-600'>Quantity: {quantity}</p>
                                             <p className='text-lg'>Price: ₹{product.price}</p>
                                         </div>

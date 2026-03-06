@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LucideChevronsLeftRightEllipsis, Circle, CircleDot } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getHeroBanners } from "../../features/heroBanner/heroBannerSlice";
+import { BannerSkeleton } from "../skeleton/heroBannerSkeleton";
 
 const Hero: React.FC = () => {
 
@@ -37,71 +38,97 @@ const Hero: React.FC = () => {
   }
 
   if (loading === "pending") {
-    return (
-      <div className='flex items-center  w-full justify-center h-full'>
-        <h1>Loading...</h1>
-      </div>
-    )
+    return <BannerSkeleton />
   }
 
   return (
-    <section className="w-full items-center justify-center flex flex-col ">
+    <section className="w-full">
       {/* Hero Banner */}
-      <div className=" w-full relative pb-4 px-2  bg-white  ">
-        <div className="w-full h-full overflow-hidden flex">
-          {banners?.map(banner => (
-            <img
-              key={banner._id}
-              src={banner.image}
-              alt="hero"
-              className="shrink-0 grow-0 transition ease-in-out duration-300 h-20 sm:h-44 lg:h-52 w-full "
-              style={{ translate: `${-100 * imgIndex}%` }}
-            />
-          ))}
+      <div className="w-full relative bg-white">
+
+        {/* Image Track */}
+        <div className="w-full overflow-hidden">
+          <div
+            className="flex transition-transform ease-in-out duration-300"
+            style={{ transform: `translateX(-${100 * imgIndex}%)` }}
+          >
+            {banners?.map(banner => (
+              <img
+                key={banner._id}
+                src={banner.image}
+                alt="hero"
+                className="shrink-0 w-full object-cover
+              h-36
+              sm:h-52
+              md:h-64
+              lg:h-80
+              xl:h-96"
+              />
+            ))}
+          </div>
         </div>
+
+        {/* Prev Button */}
         <button
-          className="absolute top-0 bottom-3 sm:bottom-0 left-2 sm:left-5 cursor-pointer "
+          className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-4
+        bg-white/70 hover:bg-white
+        backdrop-blur-sm
+        rounded-full
+        p-1.5 sm:p-2
+        shadow-md
+        transition-all duration-200
+        cursor-pointer
+        focus:outline-none"
           onClick={showPrevImage}
           aria-label="View Previous Image"
         >
           <svg
-            className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 group-hover:text-emerald-600 transition-colors duration-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+            className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+
+        {/* Next Button */}
         <button
-          className="absolute top-0 bottom-3 sm:bottom-0 right-2 sm:right-5 cursor-pointer"
+          className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-4
+        bg-white/70 hover:bg-white
+        backdrop-blur-sm
+        rounded-full
+        p-1.5 sm:p-2
+        shadow-md
+        transition-all duration-200
+        cursor-pointer
+        focus:outline-none"
           onClick={showNextImage}
           aria-label="View Next Image"
         >
           <svg
-            className="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 group-hover:text-emerald-600 transition-colors duration-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+            className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-        <div className="absolute bottom-1 sm:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2">
+
+        {/* Dot Indicators */}
+        <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2
+      flex items-center gap-1.5 sm:gap-2">
           {banners?.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setImgIndex(idx)}
-              className="group focus:outline-none"
+              className="focus:outline-none"
               aria-label={`View Image ${idx + 1}`}
             >
               <div className={`
-        transition-all duration-500 ease-out
-        ${idx === imgIndex
-                  ? 'w-6 sm:w-8 h-1.5 sm:h-2 bg-white rounded-full shadow-lg shadow-white/50'
-                  : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/40 rounded-full hover:bg-white/70 hover:scale-110'
+            transition-all duration-500 ease-out rounded-full
+            ${idx === imgIndex
+                  ? 'w-5 sm:w-7 h-1.5 sm:h-2 bg-white shadow-lg shadow-white/50'
+                  : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/50 hover:bg-white/80 hover:scale-110'
                 }
-      `} />
+          `} />
             </button>
           ))}
         </div>

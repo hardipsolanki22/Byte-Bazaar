@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { assignRole, getUsersList } from '../../../features/user/userSlice'
 import { toast } from 'sonner'
 import { Spinner } from '../../../components/ui/spinner'
+import { AdminUsersSkeleton } from '../../../components/skeleton/UsersSkeleton'
 
 const Users: React.FC = () => {
     const users = useAppSelector(({ userList }) => userList.users)
@@ -19,12 +20,8 @@ const Users: React.FC = () => {
         }
     }, [dispatch])
 
-    if (!users.length && loading === "pending") {
-        return (
-            <div className='flex items-center w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if (!users.length && (loading === "pending" || loading === "idle")) {
+        return <AdminUsersSkeleton />
     }
 
     const assignUserRole = (userId: string, role: "USER" | "ADMIN") => {

@@ -540,7 +540,8 @@ const getUserOrders = asyncHandler(async (req, res) => {
                     {
                         $project: {
                             name: 1,
-                            mainImage: 1
+                            mainImage: 1,
+                            slug: 1
                         }
                     }
                 ]

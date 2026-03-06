@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getUserCart } from '../../features/cart/cartSlice'
 import { getAddresses } from '../../features/address/addressSlice'
 import { setAddressId } from '../../features/checkout/checkoutSlice'
+import { AddressPageSkeleton } from '../skeleton/checkoutAddSkeleton'
 
 const Address: React.FC = () => {
 
@@ -30,14 +31,10 @@ const Address: React.FC = () => {
     }, [dispatch])
 
     if (cartLoading === "pending" || addressLoading === "idle") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <AddressPageSkeleton />
     }
     const primaryAddress = addresses?.find(add => add.isPrimary === true)
-    
+
     const handleCheckout = () => {
         if (primaryAddress) {
             dispatch(setAddressId(primaryAddress?._id))

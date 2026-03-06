@@ -11,6 +11,7 @@ import { getRating } from '../../../features/rating/ratingSlice'
 import { calRatingPercentage } from '../../../helpers/calRatingPercentage'
 import { Spinner } from '../../../components/ui/spinner'
 import { toast } from 'sonner'
+import { SingleProductSkeleton } from '../../../components/skeleton/singleProductSkeleton'
 
 const SingleProduct: React.FC = () => {
 
@@ -43,11 +44,7 @@ const SingleProduct: React.FC = () => {
     if ((!!!product) && loading === "pending" || loading === "idle"
         || ratingLoading === 'pending' || ratingLoading == 'idle'
     ) {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <SingleProductSkeleton />
     }
     if (!product) {
         return (

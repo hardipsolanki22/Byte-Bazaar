@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { deleteCategory, getCategories } from '../../../features/category/categorySlice'
 import { toast } from 'sonner'
+import { AdminUsersSkeleton } from '../../../components/skeleton/UsersSkeleton'
 
 const Category = () => {
     const categories = useAppSelector(({ category }) => category.catagories)
@@ -30,11 +31,7 @@ const Category = () => {
     }
 
     if ((loading === "pending" || loading === "idle") && !categories?.length) {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <AdminUsersSkeleton />
     }
     return (
         <div className='flex items-center flex-col w-full'>

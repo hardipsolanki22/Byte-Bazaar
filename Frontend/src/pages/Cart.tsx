@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { applyCoupon } from '../features/coupon/couponSlice'
 import EmptyCart from '../assets/EmptyCart'
+import { CartPageSkeleton } from '../components/skeleton/cartSkeleton'
 
 type Input = {
     couponCode: string;
@@ -32,11 +33,7 @@ const Cart: React.FC = () => {
     }, [dispatch])
 
     if (!cart && loading === "pending" || loading === "idle") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <CartPageSkeleton />
     }
     if (!cart?.items.length) return (<EmptyCart />)
 
@@ -81,7 +78,7 @@ const Cart: React.FC = () => {
 
 
     return (
-        <div className='flex flex-col md:flex-row items-center justify-center'>
+        <div className='flex flex-col md:flex-row items-center justify-center pb-20 md:p-0'>
             <div className='grid md:grid-cols-12 gap-4 w-full'>
                 <div className='md:col-span-8 p-4 flex flex-col gap-4'>
                     <h2 className='sm:text-xl font-semibold text-start'>Products Details</h2>

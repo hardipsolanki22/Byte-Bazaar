@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getProductsByCategory } from '../features/product/productSlice';
 import Product from '../components/products/Product';
 import ProductNotFoundWithText from '../assets/ProductNotFound';
+import ProductByCategorySkeleton from '../components/skeleton/productByCategory';
 
 const ProductsByCategory = () => {
     const [searchParams] = useSearchParams()
@@ -20,11 +21,7 @@ const ProductsByCategory = () => {
     }, [category, dispatch])
 
     if (productLoading === "pending" || productLoading === "idle") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <ProductByCategorySkeleton />
     }
     if (!products?.length) {
         return (
