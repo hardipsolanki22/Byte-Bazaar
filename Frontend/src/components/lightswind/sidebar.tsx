@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
 // Re-implementing the 'cn' utility function directly for self-containment
-function cn(...inputs: clsx.ClassValue[]) {
+function cn(...inputs: (string | undefined | null | Record<string, boolean>)[]) {
     return twMerge(clsx(inputs));
 }
 
@@ -24,7 +24,7 @@ interface SidebarContextType {
         height: number;
     }>;
     menuItemRefs: React.MutableRefObject<Map<string, HTMLDivElement | null>>;
-    menuRef: React.RefObject<HTMLDivElement>;
+    menuRef: React.RefObject<HTMLDivElement | null>;
     updateIndicatorPosition: (id: string | null) => void;
     notifyMenuItemRefChange: () => void;
 }
@@ -567,13 +567,13 @@ export function SidebarMenuButton({
                     {React.Children.map(children, (child) => {
                         if (React.isValidElement(child)) {
                             return React.cloneElement(child, {
-                                ...child.props,
+                                ...(child.props as any || {}),
                                 className: cn(
                                     sharedClassName,
                                     "justify-center p-2",
                                     "hover:bg-primary/10 hover:scale-110",
                                     isActive ? "text-primary font-medium" : "",
-                                    child.props?.className
+                                    (child.props as any)?.className
                                 ),
                             });
                         }
@@ -612,8 +612,23 @@ export function SidebarMenuButton({
                 onClick={handleClick}
                 {...props}
             >
+                {/* {React.Children.map(children, (child) => {
+                    if (React.isValidElement() && typeof child.props === "object" && child.props !== null) {
+                        return React.cloneElement(child, {
+                            ...child.props,
+                            className: cn(
+                                sharedClassName,
+                                "justify-start gap-2",
+                                "hover:bg-primary/10 hover:translate-x-1",
+                                isActive ? "text-primary font-medium" : "",
+                                child.props?.className
+                            ),
+                        });
+                    }
+                    return child;
+                })} */}
                 {React.Children.map(children, (child) => {
-                    if (React.isValidElement(child)) {
+                    if (React.isValidElement<{ className?: string }>(child)) {
                         return React.cloneElement(child, {
                             ...child.props,
                             className: cn(
