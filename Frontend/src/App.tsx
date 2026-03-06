@@ -38,6 +38,7 @@ import UpdateHeroBanner from './pages/admin/heroBanner/UpdateHeroBanner'
 import ProductsByCategory from './pages/ProductsByCategory'
 import OrderFailed from './pages/OrderFailed'
 import OrderSuccess from './pages/OrderSuccess'
+import AboutPage from './pages/About'
 
 const App = () => {
   const dispatch = useAppDispatch()
@@ -80,6 +81,9 @@ const App = () => {
           <Route element={
             <Account />
           } path='/account' />
+          <Route element={
+            <AboutPage />
+          } path='/about' />
           <Route element={
             <ProductsByCategory />
           } path='/products' />
