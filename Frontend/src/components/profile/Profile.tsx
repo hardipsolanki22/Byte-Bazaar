@@ -16,7 +16,7 @@ type Inputs = {
     avatar?: FileList | null
 }
 
-const Profile: React.FC = () => {
+const Profile = () => {
     const user = useAppSelector(({ users }) => users.userData)
     const loading = useAppSelector(({ users }) => users.loading)
     const {
@@ -130,11 +130,8 @@ const Profile: React.FC = () => {
                             : "Update"
                         }
                     </Button>
-
                 </form>
-
             </div>
-
         </div>
     )
 }

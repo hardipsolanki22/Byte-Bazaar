@@ -23,7 +23,7 @@ import OrdersByAdmin from "./pages/admin/order/Order"
 import SingleOrderByAdmin from "./pages/admin/order/SingleOrder"
 import VerifyEmail from './components/auth/VerifyEmail'
 import { useEffect } from 'react'
-import { useAppDispatch } from './app/hooks'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 import { currentUser } from './features/auth/authSlice'
 import ForgotPassowrd from './components/auth/ForgotPassowrd'
 import AddCategory from './pages/admin/category/AddCategory'
@@ -41,12 +41,30 @@ import AboutPage from './pages/About'
 import Protected from './components/layout/Protected'
 import ProtectedAdmin from './components/layout/admin/AdminProtected'
 import ProtectedForUnSecure from './components/layout/ProtectedForUnSecurePage'
+import NotFound from './pages/Page404'
+import { getCategories } from './features/category/categorySlice'
+import { getHeroBanners } from './features/heroBanner/heroBannerSlice'
+import { getProducts } from './features/product/productSlice'
+import AppLoader from './components/AppLoader'
 
 const App = () => {
   const dispatch = useAppDispatch()
+  const appInitialized = useAppSelector(({ users }) => users.appInitialized)
+
+
+
   useEffect(() => {
-    dispatch(currentUser())
+    Promise.all([
+      dispatch(currentUser()),
+      dispatch(getCategories()),
+      dispatch(getHeroBanners()),
+      dispatch(getProducts()),
+
+    ])
   }, [dispatch])
+
+
+  if (!appInitialized) return <AppLoader />  // ← sirf first lo
 
   return (
     <BrowserRouter>
@@ -299,9 +317,8 @@ const App = () => {
             }
             path='/admin/banner/:bannerId'
           />
-
         </Route>
-
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

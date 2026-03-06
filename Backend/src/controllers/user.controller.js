@@ -44,13 +44,20 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new APIError(500, "Internal server error while uploading avatar")
     }
 
+    const cleanPhone = phoneNumber
+        .toString()
+        .trim()
+        .replace(/^\+91/, "")
+        .replace(/^91/, "")
+        .trim();
+
     const createUser = await User.create({
         fullName,
         email,
         password,
         role: userRole.USER,
         avatar,
-        phoneNumber,
+        phoneNumber: `+91${cleanPhone}`,
     })
 
     const user = await User.findById(createUser?._id)
@@ -424,7 +431,13 @@ const updateUserDetails = asyncHandler(async (req, res) => {
         user.email = email
     }
     if (phoneNumber) {
-        user.phoneNumber = phoneNumber
+        const cleanPhone = phoneNumber
+            .toString()
+            .trim()
+            .replace(/^\+91/, "")
+            .replace(/^91/, "")
+            .trim();
+        user.phoneNumber = cleanPhone
     }
 
     await user.save({ validateBeforeSave: false })

@@ -26,6 +26,7 @@ interface UserState {
     userData: UserData | null;
     isAuthenticated: boolean;
     loading: 'idle' | 'pending' | 'succeeded' | 'failed',
+    appInitialized: boolean;
 }
 
 // create the thunk
@@ -222,7 +223,8 @@ export const forgotPassword = createAsyncThunk(
 const initialState: UserState = {
     isAuthenticated: false,
     userData: null,
-    loading: 'idle'
+    loading: 'idle',
+    appInitialized: false
 }
 
 export const authSlice = createSlice({
@@ -278,11 +280,17 @@ export const authSlice = createSlice({
                 state.loading = "succeeded"
                 state.isAuthenticated = true
                 state.userData = payload.data
+                if (!state.appInitialized) {
+                    state.appInitialized = true
+                }
             })
             .addCase(currentUser.rejected, (state) => {
                 state.loading = "failed"
                 state.userData = null
                 state.isAuthenticated = false
+                 if (!state.appInitialized) {
+                    state.appInitialized = true; 
+                }
             })
 
             // logout user

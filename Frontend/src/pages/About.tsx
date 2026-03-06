@@ -551,7 +551,6 @@ export default function AboutPage() {
             <span>© {new Date().getFullYear()} {user?.name ?? "Hardip Solanki"}. All rights reserved.</span>
             <span>Built with React · TypeScript · Tailwind CSS</span>
           </footer>
-
         </div>
       </div>
     </>

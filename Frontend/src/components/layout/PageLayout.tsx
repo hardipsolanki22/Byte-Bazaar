@@ -20,11 +20,16 @@ const PageLayout = ({
 }: PageLayoutProps) => {
 
   const location = useLocation()
-  const hideFooterPaths = ["/signin", "/signup", "/checkout/cart", "/checkout/address", "/checkout/payment", "/about"]
-  if (hideFooterPaths.includes(location.pathname)) {
+  const hideFooterPaths = ["/signin", "/signup", "/checkout/cart", "/checkout/address", "/checkout/payment"]
+
+  const hideFooterPrefixes = ["/verify-email/"]
+
+  if (
+    hideFooterPaths.includes(location.pathname) ||
+    hideFooterPrefixes.some((prefix) => location.pathname.startsWith(prefix))
+  ) {
     noFooter = true
   }
-
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 ">
       <Toaster />
