@@ -11,6 +11,7 @@ import { calRatingPercentage } from '../helpers/calRatingPercentage';
 import { addItemOrUpdateItemQuantity, getUserCart } from '../features/cart/cartSlice';
 import { toast } from 'sonner';
 import emptyRatings from "../assets/svg/empty-ratings.svg"
+import ProductNotFoundWithText from '../assets/ProductNotFound';
 
 const Product: React.FC = () => {
 
@@ -59,9 +60,7 @@ const Product: React.FC = () => {
   if (!product) {
     return (
       <div className='w-full flex items-center justify-center text-center h-full'>
-        <h2 className='text-2xl text-slate-600 font-semibold'>
-          Products Not Found
-        </h2>
+        <ProductNotFoundWithText />
       </div>
     )
   }

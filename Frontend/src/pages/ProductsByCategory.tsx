@@ -3,6 +3,7 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getProductsByCategory } from '../features/product/productSlice';
 import Product from '../components/products/Product';
+import ProductNotFoundWithText from '../assets/ProductNotFound';
 
 const ProductsByCategory = () => {
     const [searchParams] = useSearchParams()
@@ -27,10 +28,8 @@ const ProductsByCategory = () => {
     }
     if (!products?.length) {
         return (
-            <div className='w-full flex items-center justify-center text-center min-h-screen'>
-                <h2 className='text-2xl text-slate-600 font-semibold'>
-                    Products Not Found
-                </h2>
+            <div className='w-full flex items-center justify-center text-center h-full'>
+                <ProductNotFoundWithText />
             </div>
         )
     }

@@ -55,8 +55,10 @@ const SingleOrder: React.FC = () => {
                                         <div className='flex flex-col m-2'>
                                             <h2 className='text-lg font-semibold inline-block sm:hidden'>
                                                 {product.name.substring(0, 20)}{product.name.length > 20 ? '...' : ''}
+                                            </h2> 
+                                            <h2 className='text-lg font-semibold hidden sm:inline-block break-words line-clamp-2'>
+                                                 {product.name.substring(0, 50)}{product.name.length > 50 ? '...' : ''}
                                             </h2>
-                                            <h2 className='text-lg font-semibold hidden sm:inline-block'>{product.name}</h2>
                                             
                                             <p className='text-gray-600'>Quantity: {quantity}</p>
                                             <p className='text-lg'>Price: ₹{product.price}</p>
