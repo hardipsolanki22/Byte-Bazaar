@@ -24,7 +24,6 @@ const Account: React.FC = () => {
     const loading = useAppSelector(({ users }) => users.loading)
     const userData = useAppSelector(({ users }) => users.userData)
     const addresses = useAppSelector(({ address }) => address.addresses)
-    const addLoading = useAppSelector(({ address }) => address.loading)
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
 

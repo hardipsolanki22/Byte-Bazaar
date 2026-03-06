@@ -1,5 +1,4 @@
 import { Star } from 'lucide-react';
-import React from 'react'
 
 type ProductProps = {
     _id: string;
@@ -18,8 +17,6 @@ const Product = ({
     mainImage,
     averageRating,
     ratingCount,
-    slug,
-    ...product
 }: ProductProps) => {
     return (
         <div

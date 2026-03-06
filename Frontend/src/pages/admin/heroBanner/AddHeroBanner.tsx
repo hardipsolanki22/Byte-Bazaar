@@ -1,4 +1,3 @@
-import React from 'react'
 import HeroBannerForm from '../../../components/admin/HeroBannerForm'
 
 const AddHeroBanner = () => {

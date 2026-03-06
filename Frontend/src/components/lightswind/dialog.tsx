@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import type { HTMLMotionProps } from "motion/react"
 
 // Helper for cn if not provided
-const dummyCn = (...inputs) => {
+const dummyCn = (...inputs: any) => {
     return inputs.filter(Boolean).join(' ');
 };
 const cnFunction = typeof cn !== 'undefined' ? cn : dummyCn;

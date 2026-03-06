@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '../../lightswind/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../lightswind/hover-card'

@@ -132,7 +132,7 @@ export const cartSlice = createSlice({
             .addCase(addItemOrUpdateItemQuantity.pending, (state) => {
                 state.loading = 'pending'
             })
-            .addCase(addItemOrUpdateItemQuantity.fulfilled, (state, { payload }) => {
+            .addCase(addItemOrUpdateItemQuantity.fulfilled, (state) => {
                 state.loading = 'succeeded'
                 // console.log("payload: ", payload)
                 // if (state.cart?.items.length) {
@@ -153,7 +153,7 @@ export const cartSlice = createSlice({
             .addCase(removeItemFromCart.pending, (state) => {
                 state.loading = 'pending'
             })
-            .addCase(removeItemFromCart.fulfilled, (state, { payload }) => {
+            .addCase(removeItemFromCart.fulfilled, (state) => {
                 state.loading = 'succeeded'
                 // console.log("payload: ", payload)
                 // if (state.cart?.items.length) {

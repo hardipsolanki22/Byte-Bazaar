@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Input } from '../lightswind/input'
 import { Label } from '../lightswind/label'
 import { Button } from '../lightswind/button'

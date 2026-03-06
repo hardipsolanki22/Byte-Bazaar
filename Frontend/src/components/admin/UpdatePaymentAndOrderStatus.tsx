@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../lightswind/select'
 import { Button } from '../lightswind/button'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'

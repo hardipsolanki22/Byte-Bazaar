@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { deleteReq, getReq, patchReq, postReq } from '../../config/configAxios';
+import { getReq, postReq } from '../../config/configAxios';
 import type {
     CreateRating,
     CreateRatingReq,

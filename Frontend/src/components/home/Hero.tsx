@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { LucideChevronsLeftRightEllipsis, Circle, CircleDot } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getHeroBanners } from "../../features/heroBanner/heroBannerSlice";
 import { BannerSkeleton } from "../skeleton/heroBannerSkeleton";

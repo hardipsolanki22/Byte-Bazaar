@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import  { useEffect } from 'react'
 import { Button } from '../../../components/lightswind/button'
 import { Delete, PencilIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'

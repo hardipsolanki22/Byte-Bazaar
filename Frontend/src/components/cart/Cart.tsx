@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../lightswind/button'
 import { Minus, Plus } from 'lucide-react'
 import { toast } from 'sonner';
@@ -22,7 +22,6 @@ interface CartProps {
 const Cart = ({
     product,
     quantity,
-    ...props
 }: CartProps) => {
 
     const [quantityState, setQuantityState] = useState<number>(quantity)

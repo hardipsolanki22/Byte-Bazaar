@@ -1,4 +1,3 @@
-import React from 'react'
 import { Label } from '../lightswind/label'
 import { Input } from '../lightswind/input'
 import { Button } from '../lightswind/button'

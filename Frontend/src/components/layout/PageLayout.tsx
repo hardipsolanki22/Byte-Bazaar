@@ -1,10 +1,7 @@
-import type React from "react"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import { Toaster } from "../ui/sonner"
-import { useEffect } from "react"
-import { useAppSelector } from "../../app/hooks"
 
 interface PageLayoutProps {
   className?: string

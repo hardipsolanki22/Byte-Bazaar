@@ -1,4 +1,3 @@
-import React from 'react'
 import CategoryForm from '../../../components/admin/CategoryForm'
 
 const AddCategory = () => {

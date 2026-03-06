@@ -1,12 +1,10 @@
-import React from 'react'
 import { Button } from '../lightswind/button'
 import { Input } from '../lightswind/input'
 import { Label } from '../lightswind/label'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { currentUser, updateAvatar, updateDetails } from '../../features/auth/authSlice'
+import { updateAvatar, updateDetails } from '../../features/auth/authSlice'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useNavigate } from 'react-router-dom'
 import { Spinner } from '../ui/spinner'
 
 type Inputs = {

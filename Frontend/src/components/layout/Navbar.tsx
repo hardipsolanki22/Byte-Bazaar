@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Home, User, Contact, HomeIcon, UserIcon, SettingsIcon, ShoppingBag, Info, LayoutDashboard } from "lucide-react";
+import { Home, User, ShoppingBag, Info, LayoutDashboard } from "lucide-react";
 import { Button } from '../lightswind/button';
-import { Input } from "../lightswind/input"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../lightswind/hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from '../lightswind/avatar';
-import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem }
-  from '../lightswind/command';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { toast } from 'sonner';
 import { logOutUser } from '../../features/auth/authSlice';
@@ -18,11 +15,6 @@ import { getCategories } from '../../features/category/categorySlice';
 import { getUserCart } from '../../features/cart/cartSlice';
 import { CategoryTabsSkeleton } from '../skeleton/categorySkeleton';
 
-
-type CategoriesType = {
-  name: string;
-  slug: string;
-}
 
 type NavItemsType = {
   name: string

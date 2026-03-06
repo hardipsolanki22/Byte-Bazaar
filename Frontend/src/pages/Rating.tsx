@@ -8,7 +8,6 @@ import { Spinner } from '../components/ui/spinner'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { CreateRating } from '../types/ratingType'
-import { useForm, type SubmitHandler } from 'react-hook-form'
 import { createRating, getRating } from '../features/rating/ratingSlice'
 import { toast } from 'sonner'
 
