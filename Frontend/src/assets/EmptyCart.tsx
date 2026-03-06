@@ -72,7 +72,8 @@ const EmptyCart = () => {
                 {/* CTA Button */}
                 <button
                     onClick={() => navigate("/")}
-                    className="mt-2 px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 transition-all duration-150 text-white text-sm sm:text-base font-medium rounded-full shadow-md shadow-indigo-200"
+                    className="mt-2 px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 active:scale-95 
+                    cursor-pointer transition-all duration-150 text-white text-sm sm:text-base font-medium rounded-full shadow-md shadow-indigo-200"
                 >
                     Start Shopping
                 </button>
