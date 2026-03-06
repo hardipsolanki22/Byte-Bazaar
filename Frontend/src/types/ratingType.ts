@@ -27,3 +27,19 @@ export interface GetRatingRes {
     message: string;
     success: boolean
 }
+export interface CreateRating {
+    comment: string;
+    rating: number;
+}
+export interface CreateRatingReq {
+    comment: string;
+    rating: number;
+    slug: string;
+}
+
+export interface CreateRatingRes {
+    status: number;
+    message: string;
+    success: boolean
+    daat: {}
+}

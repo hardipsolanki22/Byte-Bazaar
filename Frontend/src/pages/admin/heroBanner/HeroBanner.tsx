@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { Delete, PencilIcon } from 'lucide-react'
 import { deleteHeroBanner, getHeroBanners } from '../../../features/heroBanner/heroBannerSlice'
 import { toast } from 'sonner'
+import { BannerSkeleton } from '../../../components/skeleton/heroBannerSkeleton'
 
 const HeroBanner = () => {
     const banners = useAppSelector(({ banner }) => banner.banners)
@@ -27,12 +28,8 @@ const HeroBanner = () => {
         if (!banners?.length) dispatch(getHeroBanners())
     }, [dispatch])
 
-    if (loading === "pending" && !banners?.length) {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if ((loading === "pending" || loading === "idle") && !banners?.length) {
+        return <BannerSkeleton />
     }
 
     if (!banners?.length) {

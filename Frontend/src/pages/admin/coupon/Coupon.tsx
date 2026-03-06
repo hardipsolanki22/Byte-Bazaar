@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { deleteCoupon, getCoupons } from '../../../features/coupon/couponSlice';
 import { toast } from 'sonner';
+import { AdminUsersSkeleton } from '../../../components/skeleton/UsersSkeleton';
 
 const Coupon: React.FC = () => {
     const coupons = useAppSelector(({ coupon }) => coupon.coupons)
@@ -26,12 +27,8 @@ const Coupon: React.FC = () => {
         }
     }, [dispatch])
 
-    if (loading === 'pending' && !coupons?.length) {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if ((loading === 'pending' || loading === "idle") && !coupons?.length) {
+        return <AdminUsersSkeleton />
     }
 
     const deleteCouponHandler = (couponId: string) => {

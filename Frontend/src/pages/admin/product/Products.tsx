@@ -5,6 +5,7 @@ import Product from '../../../components/products/Product'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { clearSingleProduct, getProducts, getProductsByCategory } from '../../../features/product/productSlice'
 import { getCategories } from '../../../features/category/categorySlice'
+import ProductByCategorySkeleton from '../../../components/skeleton/productByCategory'
 
 const Products: React.FC = () => {
     const productLoading = useAppSelector(({ product }) => product.loading)
@@ -35,8 +36,8 @@ const Products: React.FC = () => {
 
     if (productLoading === "pending" || productLoading === "idle" || categoriesLoading === "pending") {
         return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
+            <div className='w-full h-full'>
+                <ProductByCategorySkeleton />
             </div>
         )
     }

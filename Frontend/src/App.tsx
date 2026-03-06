@@ -116,7 +116,7 @@ const App = () => {
             <AuthLayout authentication>
               <Rating />
             </AuthLayout>
-          } path='/rating' />
+          } path='/rating/:productSlug' />
         </Route>
 
         {/* Admin routes */}

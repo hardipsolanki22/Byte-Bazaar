@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { clearSingleOrder, getOrders } from '../../../features/order/orderSlice'
 import type { FilterOrders } from '../../../types/orderTypes'
+import { AdminUsersSkeleton } from '../../../components/skeleton/UsersSkeleton'
 
 const Order: React.FC = () => {
     const loading = useAppSelector(({ order }) => order.loading)
@@ -26,12 +27,8 @@ const Order: React.FC = () => {
         dispatch(clearSingleOrder())
     }, [dispatch, filters.ispaymentdone, filters.status])
 
-    if (loading === 'pending' && !orders?.length) {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if ((loading === 'pending' || loading === "idle") && !orders?.length) {
+        return <AdminUsersSkeleton />
     }
 
     return (

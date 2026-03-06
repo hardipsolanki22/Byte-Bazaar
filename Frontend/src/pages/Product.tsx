@@ -12,6 +12,7 @@ import { addItemOrUpdateItemQuantity, getUserCart } from '../features/cart/cartS
 import { toast } from 'sonner';
 import emptyRatings from "../assets/svg/empty-ratings.svg"
 import ProductNotFoundWithText from '../assets/ProductNotFound';
+import { SingleProductSkeleton } from '../components/skeleton/singleProductSkeleton';
 
 const Product: React.FC = () => {
 
@@ -51,11 +52,7 @@ const Product: React.FC = () => {
     (!!!product) && loading === "pending" || loading === "idle"
     || ratingLoading === 'pending' || ratingLoading == 'idle'
   ) {
-    return (
-      <div className='flex items-center  w-full justify-center h-full'>
-        <h1>Loading...</h1>
-      </div>
-    )
+    return <SingleProductSkeleton />
   }
   if (!product) {
     return (

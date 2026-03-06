@@ -4,11 +4,40 @@ import { Textarea } from '../components/lightswind/textarea'
 import { Label } from '../components/lightswind/label'
 import { Button } from '../components/lightswind/button'
 import { Badge } from '../components/lightswind/badge'
+import { Spinner } from '../components/ui/spinner'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import { useNavigate, useParams } from 'react-router-dom'
+import type { CreateRating } from '../types/ratingType'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import { createRating, getRating } from '../features/rating/ratingSlice'
+import { toast } from 'sonner'
 
 const Rating: React.FC = () => {
+    const ratingLoading = useAppSelector(({ rating }) => rating.loading)
     const [rating, setRating] = useState<number>(0)
     const [hoverRating, setHoverRating] = useState<number>(0)
     const [comment, setComment] = useState<string>('')
+    const dispatch = useAppDispatch()
+    const { productSlug } = useParams()
+    if (!productSlug) return
+    const navigate = useNavigate()
+
+    const onSubmit = (data: CreateRating) => {
+        dispatch(createRating({ ...data, slug: productSlug }))
+            .unwrap()
+            .then((data) => {
+                if (data) {
+                    dispatch(getRating(productSlug))
+                        .unwrap()
+                        .then(() => {
+                            navigate("/my-orders")
+                        })
+                }
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
+    }
 
 
     return (
@@ -56,7 +85,13 @@ const Rating: React.FC = () => {
                 </div>
 
                 {/* Comment Section */}
-                <form className='flex flex-col mt-6 gap-4'>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        onSubmit({ comment, rating })
+                    }
+                    }
+                    className='flex flex-col mt-6 gap-4'>
                     <div>
                         <Label htmlFor="message">Add a Comment</Label>
                         <Textarea
@@ -73,8 +108,13 @@ const Rating: React.FC = () => {
                     {/* Submit Button */}
                     <Button
                         className='cursor-pointer'
+                        disabled={ratingLoading === "pending"}
                     >
-                        Submit Rating
+                        {ratingLoading === "pending" ?
+                            <Spinner data-icon="inline-start" />
+                            : "Submit Rating"
+                        }
+
                     </Button>
                 </form>
             </div>

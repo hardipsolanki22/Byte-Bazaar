@@ -18,6 +18,7 @@ import { logOutUser } from "../features/auth/authSlice";
 import { toast } from "sonner";
 import { Spinner } from "../components/ui/spinner";
 import { deleteAddress, getAddresses } from "../features/address/addressSlice";
+import { AccountPageSkeleton } from "../components/skeleton/accoutProfileSkeleton";
 
 const Account: React.FC = () => {
     const loading = useAppSelector(({ users }) => users.loading)
@@ -66,7 +67,7 @@ const Account: React.FC = () => {
                             className="cursor-pointer">Security</TabsTrigger>
                     </TabsList>
                     <TabsContent value="account" className=" ">
-                        <div className="bg-white p-4 rounded-md w-full flex flex-col justify-center 
+                        {loading === "pending" ? <AccountPageSkeleton /> : (<div className="bg-white p-4 rounded-md w-full flex flex-col justify-center 
                         border border-slate-300 text-center">
                             <div className="mb-4 border-b pb-4 border-slate-300">
                                 <h2 className="text-2xl font-semibold my-2">Account Details</h2>
@@ -110,7 +111,8 @@ const Account: React.FC = () => {
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                        </div>
+                        </div>)}
+
                     </TabsContent>
                     <TabsContent value="addresses">
                         <div className="bg-white p-4 rounded-md w-full flex flex-col justify-center 

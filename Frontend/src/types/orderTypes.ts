@@ -111,6 +111,7 @@ export interface UserOrder {
             _id: string;
             name: string;
             mainImage: string;
+            slug: string;
         }
     ]
 }

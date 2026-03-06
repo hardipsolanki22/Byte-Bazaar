@@ -5,6 +5,7 @@ import Product from '../products/Product'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { clearSingleProduct, getProducts, getProductsByCategory } from '../../features/product/productSlice'
 import { getCategories } from '../../features/category/categorySlice'
+import ProductByCategorySkeleton from '../skeleton/productByCategory'
 
 const Products: React.FC = () => {
   const productLoading = useAppSelector(({ product }) => product.loading)
@@ -34,11 +35,7 @@ const Products: React.FC = () => {
   }, [categoryTobeSelected])
 
   if (productLoading === "pending" || productLoading === "idle" || categoriesLoading === "pending") {
-    return (
-      <div className='flex items-center  w-full justify-center h-full'>
-        <h1>Loading...</h1>
-      </div>
-    )
+    return <ProductByCategorySkeleton />
   }
 
   return (

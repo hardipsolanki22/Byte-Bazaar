@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
 import { Home, User, Contact, HomeIcon, UserIcon, SettingsIcon, ShoppingBag, Info, LayoutDashboard } from "lucide-react";
 import { Button } from '../lightswind/button';
 import { Input } from "../lightswind/input"
@@ -8,7 +8,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../lightswind/hover-card";
-import { Avatar, AvatarImage } from '../lightswind/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../lightswind/avatar';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem }
   from '../lightswind/command';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { logOutUser } from '../../features/auth/authSlice';
 import { getCategories } from '../../features/category/categorySlice';
 import { getUserCart } from '../../features/cart/cartSlice';
+import { CategoryTabsSkeleton } from '../skeleton/categorySkeleton';
 
 
 type CategoriesType = {
@@ -38,7 +39,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const location = useLocation()
-  const [active, setActive] = useState("/")
 
   useEffect(() => {
     if (!categories?.length) dispatch(getCategories())
@@ -70,15 +70,11 @@ const Navbar: React.FC = () => {
     { slug: "/account", label: "Profile", Icon: User },
     { slug: "/about", label: "About", Icon: Info },
     ...(user?.role === "ADMIN"
-      ? [{ slug: "/admin", label: "Admin", Icon: LayoutDashboard }]
+      ? [{ slug: "/admin/add-product", label: "Admin", Icon: LayoutDashboard }]
       : []),
   ];;
 
-  const menuItems = [
-    { label: "Home", icon: <Home size={20} />, href: "/" },
-    { label: "About", icon: <User size={20} />, onClick: () => console.log("Profile") },
-    { label: "Contact", icon: <Contact size={20} />, href: "/settings" }
-  ];
+
 
   const logoutHandler = () => {
     dispatch(logOutUser())
@@ -94,77 +90,52 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className='hidden md:flex justify-between px-4 items-center bg-white border-b border-gray-200 h-16  '>
-        {/* <div className='gap-10 flex items-center justify-center w-[50%] lg:w-[60%] relative'> */}
         <Link to="/" className='flex items-center  '>
           <img src="/byteBazaar.png" alt="logo"
             className='w-24 h-24 cursor-pointer' />
         </Link>
-        {/* <Command className="rounded-lg border shadow-md w-full"> */}
-        {/* <CommandInput placeholder="Type a product name or search..." /> */}
-        {/* <CommandList className='absolute top-16 bg-white p-4 z-50 w-[74%] lg:w-[88%]'>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Suggestions" >
-                <CommandItem>
-                  <span>Calendar</span>
-                </CommandItem>
-                <CommandItem>
-                  <span>Search Emoji</span>
-                </CommandItem>
-                <CommandItem>
-                  <span>Launch Email</span>
-                </CommandItem>
-              </CommandGroup>
-              <CommandGroup heading="Settings">
-                <CommandItem>
-                  <span>Profile</span>
-                </CommandItem>
-                <CommandItem>
-                  <span>Settings</span>
-                </CommandItem>
-              </CommandGroup>
-            </CommandList> */}
-        {/* </Command> */}
-        {/* </div> */}
 
-        <ul>
+        <ul className="flex items-center">
+          {/* Nav items — unchanged */}
           {navItems.map((item, index) => (
-            <li key={index} className='inline-block mx-2'>
-              <Button variant='ghost'
-                className='cursor-pointer hover:bg-gray-100 '
-                onClick={() => { navigate(item.slug) }}>
+            <li key={index} className="inline-block mx-2">
+              <Button variant="ghost"
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={() => navigate(item.slug)}>
                 {item.name}
               </Button>
             </li>
           ))}
 
-          {!!!isAuthenticated &&
+          {/* Login / Sign Up — unchanged */}
+          {!!!isAuthenticated && (
             <>
-              <li className='inline-block'>
-                <Button
-                  onClick={() => navigate("/signin")}
-                  variant='github'
-                  className='cursor-pointer'>
+              <li className="inline-block">
+                <Button onClick={() => navigate("/signin")} variant="github" className="cursor-pointer">
                   Login
                 </Button>
               </li>
-              <li className='inline-block mx-4'>
-                <Button
-                  onClick={() => navigate("/signup")}
-                  className='cursor-pointer'>
+              <li className="inline-block mx-4">
+                <Button onClick={() => navigate("/signup")} className="cursor-pointer">
                   Sign Up
                 </Button>
               </li>
             </>
-          }
-          {!!isAuthenticated &&
-            <li className='inline-block mx-4'>
+          )}
+
+          {/* ── Avatar — fixed: remove variant='link', center with flex ── */}
+          {!!isAuthenticated && (
+            <li className="inline-flex items-center mx-4">
               <HoverCard openDelay={200}>
                 <HoverCardTrigger asChild>
-                  <Button variant='link' className='cursor-pointer'>
-                    <Avatar>
-                      <AvatarImage src={user?.avatar} alt="@shadcn" />
+                  <button className="cursor-pointer flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <Avatar className="w-9 h-9">
+                      <AvatarImage src={user?.avatar} alt={user?.fullName ?? "user"} />
+                      <AvatarFallback className="text-sm font-semibold">
+                        {user?.fullName?.[0]?.toUpperCase() ?? "U"}
+                      </AvatarFallback>
                     </Avatar>
-                  </Button>
+                  </button>
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <div className="p-2">
@@ -181,56 +152,60 @@ const Navbar: React.FC = () => {
                     <Button
                       onClick={logoutHandler}
                       disabled={loading === "pending"}
-                      variant="ghost" className="w-full text-left cursor-pointer">
+                      variant="ghost"
+                      className="w-full text-left cursor-pointer">
                       Logout
                     </Button>
-                    {user?.role === 'ADMIN' &&
+                    {user?.role === "ADMIN" && (
                       <Link to="/admin/add-product">
                         <Button variant="ghost" className="w-full text-left mb-2 cursor-pointer">
                           Admin
                         </Button>
-                      </Link>}
+                      </Link>
+                    )}
                   </div>
                 </HoverCardContent>
               </HoverCard>
-            </li>}
-          <li className='inline-block relative'>
-            <Button
-              onClick={() => navigate("/checkout/cart")}
-              variant='link'
-              className='cursor-pointer'>
-              <img src="/shopping-cart.png" alt="cart"
-                className="w-6 h-6 " />
+            </li>
+          )}
+
+          {/* Cart */}
+          <li className="inline-flex items-center relative">
+            <Button onClick={() => navigate("/checkout/cart")} variant="link" className="cursor-pointer p-2">
+              <img src="/shopping-cart.png" alt="cart" className="w-6 h-6" />
             </Button>
-            <span className="absolute top-0 right-0 bg-red-500 text-white
-             rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
               {cartItems?.length ?? 0}
             </span>
           </li>
 
         </ul>
       </nav>
-      <nav className='flex justify-between items-center md:hidden'>
-        <Link to="/" className='flex items-center  '>
-          <img src="/byteBazaar.png" alt="logo"
-            className='w-16 h-16 cursor-pointer' />
+
+      {/* For Mobile */}
+      <nav className='flex justify-between items-center md:hidden px-4 h-16 bg-white border-b border-gray-200'>
+        <Link to="/" className='flex items-center'>
+          <img src="/byteBazaar.png" alt="logo" className='w-16 h-16 cursor-pointer' />
         </Link>
-        <div>
+
+        {/* Cart with correct relative positioning */}
+        <div className="relative inline-flex items-center">
           <Button
             onClick={() => navigate("/checkout/cart")}
             variant='link'
-            className='cursor-pointer'>
-            <img src="/shopping-cart.png" alt="cart"
-              className="w-6 h-6 " />
+            className='cursor-pointer p-2'>
+            <img src="/shopping-cart.png" alt="cart" className="w-6 h-6" />
           </Button>
-          <span className="absolute top-2 right-1 bg-red-500 text-white
-             rounded-full w-5 h-5 flex items-center justify-center text-xs">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white
+      rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold pointer-events-none">
             {cartItems?.length ?? 0}
           </span>
         </div>
       </nav>
+
+      {/* Show categories */}
       {!ignoreCategory.includes(location.pathname) &&
-        <div className="flex w-full text-center items-center justify-center
+        categoryLoading === "pending" ? <CategoryTabsSkeleton /> : (<div className="flex w-full text-center items-center justify-center
        space-x-2 overflow-x-auto md:p-2 border-b border-gray-200 bg-white md:mt-1">
           {categories?.map((category, idx) => (
             <Button
@@ -242,13 +217,10 @@ const Navbar: React.FC = () => {
               {category.name}
             </Button>
           ))}
+        </div>)}
 
-
-        </div>
-      }
-
+      {/* Bottom Nav for mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 md:hidden">
-        {/* Outer pill container */}
         <nav
           className="relative flex items-center justify-around rounded-2xl px-2 py-2 mx-auto max-w-sm"
           style={{
@@ -259,58 +231,63 @@ const Navbar: React.FC = () => {
           }}
         >
           {navItemsForMobile.map(({ slug, label, Icon }) => {
-            const isActive = active === slug;
             return (
-              <button
+              <NavLink
+                to={slug}
                 key={slug}
-                onClick={() => { setActive(slug); navigate(slug) }}
                 className="relative flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 cursor-pointer group"
                 style={{ minWidth: 56 }}
                 aria-label={label}
               >
-                {/* Active background pill */}
-                {isActive && (
-                  <span
-                    className="absolute inset-0 rounded-xl"
-                    style={{
-                      background: "rgba(255,255,255,0.07)",
-                      boxShadow: "0 -4px 16px 2px rgba(140,180,255,0.45), inset 0 1px 0 rgba(255,255,255,0.12)",
-                    }}
-                  />
+                {({ isActive }) => (
+                  <>
+                    {/* Active background pill */}
+                    {isActive && (
+                      <span
+                        className="absolute inset-0 rounded-xl"
+                        style={{
+                          background: "rgba(255,255,255,0.07)",
+                          boxShadow: "0 -4px 16px 2px rgba(140,180,255,0.45), inset 0 1px 0 rgba(255,255,255,0.12)",
+                        }}
+                      />
+                    )}
+
+                    {/* Top glow bar (tubelight) */}
+                    {isActive && (
+                      <span
+                        className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-8 rounded-full"
+                        style={{
+                          background: "linear-gradient(90deg, transparent, rgba(180,210,255,0.95), transparent)",
+                          boxShadow: "0 0 10px 3px rgba(150,200,255,0.6)",
+                        }}
+                      />
+                    )}
+
+                    {/* Icon */}
+                    <span
+                      className="relative z-10 transition-all duration-300"
+                      style={{
+                        color: isActive ? "#c8dcff" : "rgba(255,255,255,0.3)",
+                        filter: isActive ? "drop-shadow(0 0 6px rgba(160,210,255,0.8))" : "none",
+                        transform: isActive ? "scale(1.15) translateY(-1px)" : "scale(1)",
+                      }}
+                    >
+                      <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                    </span>
+
+                    {/* Label */}
+                    <span
+                      className="relative z-10 text-[10px] font-semibold tracking-wide transition-all duration-300"
+                      style={{
+                        color: isActive ? "rgba(200,224,255,0.9)" : "rgba(255,255,255,0.22)",
+                        fontFamily: "'DM Sans', sans-serif",
+                      }}
+                    >
+                      {label}
+                    </span>
+                  </>
                 )}
-
-                {/* Top glow bar (tubelight) */}
-                {isActive && (
-                  <span
-                    className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-8 rounded-full"
-                    style={{
-                    }}
-                  />
-                )}
-
-                {/* Icon */}
-                <span
-                  className="relative z-10 transition-all duration-300"
-                  style={{
-                    color: isActive ? "#c8dcff" : "rgba(255,255,255,0.3)",
-                    filter: isActive ? "drop-shadow(0 0 6px rgba(160,210,255,0.8))" : "none",
-                    transform: isActive ? "scale(1.15) translateY(-1px)" : "scale(1)",
-                  }}
-                >
-                  <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
-                </span>
-
-                {/* Label */}
-                <span
-                  className="relative z-10 text-[10px] font-semibold tracking-wide transition-all duration-300"
-                  style={{
-                    color: isActive ? "rgba(200,224,255,0.9)" : "rgba(255,255,255,0.22)",
-                    fontFamily: "'DM Sans', sans-serif",
-                  }}
-                >
-                  {label}
-                </span>
-              </button>
+              </NavLink>
             );
           })}
         </nav>
@@ -321,4 +298,4 @@ const Navbar: React.FC = () => {
   )
 }
 
-export default Navbar
+export default Navbar 
