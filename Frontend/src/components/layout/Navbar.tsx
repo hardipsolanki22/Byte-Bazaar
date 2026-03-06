@@ -47,10 +47,29 @@ const Navbar: React.FC = () => {
 
 
   const ignoreCategory = [
-    "/signup", "/signin", "/account", "/checkout/cart",
-    "/checkout/address", "/checkout/payment", "/my-orders",
-    "/about"
+    "/signup",
+    "/signin",
+    "/account",
+    "/checkout/cart",
+    "/checkout/address",
+    "/checkout/payment",
+    "/about",
+    "/orders",
   ]
+
+  // Dynamic route prefixes alag rakhvo
+  const ignoreCategoryPrefixes = [
+    "/my-orders/",       // /my-orders/:orderId
+    "/verify-email/",    // /verify-email/:token
+    "/forgot-password/", // /forgot-password/:token
+    "/rating/",          // /rating/:slug
+    "/admin",            // all admin routes
+  ]
+
+  const shouldHideCategory =
+    ignoreCategory.includes(location.pathname) ||
+    ignoreCategoryPrefixes.some((prefix) => location.pathname.startsWith(prefix))
+
   const navItems: NavItemsType[] = [
     {
       name: "Home",
@@ -204,20 +223,25 @@ const Navbar: React.FC = () => {
       </nav>
 
       {/* Show categories */}
-      {!ignoreCategory.includes(location.pathname) &&
-        categoryLoading === "pending" ? <CategoryTabsSkeleton /> : (<div className="flex w-full text-center items-center justify-center
-       space-x-2 overflow-x-auto md:p-2 border-b border-gray-200 bg-white md:mt-1">
-          {categories?.map((category, idx) => (
-            <Button
-              variant="link"
-              key={idx}
-              className="cursor-pointer"
-              onClick={() => navigate(`/products?category=${category.slug}`)}
-            >
-              {category.name}
-            </Button>
-          ))}
-        </div>)}
+      {!shouldHideCategory && (
+        categoryLoading === "pending"
+          ? <CategoryTabsSkeleton />
+          : (
+            <div className="flex w-full text-center items-center justify-center
+        space-x-2 overflow-x-auto md:p-2 border-b border-gray-200 bg-white md:mt-1">
+              {categories?.map((category, idx) => (
+                <Button
+                  variant="link"
+                  key={idx}
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/products?category=${category.slug}`)}
+                >
+                  {category.name}
+                </Button>
+              ))}
+            </div>
+          )
+      )}
 
       {/* Bottom Nav for mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 md:hidden">

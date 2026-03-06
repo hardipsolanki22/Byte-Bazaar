@@ -100,7 +100,7 @@ const Account: React.FC = () => {
                                     </div>
                                 </div>
                                 {/* Popup */}
-                                <Popover>
+                                <Popover closeOnOutsideClick={true} >
                                     <PopoverTrigger asChild>
                                         <Button variant="ghost" className="mt-4 cursor-pointer">
                                             <Pencil className="mr-2" size={16} />
@@ -110,6 +110,7 @@ const Account: React.FC = () => {
                                         <Profile />
                                     </PopoverContent>
                                 </Popover>
+
                             </div>
                         </div>)}
 

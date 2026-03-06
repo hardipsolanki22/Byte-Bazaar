@@ -23,9 +23,8 @@ import OrdersByAdmin from "./pages/admin/order/Order"
 import SingleOrderByAdmin from "./pages/admin/order/SingleOrder"
 import VerifyEmail from './components/auth/VerifyEmail'
 import { useEffect } from 'react'
-import { useAppDispatch } from './app/hooks'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 import { currentUser } from './features/auth/authSlice'
-import AuthLayout from './components/layout/AuthLayout'
 import ForgotPassowrd from './components/auth/ForgotPassowrd'
 import AddCategory from './pages/admin/category/AddCategory'
 import Category from './pages/admin/category/Category'
@@ -39,145 +38,287 @@ import ProductsByCategory from './pages/ProductsByCategory'
 import OrderFailed from './pages/OrderFailed'
 import OrderSuccess from './pages/OrderSuccess'
 import AboutPage from './pages/About'
+import Protected from './components/layout/Protected'
+import ProtectedAdmin from './components/layout/admin/AdminProtected'
+import ProtectedForUnSecure from './components/layout/ProtectedForUnSecurePage'
+import NotFound from './pages/Page404'
+import { getCategories } from './features/category/categorySlice'
+import { getHeroBanners } from './features/heroBanner/heroBannerSlice'
+import { getProducts } from './features/product/productSlice'
+import AppLoader from './components/AppLoader'
 
 const App = () => {
   const dispatch = useAppDispatch()
+  const appInitialized = useAppSelector(({ users }) => users.appInitialized)
+
+
+
   useEffect(() => {
-    dispatch(currentUser())
+    Promise.all([
+      dispatch(currentUser()),
+      dispatch(getCategories()),
+      dispatch(getHeroBanners()),
+      dispatch(getProducts()),
+
+    ])
   }, [dispatch])
+
+
+  if (!appInitialized) return <AppLoader />  // ← sirf first lo
 
   return (
     <BrowserRouter>
       <Routes>
         {/* Normal user routes */}
-        <Route path='/' element={
-          <PageLayout />
-        } >
-          <Route element={
-            <Index />
-          } path='/' />
-          <Route element={
-            <AuthLayout>
-              <SignIn />
-            </AuthLayout>
-          } path='/signin'
+        <Route
+          element={
+            <PageLayout />
+          } path="/"
+        >
+          <Route
+            element={
+              <Index />
+            }
+            path='/'
           />
-          <Route element={
-            <AuthLayout>
-              <SignUp />
-            </AuthLayout>
-          } path='/signup'
+          <Route
+            element={
+              <ProtectedForUnSecure>
+                <SignIn />
+              </ProtectedForUnSecure>
+            }
+            path='/signin'
           />
-          <Route element={
-            <AuthLayout>
-              <VerifyEmail />
-            </AuthLayout>
-          } path='/verify-email/:verificationToken'
+          <Route
+            element={
+              <ProtectedForUnSecure>
+                <SignUp />
+              </ProtectedForUnSecure>
+            }
+            path='/signup'
           />
-          <Route element={
-            <ForgotPassowrd />
-          } path='/forgot-password/:forgotPasswordToken'
+          <Route
+            element={
+              <ProtectedForUnSecure>
+                <VerifyEmail />
+              </ProtectedForUnSecure>
+            }
+            path='/verify-email/:verificationToken'
           />
-          <Route element={
-            <Account />
-          } path='/account' />
-          <Route element={
-            <AboutPage />
-          } path='/about' />
-          <Route element={
-            <ProductsByCategory />
-          } path='/products' />
-          <Route element={
-            <Product />
-          } path='/products/:slug' />
-          <Route element={
-            <Cart />
-          } path='/checkout/cart' />
-          <Route element={
-            <Address />
-          } path='/checkout/address' />
-          <Route element={
-            <Payment />
-          } path='/checkout/payment' />
-          <Route element={
-            <OrderFailed />
-          } path='/order-failed' />
-          <Route element={
-            <OrderSuccess />
-          } path='/order-success' />
-          <Route element={
-            <Order />
-          } path='/my-orders' />
+          <Route
+            element={
+              <ProtectedForUnSecure>
+                <ForgotPassowrd />
+              </ProtectedForUnSecure>
+            } path='/forgot-password/:forgotPasswordToken'
+          />
+          <Route
+            element={
+              <Protected>
+                <Account />
+              </Protected>
+            }
+            path='/account'
+          />
+          <Route
+            element={
+              <AboutPage />
+            }
+            path='/about'
+          />
+          <Route
+            element={
+              <ProductsByCategory />
+            }
+            path='/products'
+          />
+          <Route
+            element={
+              <Product />
+            }
+            path='/products/:slug'
+          />
+          <Route
+            element={
+              <Protected>
+                <Cart />
+              </Protected>
+            }
+            path='/checkout/cart'
+          />
+          <Route
+            element={
+              <Protected>
+                <Address />
+              </Protected>
+            }
+            path='/checkout/address'
+          />
+          <Route
+            element={
+              <Protected>
+                <Payment />
+              </Protected>
+            }
+            path='/checkout/payment'
+          />
+          <Route
+            element={
+              <Protected>
+                <OrderFailed />
+              </Protected>
+            }
+            path='/order-failed'
+          />
+          <Route
+            element={
+              <Protected>
+                <OrderSuccess />
+              </Protected>
+            }
+            path='/order-success'
+          />
+          <Route
+            element={
+              <Protected>
+                <Order />
+              </Protected>
+            }
+            path='/my-orders'
+          />
 
-          <Route element={
-              <SingleOrder />
-          } path='/my-orders/:orderId' />
-          <Route element={
-            <AuthLayout authentication>
-              <Rating />
-            </AuthLayout>
-          } path='/rating/:productSlug' />
+          <Route
+            element={
+              <Protected>
+                <SingleOrder />
+              </Protected>
+            }
+            path='/my-orders/:orderId'
+          />
+          <Route
+            element={
+              <Protected>
+                <Rating />
+              </Protected>
+            }
+            path='/rating/:productSlug'
+          />
         </Route>
+
 
         {/* Admin routes */}
-        <Route element={
-          <AdminPageLayout />
-        } path='/admin'
+        <Route
+          element={
+            <ProtectedAdmin>
+              <AdminPageLayout />
+            </ProtectedAdmin>
+          }
+          path='/admin'
         >
-          <Route element={
-            <Deshboard />
-          } path='/admin' />
-          <Route element={
-            <AddProduct />
-          } path='/admin/add-product' />
-          <Route element={
-            <AdminProdutsList />
-          } path='/admin/products' />
-          <Route element={
-            <SingleProduct />
-          } path='/admin/products/:slug' />
-          <Route element={
-            <UpdateProduct />
-          } path='/admin/products/:slug/update' />
-          <Route element={
-            <Coupon />
-          } path='/admin/coupon' />
-          <Route element={
-            <AddCategory />
-          } path='/admin/add-category' />
-          <Route element={
-            <UpdateCategory />
-          } path='/admin/category/:slug' />
-          <Route element={
-            <Category />
-          } path='/admin/category' />
-          <Route element={
-            <AddCoupon />
-          } path='/admin/add-coupon' />
-          <Route element={
-            <UpdateCoupon />
-          } path='/admin/coupon/:couponId' />
-          <Route element={
-            <Users />
-          } path='/admin/users' />
-          <Route element={
-            <OrdersByAdmin />
-          } path='/admin/order' />
-          <Route element={
-            <SingleOrderByAdmin />
-          } path='/admin/order/:orderId' />
-          <Route element={
-            <AddHeroBanner />
-          } path='/admin/add-banner' />
-          <Route element={
-            <HeroBanner />
-          } path='/admin/banner' />
-          <Route element={
-            <UpdateHeroBanner />
-          } path='/admin/banner/:bannerId' />
-
+          <Route
+            element={
+              <Deshboard />
+            }
+            path='/admin'
+          />
+          <Route
+            element={
+              <AddProduct />
+            }
+            path='/admin/add-product'
+          />
+          <Route
+            element={
+              <AdminProdutsList />
+            }
+            path='/admin/products'
+          />
+          <Route
+            element={
+              <SingleProduct />
+            }
+            path='/admin/products/:slug'
+          />
+          <Route
+            element={
+              <UpdateProduct />
+            }
+            path='/admin/products/:slug/update'
+          />
+          <Route
+            element={
+              <Coupon />
+            }
+            path='/admin/coupon'
+          />
+          <Route
+            element={
+              <AddCategory />
+            }
+            path='/admin/add-category'
+          />
+          <Route
+            element={
+              <UpdateCategory />
+            }
+            path='/admin/category/:slug'
+          />
+          <Route
+            element={
+              <Category />
+            }
+            path='/admin/category'
+          />
+          <Route
+            element={
+              <AddCoupon />
+            }
+            path='/admin/add-coupon'
+          />
+          <Route
+            element={
+              <UpdateCoupon />
+            }
+            path='/admin/coupon/:couponId'
+          />
+          <Route
+            element={
+              <Users />
+            }
+            path='/admin/users'
+          />
+          <Route
+            element={
+              <OrdersByAdmin />
+            }
+            path='/admin/order'
+          />
+          <Route
+            element={
+              <SingleOrderByAdmin />
+            }
+            path='/admin/order/:orderId'
+          />
+          <Route
+            element={
+              <AddHeroBanner />
+            }
+            path='/admin/add-banner'
+          />
+          <Route
+            element={
+              <HeroBanner />
+            }
+            path='/admin/banner'
+          />
+          <Route
+            element={
+              <UpdateHeroBanner />
+            }
+            path='/admin/banner/:bannerId'
+          />
         </Route>
-
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

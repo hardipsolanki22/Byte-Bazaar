@@ -8,22 +8,22 @@ const Footer: React.FC = () => {
     {
       name: "Github",
       icon: <Github />,
-      link: "https://github.com/CYNERZA/CYNERZA-WEB"
+      link: "https://github.com/hardipsolanki22"
     },
     {
       name: "LinkedIn",
       icon: <Linkedin />,
-      link: "https://www.linkedin.com/company/cynerza"
+      link: "https://www.linkedin.com/in/hardip-solanki-294168351"
     },
     {
       name: "Instagram",
       icon: <Instagram />,
-      link: "https://www.instagram.com/cynerza/?igsh=MTg5dXAwdTlkdzBtcA%3D%3D#"
+      link: "https://www.instagram.com/hardipsolanki22"
     },
     {
       name: "Facebook",
       icon: <Facebook />,
-      link: "https://www.facebook.com/profile.php?id=61578860566441&rdid=JA72joEmBaBRVybF&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F16wZQ8oji1%2F#"
+      link: "https://www.facebook.com/profile.php?id=61575877882572"
     },
   ]
 
@@ -94,9 +94,6 @@ const Footer: React.FC = () => {
                 {item}
               </Link>
             ))}
-          <button className='text-gray-500 cursor-pointer'>
-            ☀️ Light Mode
-          </button>
         </div>
       </div>
     </footer>
