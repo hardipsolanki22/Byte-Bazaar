@@ -8,7 +8,7 @@ const sendEmail = async (options) => {
         theme: "default",
         product: {
             name: "ByteBazaar",
-            link: "http://localhost:5000"
+            link: "https://byte-bazaar-isvj.onrender.com/"
         }
     })
 

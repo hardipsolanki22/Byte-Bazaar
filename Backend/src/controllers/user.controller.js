@@ -243,7 +243,7 @@ const resentEmailVerification = asyncHandler(async (req, res) => {
         subject: "Please verify your email",
         mailGenContent: emailVerificationMailGenContent(
             user.fullName,
-            `http://localhost:5000/api/v1/users/verify-email/${unHashToken}`
+            `https://byte-bazaar-isvj.onrender.com/api/v1/users/verify-email/${unHashToken}`
         )
     })
 

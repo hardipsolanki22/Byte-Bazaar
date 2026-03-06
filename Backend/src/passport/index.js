@@ -29,7 +29,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:5000/api/v1/users/google/callback"
+            callbackURL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/google/callback"
         },
         async function (accessToken, refreshToken, profile, cb) {
             // check if user is exists
@@ -87,7 +87,7 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
-            callbackURL: "http://localhost:5000/api/v1/users/facebook/callback",
+            callbackURL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/facebook/callback",
             profileFields: ['id', 'displayName', 'email', 'photos'],
             profileURL: 'https://graph.facebook.com/v18.0/me',
         },
