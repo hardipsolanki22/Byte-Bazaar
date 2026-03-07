@@ -94,7 +94,9 @@ const Product: React.FC = () => {
         dispatch(getUserCart())
           .unwrap()
           .then(() => {
-            toast.success(data.message)
+            toast.success(data.message, {
+              position: "top-center"
+            })
             navigate("/checkout/cart")
           })
       })
