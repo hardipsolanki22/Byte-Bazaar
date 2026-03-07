@@ -57,11 +57,11 @@ const Hero: React.FC = () => {
                 src={banner.image}
                 alt="hero"
                 className="shrink-0 w-full object-cover
-              h-36
-              sm:h-52
-              md:h-64
-              lg:h-80
-              xl:h-96"
+  h-36
+  sm:h-52
+  md:h-64
+  lg:h-[calc(100vw*0.375)]
+  xl:h-[450px]"
               />
             ))}
           </div>
