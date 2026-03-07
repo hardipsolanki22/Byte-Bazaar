@@ -72,5 +72,4 @@ app.use("/api/v1/order", orderRouter)
 app.use(errorHandler)
 
 export { app }
-
-
+export default app 
