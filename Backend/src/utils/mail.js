@@ -8,7 +8,7 @@ const sendEmail = async (options) => {
         theme: "default",
         product: {
             name: "ByteBazaar",
-            link: "https://byte-bazaar-isvj.onrender.com/"
+            link: "https://byte-bazaar-frontend.vercel.app/"
         }
     })
 
