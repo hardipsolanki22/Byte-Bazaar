@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { TruckElectricIcon, Package, GiftIcon, LocationEdit } from "lucide-react"
-import { Button } from '../lightswind/button'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { getUserSingleOrder } from '../../features/order/orderSlice'
 import emptyOrders from "../../assets/svg/empty-orders.svg"
@@ -14,7 +13,6 @@ const SingleOrder: React.FC = () => {
     const loading = useAppSelector(({ order }) => order.loading)
     const singleOrder = useAppSelector(({ order }) => order.userSingleOrder)
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(getUserSingleOrder(orderId))
@@ -148,17 +146,6 @@ const SingleOrder: React.FC = () => {
                         </div>
                     )}
                 </div>
-                {singleOrder.status === "DELIVERED" &&
-                    <div className='flex mt-3 sm:mt-0 sm:items-end w-full mx-4 sm:mx-0 items-center sm:justify-end'>
-                        <Button
-                            onClick={() => navigate("/rating")}
-                            className='cursor-pointer'>
-                            Add Feedback
-                        </Button>
-                    </div>
-
-                }
-
             </div>
 
             <div className='p-4 mt-4 border border-slate-200 rounded-md w-full'>
