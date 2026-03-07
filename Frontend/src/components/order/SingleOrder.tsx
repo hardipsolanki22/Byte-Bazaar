@@ -149,7 +149,7 @@ const SingleOrder: React.FC = () => {
                     )}
                 </div>
                 {singleOrder.status === "DELIVERED" &&
-                    <div className='flex mt-3 sm:mt-0 sm:items-end w-full items-start sm:justify-end'>
+                    <div className='flex mt-3 sm:mt-0 sm:items-end w-full items-center sm:justify-end'>
                         <Button
                             onClick={() => navigate("/rating")}
                             className='cursor-pointer'>
