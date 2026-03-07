@@ -39,7 +39,6 @@ const AvatarImage = React.forwardRef<HTMLImageElement, AvatarImageProps>(
         const finalSrc = src && !imgError ? src : DEFAULT_AVATAR;
 
         const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-            console.log("AvatarImage error occurred, using fallback");
             setImgError(true);
             if (onError) onError(e);
         };

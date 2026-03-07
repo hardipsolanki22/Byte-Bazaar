@@ -128,7 +128,6 @@ const ProductForm = ({
                 formData.append("mainImage", data.mainImage[0])
             }
             if (data?.subImages?.length) {
-                console.log(Array.from(data.subImages).length)
                 Array.from(data?.subImages).slice(0, MAX_IMAGES).forEach((file) => {
                     console.log(file)
                     formData.append("subImages", file)

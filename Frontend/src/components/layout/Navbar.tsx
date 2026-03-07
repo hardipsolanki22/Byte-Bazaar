@@ -91,7 +91,9 @@ const Navbar: React.FC = () => {
     dispatch(logOutUser())
       .unwrap()
       .then((data) => {
-        toast.success(data.message)
+        toast.success(data.message, {
+          position: "top-center"
+        })
         navigate("/signin")
       })
       .catch((error) => {
