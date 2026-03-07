@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getHeroBanners } from '../../../features/heroBanner/heroBannerSlice';
 import HeroBannerForm from '../../../components/admin/HeroBannerForm';
+import AppLoader from '../../../components/AppLoader';
 
 const UpdateHeroBanner = () => {
     const { bannerId } = useParams();
@@ -18,11 +19,7 @@ const UpdateHeroBanner = () => {
         }
     }, [dispatch])
 
-    return loading === "pending" && !!!banners?.length ? (
-        <div className='flex items-center  w-full justify-center h-full'>
-            <h1>Loading...</h1>
-        </div>
-    ) : (
+    return loading === "pending" && !!!banners?.length ? <AppLoader /> : (
         <div className='flex min-h-screen w-full items-center justify-center'>
             <div className='bg-white rounded-md lg:w-1/2 w-full sm:w-md'>
                 <HeroBannerForm

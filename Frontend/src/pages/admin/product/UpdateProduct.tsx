@@ -1,8 +1,9 @@
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
 import ProductForm from '../../../components/admin/ProductForm'
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getProduct } from '../../../features/product/productSlice';
+import AppLoader from '../../../components/AppLoader';
 
 const UpdateProduct = () => {
 
@@ -19,12 +20,8 @@ const UpdateProduct = () => {
         }
     }, [dispatch, slug])
 
-    if (!product && loading == "pending" || categoryInitLoading === "pending") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+    if (!product && (loading == "pending" || categoryInitLoading === "pending")) {
+        return <AppLoader />
     }
 
     return (

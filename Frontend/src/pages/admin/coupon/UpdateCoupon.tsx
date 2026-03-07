@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getCoupons } from '../../../features/coupon/couponSlice';
 import CouponForm from '../../../components/admin/CouponForm';
+import AppLoader from '../../../components/AppLoader';
 
 const UpdateCoupon = () => {
     // dispath that perticular category if admin refresh the page and give to form
@@ -18,11 +19,7 @@ const UpdateCoupon = () => {
         }
     }, [dispatch])
 
-    return loading === "pending" && !!!coupons?.length ? (
-        <div className='flex items-center  w-full justify-center h-full'>
-            <h1>Loading...</h1>
-        </div>
-    ) : (
+    return loading === "pending" && !!!coupons?.length ? <AppLoader /> : (
         <div className='flex min-h-screen w-full items-center justify-center'>
             <div className='bg-white rounded-md lg:w-1/2 w-full sm:w-md'>
                 <CouponForm
