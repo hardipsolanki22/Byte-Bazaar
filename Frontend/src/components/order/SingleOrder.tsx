@@ -81,15 +81,15 @@ const SingleOrder: React.FC = () => {
                         </div>
                         <div className='flex items-center justify-between'>
                             <p className='text-slate-700 font-medium'>Order Price:</p>
-                            <span className='font-semibold text-slate-700'>${singleOrder.orderPrice}</span>
+                            <span className='font-semibold text-slate-700'>₹{singleOrder.orderPrice}</span>
                         </div>
                         <div className='flex items-center justify-between'>
                             <p className='text-slate-700 font-medium'>Cart Total:</p>
-                            <span className='font-semibold text-slate-700'>${singleOrder.cartTotal}</span>
+                            <span className='font-semibold text-slate-700'>₹{singleOrder.cartTotal}</span>
                         </div>
                         <div className='flex items-center justify-between'>
                             <p className='text-slate-700 font-medium'>Discount Applied:</p>
-                            <span className='font-semibold text-green-600'>${singleOrder.discountValue}</span>
+                            <span className='font-semibold text-green-600'>₹{singleOrder.discountValue}</span>
                         </div>
                     </div>
                     {singleOrder.coupon && <div className='border-t border-slate-200 p-2'>
