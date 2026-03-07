@@ -1,8 +1,16 @@
+// export const CONFIG = {
+//     GOOGLE_REDIRECT_URL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/google",
+//     FACEBOOK_REDIRECT_URL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/facebook",
+//     BACKEND_URL: "https://byte-bazaar-isvj.onrender.com/",
+//     API_BASE_URL: "https://byte-bazaar-isvj.onrender.com/api/v1"
+// }
+
+// vercel deployement 
 export const CONFIG = {
-    GOOGLE_REDIRECT_URL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/google",
-    FACEBOOK_REDIRECT_URL: "https://byte-bazaar-isvj.onrender.com/api/v1/users/facebook",
-    BACKEND_URL: "https://byte-bazaar-isvj.onrender.com/",
-    API_BASE_URL: "https://byte-bazaar-isvj.onrender.com/api/v1"
+    GOOGLE_REDIRECT_URL: "https://byte-bazaar-ten.vercel.app/api/v1/users/google",
+    FACEBOOK_REDIRECT_URL: "https://byte-bazaar-ten.vercel.app/api/v1/users/facebook",
+    BACKEND_URL: "https://byte-bazaar-ten.vercel.app/",
+    API_BASE_URL: "https://byte-bazaar-ten.vercel.app/api/v1"
 }
 
 export const MAX_IMAGES = 3
