@@ -10,6 +10,7 @@ import { createOrder, getUserOrders } from '../../features/order/orderSlice';
 import { toast } from 'sonner';
 import { Spinner } from '../ui/spinner';
 import { clearCheckout } from '../../features/checkout/checkoutSlice';
+import { AddressPageSkeleton } from '../skeleton/checkoutAddSkeleton';
 
 const Payment: React.FC = () => {
     const cartLoading = useAppSelector(({ cart }) => cart.loading)
@@ -25,11 +26,7 @@ const Payment: React.FC = () => {
     }, [dispatch])
 
     if (!cart && cartLoading === "pending") {
-        return (
-            <div className='flex items-center  w-full justify-center h-full'>
-                <h1>Loading...</h1>
-            </div>
-        )
+        return <AddressPageSkeleton />
     }
 
     const handlePlaceOrder = () => {
