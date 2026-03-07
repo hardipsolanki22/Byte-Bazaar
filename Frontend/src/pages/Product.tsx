@@ -145,7 +145,7 @@ const Product: React.FC = () => {
                 {product?.stock && product?.stock !== 0 ? (
                   <>
                     <Badge variant={'success'}>In Stock</Badge>
-                    <span className='ml-2 text-lg text-slate-600'>{product.stock}</span>
+                    {/* <span className='ml-2 text-lg text-slate-600'>{product.stock}</span> */}
                   </>
                 )
                   : <Badge variant={'destructive'}>Out Of Stock</Badge>}
