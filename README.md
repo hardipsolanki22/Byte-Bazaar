@@ -2,7 +2,7 @@
 
 ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) that offers a comprehensive shopping experience with secure payments, user authentication, and complete product management.
 
-🌐 **Live Demo:** [https://byte-bazaar-1-yyg0.onrender.com/](https://byte-bazaar-1-yyg0.onrender.com/)
+🌐 **Live Demo:** [https://byte-bazaar-frontend.vercel.app/](https://byte-bazaar-frontend.vercel.app/)
 
 ---
 

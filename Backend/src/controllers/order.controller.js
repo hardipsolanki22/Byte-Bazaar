@@ -150,8 +150,8 @@ const createOrder = asyncHandler(async (req, res) => {
             line_items,
             mode: "payment",
             ...(discounts.length > 0 && { discounts }),
-            success_url: "https://byte-bazaar-isvj.onrender.com/api/v1/order/stripe-payment-verify?success=true&session={CHECKOUT_SESSION_ID}",
-            cancel_url: "https://byte-bazaar-isvj.onrender.com/api/v1/order/stripe-payment-verify?success=false",
+            success_url: "https://byte-bazaar-ten.vercel.app/api/v1/order/stripe-payment-verify?success=true&session={CHECKOUT_SESSION_ID}",
+            cancel_url: "https://byte-bazaar-ten.vercel.app/api/v1/order/stripe-payment-verify?success=false",
             metadata: {
                 addressId,
                 userId: req.user._id.toString()
