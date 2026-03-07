@@ -17,13 +17,11 @@ const Products: React.FC = () => {
 
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (!products?.length || !categories?.length) {
-      Promise.all([
-        dispatch(getProducts()),
-        dispatch(getCategories())
-      ])
+    if (!categories?.length) {
+      dispatch(getCategories())
     }
-    dispatch(clearSingleProduct())
+    dispatch(getProducts()),
+      dispatch(clearSingleProduct())
     return
   }, [dispatch])
 
