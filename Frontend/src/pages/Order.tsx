@@ -58,31 +58,40 @@ const Order: React.FC = () => {
                 <p className='text-slate-600'>Total Items: {order.totalItems}</p>
               </div>
               <div className='mt-2'>
+               
+
                 {order.products.map((product) => (
-                  <div key={product._id} className='flex gap-4 mb-4 '>
-                    <img src={product.mainImage} alt={product.name}
-                      className='w-24 h-24 object-cover rounded-md' />
-                    <div className='mt-3'>
-                      <span className='sm:hidden inline-block'>
-                        {product.name.length > 20
-                          ? `${product.name.slice(0, 20)}...`
-                          : product.name
-                        }
+                  <div key={product._id} className="flex flex-col sm:flex-row items-start gap-3 p-3 mb-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+
+                    {/* Product Image */}
+                    <img
+                      src={product.mainImage}
+                      alt={product.name}
+                      className="w-full sm:w-20 sm:h-20 h-40 object-cover rounded-md flex-shrink-0"
+                    />
+
+                    {/* Product Info + Button */}
+                    <div className="flex flex-row sm:flex-row items-center justify-between w-full gap-2">
+
+                      {/* Product Name */}
+                      <span className="text-sm font-medium text-gray-800 line-clamp-2 flex-1">
+                        {product.name}
                       </span>
-                      {/* <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span> */}
-                      <span className='hidden sm:inline-block'>{product.name}</span>
-                    </div>
-                    {order.status === "DELIVERED" &&
-                      <div className='flex items-end w-full justify-end'>
-                        <Button className='cursor-pointer'
+
+                      {/* Feedback Button */}
+                      {order.status === "DELIVERED" && (
+                        <Button
+                          className="cursor-pointer flex-shrink-0 text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2"
                           onClick={(e) => {
-                            e.stopPropagation();   // stops event bubbling
+                            e.stopPropagation();
                             navigate(`/rating/${product.slug}`);
-                          }}>
+                          }}
+                        >
                           Add Feedback
                         </Button>
-                      </div>
-                    }
+                      )}
+                    </div>
+
                   </div>
                 ))}
               </div>
@@ -97,3 +106,32 @@ const Order: React.FC = () => {
 }
 
 export default Order
+
+/*
+ {order.products.map((product) => (
+                  <div key={product._id} className='flex flex-col sm:flex-row gap-4 mb-4 '>
+                    <img src={product.mainImage} alt={product.name}
+                      className='w-24 h-24 object-cover rounded-md' />
+                    <div className='mt-3'>
+                      <span className='sm:hidden inline-block'>
+                        {product.name.length > 15
+                          ? `${product.name.slice(0, 15)}...`
+                          : product.name
+                        }
+                      </span>
+                      {/* <span className='sm:hidden inline-block'>{product.name.substring(0, 30)}{product.name.length > 30 ? '...' : ''}</span> }*/
+                //       <span className='hidden sm:inline-block'>{product.name}</span>
+                //     </div>
+                //     {order.status === "DELIVERED" &&
+                //       <div className='flex items-end w-full justify-end'>
+                //         <Button className='cursor-pointer'
+                //           onClick={(e) => {
+                //             e.stopPropagation();   // stops event bubbling
+                //             navigate(`/rating/${product.slug}`);
+                //           }}>
+                //           Add Feedback
+                //         </Button>
+                //       </div>
+                //     }
+                //   </div>
+                // ))}

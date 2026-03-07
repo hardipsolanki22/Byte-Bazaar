@@ -3,7 +3,6 @@ const ProductNotFoundWithText = ({
   height = 300, 
   className = '',
   message = 'Product Not Found',
-  subMessage = "The product you're looking for doesn't exist or has been removed"
 }) => {
   return (
     <div style={{ textAlign: 'center' }}>
@@ -62,18 +61,6 @@ const ProductNotFoundWithText = ({
           fontWeight="bold"
         >
           {message}
-        </text>
-        
-        {/* Sub message */}
-        <text
-          x="200"
-          y="270"
-          fontSize="14"
-          fill="#64748B"
-          textAnchor="middle"
-          fontFamily="Arial, sans-serif"
-        >
-          {subMessage}
         </text>
       </svg>
     </div>

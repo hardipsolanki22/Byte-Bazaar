@@ -236,9 +236,9 @@ const Navbar: React.FC = () => {
       )}
 
       {/* Bottom Nav for mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 md:hidden">
         <nav
-          className="relative flex items-center justify-around rounded-2xl px-2 py-2 mx-auto max-w-sm"
+          className="relative flex items-center justify-around  rounded-tl-2xl rounded-tr-2xl px-2 py-2 mx-auto max-w-sm"
           style={{
             background: "rgba(10, 10, 14, 0.95)",
             border: "1px solid rgba(255,255,255,0.08)",
