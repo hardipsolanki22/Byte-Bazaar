@@ -41,6 +41,7 @@ const Product: React.FC = () => {
       dispatch(getProduct(slug)),
       dispatch(getRating(slug))
     ])
+    setProductMainImageUrl(product?.mainImage || "")
   }, [dispatch, slug])
 
   useEffect(() => {
