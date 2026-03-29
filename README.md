@@ -133,12 +133,6 @@ Contributions are welcome! Feel free to open an issue or submit a Pull Request.
 
 ---
 
-## License
-
-This project is licensed under the ISC License.
-
----
-
 ## Author
 
 Created by **Hardip Solanki**
