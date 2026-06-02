@@ -65,12 +65,9 @@ const OrderDetails = () => {
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const { userSingleOrder, loading } = useAppSelector(({ orders }) => orders);
 
-
   useEffect(() => {
     dispatch(getUserSingleOrder(orderId));
   }, [dispatch]);
-
-
 
   const statusConfig = getStatusConfig(userSingleOrder?.status);
 

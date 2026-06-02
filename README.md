@@ -4,7 +4,7 @@ ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, E
 
 🌐 **Live Demo:** [https://byte-bazaar-frontend.vercel.app/](https://byte-bazaar-frontend.vercel.app/)
 
-📱 **Mobile APK Download:** [Download APK from Google Drive](https://drive.google.com/file/d/1nyV0vQwCOO7EXD_MbhnyBbsjTDS2V81t/view?usp=drivesdk)
+📱 **Mobile APK Download:** [Download APK from Google Drive](https://drive.google.com/file/d/1NfwUfiAcU4jcYx8u10yHep5Rmdu5XXOu/view?usp=drivesdk)
 
 ---
 
@@ -94,7 +94,7 @@ ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, E
 The Android mobile app APK is available for testing and direct installation.
 
 ### Download APK
-- **APK file:** [Download from Google Drive](https://drive.google.com/file/d/1nyV0vQwCOO7EXD_MbhnyBbsjTDS2V81t/view?usp=drivesdk)
+- **APK file:** [Download from Google Drive](https://drive.google.com/file/d/1NfwUfiAcU4jcYx8u10yHep5Rmdu5XXOu/view?usp=drivesdk)
 
 ### Notes
 - This APK is for **Android devices only**
