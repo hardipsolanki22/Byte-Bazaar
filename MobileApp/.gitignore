@@ -15,10 +15,12 @@ web-build/
 expo-env.d.ts
 
 
-# env files
+# Environment Variables
 .env
 .env.local
+.env.development
 .env.production
+.env.staging
 
 # Native
 .kotlin/

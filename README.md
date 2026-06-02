@@ -1,8 +1,10 @@
 # ByteBazaar - E-Commerce Platform
 
-ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) that offers a comprehensive shopping experience with secure payments, user authentication, and complete product management.
+ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, Express.js, React, Node.js) and a mobile app built with Expo React Native. It offers a complete shopping experience with secure payments, user authentication, product management, order tracking, and admin controls.
 
 🌐 **Live Demo:** [https://byte-bazaar-frontend.vercel.app/](https://byte-bazaar-frontend.vercel.app/)
+
+📱 **Mobile APK Download:** [Download APK from Google Drive](https://drive.google.com/file/d/1DsTnUTaD5xrmRuUkGkkf2R820pLz6w_E/view?usp=drivesdk)
 
 ---
 
@@ -23,6 +25,9 @@ ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, E
 - 💳 **Payment Integration**
   - Secure payments via Stripe
   - Cash on Delivery option
+
+
+
   - Order tracking
   - Payment status monitoring
 
@@ -40,6 +45,12 @@ ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, E
   - Coupon management
   - Hero banner management
 
+- 📲 **Mobile App**
+  - Android APK available for testing and sharing
+  - Expo-based React Native app
+  - Shared APIs with the web platform
+  - Optimized mobile shopping experience
+
 ---
 
 ## Tech Stack
@@ -54,87 +65,51 @@ ByteBazaar is a modern e-commerce platform built with the MERN stack (MongoDB, E
 - Input Validation: Express Validator
 - Payment Processing: Stripe
 
-### Frontend
+### Frontend Web
 - React with TypeScript
 - Vite as build tool
 - Modern ES6+ JavaScript
-- Tailwind CSS Responsive Design
+- Tailwind CSS responsive design
+- React Router
+- API integration with Axios
+
+### Mobile App
+- Expo React Native
+- React Native with TypeScript
+- Expo Router
+- Redux Toolkit for state management
+- React Hook Form for forms
+- Stripe React Native for payment integration
+- React Native Reanimated for smooth animations
+- React Native Safe Area Context
+- React Native Gesture Handler
+- React Native Screens
+- React Native SVG
+- Async Storage for local persistence
+
+---
+
+## APK Version
+
+The Android mobile app APK is available for testing and direct installation.
+
+### Download APK
+- **APK file:** [Download from Google Drive](https://drive.google.com/file/d/1DsTnUTaD5xrmRuUkGkkf2R820pLz6w_E/view?usp=drivesdk)
+
+### Notes
+- This APK is for **Android devices only**
+- It can be installed without using the Play Store
+- Users can download the APK from Google Drive and install it manually
+- Make sure “Install unknown apps” is enabled on the Android device before installation
 
 ---
 
 ## Getting Started
 
-Follow these steps to run ByteBazaar locally (backend + frontend).
+Follow these steps to run ByteBazaar locally (backend + frontend + mobile app).
 
-1. **Clone the repository:**
-    ```bash
-    git clone https://github.com/hardipsolanki22/Byte-Bazaar.git
-    cd Byte-Bazaar
-    ```
+### 1. Clone the repository
 
-2. **Install dependencies:**
-    ```bash
-    # Backend dependencies
-    cd Backend && npm install
-
-    # Frontend dependencies
-    cd ../Frontend && npm install
-    ```
-
-3. **Configure environment variables:**
-
-    Create a `.env` file inside the `Backend` directory (copy `.env.sample` for reference):
-    ```env
-    PORT=8000
-    MONGODB_URI=your_mongodb_uri
-    JWT_SECRET=your_jwt_secret
-    STRIPE_SECRET_KEY=your_stripe_secret_key
-    CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-    CLOUDINARY_API_KEY=your_cloudinary_api_key
-    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-    ```
-
-    > ⚠️ The frontend does not require a `.env` file — all configuration is handled via `src/config/constants.ts`.
-
-4. **Start the development servers:**
-    ```bash
-    # Backend (in one terminal)
-    cd Backend && npm run dev
-
-    # Frontend (in a second terminal)
-    cd Frontend && npm run dev
-    ```
-
-    The backend listens on `http://localhost:8000` by default; the frontend is served by Vite at `http://localhost:5173`.
-
-5. **Access the app:**
-    - Open the frontend URL in your browser to start using ByteBazaar.
-    - Use Postman or similar tools to test API endpoints prefixed with `/api`.
-
----
-
-## API Documentation
-
-The API includes endpoints for:
-- User authentication and management
-- Product operations
-- Cart management
-- Order processing
-- Payment handling
-- Category management
-- Coupon management
-- Rating and review system
-
----
-
-## Contributing
-
-Contributions are welcome! Feel free to open an issue or submit a Pull Request.
-
----
-
-## Author
-
-Created by **Hardip Solanki**
-
-Feel free to contact me for any queries or suggestions!
+```bash
+git clone https://github.com/hardipsolanki22/Byte-Bazaar.git
+cd Byte-Bazaar

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "MobileApp",
-    "slug": "MobileApp",
+    "name": "Byte Bazaar",
+    "slug": "bytebazaary",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/byteBazaar.png",
-    "scheme": "mobileapp",
+    "scheme": "bytebazaar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,7 +17,10 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.hardipsolanki.MobileApp"
+      "package": "com.hardipsolanki.MobileApp",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -46,14 +49,20 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.MobileApp", 
-          "enableGooglePay": true 
+          "merchantIdentifier": "merchant.com.MobileApp",
+          "enableGooglePay": true
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5f831182-8b7c-42b8-b853-40d9d2d1777f"
+      }
     }
   }
 }
