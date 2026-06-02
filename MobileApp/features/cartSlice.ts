@@ -57,11 +57,9 @@ export const removeItemFromCart = createAsyncThunk(
     'cart/remove-item',
     async (productSlug: string, { rejectWithValue }) => {
         try {
-            console.log("remove")
             const response = await patchReq<{}, RemoveItemFromCartRes>(
                 `/api/v1/cart/products/${productSlug}`,
             )
-            console.log({response})
             return {
                 data: {
                     ...response.data.data,

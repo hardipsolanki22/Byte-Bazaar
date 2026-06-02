@@ -13,6 +13,7 @@ import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getHeroBanners } from "@/features/heroBannerSlice";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const ImageSlider = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ const ImageSlider = () => {
   const flatListRef = useRef<FlatList>(null);
 
   const scrollToIndex = (index: number) => {
-    if ((index >= 0 && index < (banners?.length ?? 0))) {
+    if (index >= 0 && index < (banners?.length ?? 0)) {
       flatListRef.current?.scrollToIndex({ index, animated: true });
     }
   };
@@ -49,7 +50,10 @@ const ImageSlider = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.slide}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image
+              source={{ uri: replaceHttp(item.image) }}
+              style={styles.image}
+            />
           </View>
         )}
         onViewableItemsChanged={onViewRef.current}

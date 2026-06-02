@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Controller, useForm } from "react-hook-form";
@@ -21,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { updateAvatar, updateDetails } from "@/features/authSlice";
 import Toast from "react-native-toast-message";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 type Inputs = {
   fullName?: string;
@@ -40,7 +35,9 @@ interface EditProfileBottomSheetProps {
 const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
   const { userData, loading } = useAppSelector(({ users }) => users);
   const dispatch = useAppDispatch();
-  const [avatar, setAvatar] = useState<string | null>(userData?.avatar || null);
+  const [avatar, setAvatar] = useState<string | null>(
+    replaceHttp(userData?.avatar) || null,
+  );
 
   const {
     control,
@@ -124,9 +121,7 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.container}
-    >
+    <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <Text style={styles.title}>{TEXTS.EDIT_PROFILE.TITLE}</Text>

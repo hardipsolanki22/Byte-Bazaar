@@ -27,6 +27,7 @@ import { getRating } from "@/features/ratingSlice";
 import Toast from "react-native-toast-message";
 import { addItemOrUpdateItemQuantity, getUserCart } from "@/features/cartSlice";
 import { ROUTES_PATH } from "@/constants";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const ProductDetails = () => {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -113,7 +114,10 @@ const ProductDetails = () => {
           <View style={styles.productDetailContainer}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: selectedThumbnail || singleProduct?.mainImage }}
+                source={{
+                  uri:
+                    selectedThumbnail || replaceHttp(singleProduct?.mainImage),
+                }}
                 style={styles.image}
                 resizeMode="cover"
               />
@@ -128,14 +132,16 @@ const ProductDetails = () => {
               contentContainerStyle={styles.thumbnailList}
               renderItem={({ item, index }) => (
                 <Pressable
-                  onPress={() => setSelectedThumbnail(item)}
+                  onPress={() =>
+                    setSelectedThumbnail(replaceHttp(item) as string)
+                  }
                   style={[
                     styles.thumbnailWrapper,
                     index === 0 && styles.activeThumbnail,
                   ]}
                 >
                   <Image
-                    source={{ uri: item }}
+                    source={{ uri: replaceHttp(item) }}
                     style={styles.thumbnailImage}
                     resizeMode="cover"
                   />
@@ -174,7 +180,11 @@ const ProductDetails = () => {
 
             {/* Stock */}
             <View style={styles.stockContainer}>
-              <Text style={styles.stockText}>{singleProduct && singleProduct?.stock > 0 ? TEXTS.ProductDetails.IN_STOCK : TEXTS.ProductDetails.OUT_OF_STOCK}</Text>
+              <Text style={styles.stockText}>
+                {singleProduct && singleProduct?.stock > 0
+                  ? TEXTS.ProductDetails.IN_STOCK
+                  : TEXTS.ProductDetails.OUT_OF_STOCK}
+              </Text>
             </View>
 
             {/* Rating */}
@@ -187,7 +197,8 @@ const ProductDetails = () => {
               </View>
 
               <Text style={styles.reviewText}>
-                ({singleProduct?.productRating.totalReviews} {TEXTS.ProductDetails.reviews})
+                ({singleProduct?.productRating.totalReviews}{" "}
+                {TEXTS.ProductDetails.reviews})
               </Text>
             </View>
           </View>
@@ -215,10 +226,12 @@ const ProductDetails = () => {
                 </View>
 
                 <Text style={styles.ratingSubText}>
-                  {singleProduct?.productRating.totalRatings} {TEXTS.ProductDetails.reviews},
+                  {singleProduct?.productRating.totalRatings}{" "}
+                  {TEXTS.ProductDetails.reviews},
                 </Text>
                 <Text style={styles.ratingSubText}>
-                  {singleProduct?.productRating.totalReviews} {TEXTS.ProductDetails.reviews}
+                  {singleProduct?.productRating.totalReviews}{" "}
+                  {TEXTS.ProductDetails.reviews}
                 </Text>
 
                 {/* Rating Bars */}
@@ -341,7 +354,7 @@ const ProductDetails = () => {
                     {/* Avatar */}
                     <Image
                       source={{
-                        uri: user.user.avatar,
+                        uri: replaceHttp(user.user.avatar),
                       }}
                       style={styles.userImage}
                     />

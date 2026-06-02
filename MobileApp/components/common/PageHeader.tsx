@@ -12,18 +12,23 @@ import { useAppSelector } from "@/store/hooks";
 interface PageHeaderProps {
   title: string;
   showCart?: boolean;
+  showBackButton?: boolean;
 }
 
-const PageHeader = ({ title, showCart = false }: PageHeaderProps) => {
+const PageHeader = ({ title, showCart = false,showBackButton = true }: PageHeaderProps) => {
   const router = useRouter();
   const cart = useAppSelector((state) => state.cart.cart);
 
   return (
     <View style={styles.header}>
       {/* Back Button */}
-      <Pressable onPress={() => router.back()} style={styles.iconButton}>
-        <Ionicons name="arrow-back" size={24} color={COLORS.black} />
-      </Pressable>
+      {showBackButton ? (
+        <Pressable onPress={() => router.back()} style={styles.iconButton}>
+          <Ionicons name="arrow-back" size={24} color={COLORS.black} />
+        </Pressable>
+      ) : (
+        <View style={styles.emptyView} />
+      )}
 
       {/* Title */}
       <Text numberOfLines={1} style={styles.headerTitle}>

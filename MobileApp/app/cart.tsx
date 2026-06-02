@@ -27,6 +27,7 @@ import { useRouter } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
 import UpdateProductQty from "@/components/common/UpdateProductQty";
 import { TEXTS } from "@/constants/plainText";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const Cart = () => {
   const dispatch = useAppDispatch();
@@ -66,7 +67,7 @@ const Cart = () => {
         <View style={styles.productRow}>
           {/* Image */}
           <Image
-            source={{ uri: item.product.mainImage }}
+            source={{ uri: replaceHttp(item.product.mainImage)  }}
             style={styles.productImage}
           />
 

@@ -16,6 +16,7 @@ import ImageSlider from "./ImageSlider";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getProducts } from "@/features/productSlice";
 import { Link } from "expo-router";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const Products = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +33,10 @@ const Products = () => {
         style={styles.productDetailContainer}
       >
         <View style={styles.imageContainer}>
-          <Image source={{ uri: product.mainImage }} style={styles.image} />
+          <Image
+            source={{ uri: replaceHttp(product.mainImage) }}
+            style={styles.image}
+          />
         </View>
         <View style={styles.textContainer}>
           <Text>{product.name}</Text>

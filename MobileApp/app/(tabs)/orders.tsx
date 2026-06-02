@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
 import PageHeader from "@/components/common/PageHeader";
 import { TEXTS } from "@/constants/plainText";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const orders = () => {
   const dispatch = useAppDispatch();
@@ -48,17 +49,20 @@ const orders = () => {
   function OrderItemCard({ item, orderId }: any) {
     return (
       <Pressable
-        onPress={() => {
-          return router.push({
+        onPress={() =>
+          router.push({
             pathname: ROUTES_PATH.singleOrder,
             params: {
               orderId: orderId,
             },
-          });
-        }}
+          })
+        }
         style={styles.productCard}
       >
-        <Image source={{ uri: item.mainImage }} style={styles.productImage} />
+        <Image
+          source={{ uri: replaceHttp(item.mainImage) }}
+          style={styles.productImage}
+        />
 
         <View style={styles.productInfo}>
           <Text numberOfLines={2} style={styles.productName}>
@@ -93,7 +97,10 @@ const orders = () => {
           </View>
 
           <View style={styles.rightHeader}>
-            <Text style={styles.totalItems}>{order.totalItems}{TEXTS.ORDER.ITEMS}</Text>
+            <Text style={styles.totalItems}>
+              {order.totalItems}
+              {TEXTS.ORDER.ITEMS}
+            </Text>
           </View>
         </View>
         {/* Divider */}
@@ -116,7 +123,7 @@ const orders = () => {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
-      <PageHeader title="My Orders" />
+      <PageHeader showBackButton={false} title="My Orders" />
       {/* Orders */}
 
       {!!!userOrders?.length && loading === "pending" ? (

@@ -8,6 +8,7 @@ import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { useAppSelector } from "@/store/hooks";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import EditProfileBottomSheet from "@/components/sheet/UpdateUserProfile";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const Account = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -39,7 +40,7 @@ const Account = () => {
 
           <Image
             source={{
-              uri: userData?.avatar,
+              uri: replaceHttp(userData?.avatar),
             }}
             style={styles.profileImage}
           />

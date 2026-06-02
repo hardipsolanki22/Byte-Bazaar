@@ -43,7 +43,6 @@ export const registerUser = createAsyncThunk(
     'users/register',
     async (userData: UserRegisterRequest, { rejectWithValue }) => {
         try {
-            console.log({ userData })
             const response = await postReq<UserRegisterRequest, UserRegisterResponse>(
                 "/api/v1/users/register",
                 userData,

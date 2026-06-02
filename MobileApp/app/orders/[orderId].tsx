@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import {
   ActivityIndicator,
   FlatList,
@@ -61,15 +60,17 @@ const ProductCard = ({ item }: any) => {
   );
 };
 
-const OrderDetailsScreen = () => {
+const OrderDetails = () => {
   const dispatch = useAppDispatch();
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const { userSingleOrder, loading } = useAppSelector(({ orders }) => orders);
-  useEffect(() => {
-    if (!orderId) return;
 
+
+  useEffect(() => {
     dispatch(getUserSingleOrder(orderId));
-  }, [dispatch, orderId]);
+  }, [dispatch]);
+
+
 
   const statusConfig = getStatusConfig(userSingleOrder?.status);
 
@@ -211,7 +212,7 @@ const OrderDetailsScreen = () => {
   );
 };
 
-export default OrderDetailsScreen;
+export default OrderDetails;
 
 const styles = StyleSheet.create({
   container: {

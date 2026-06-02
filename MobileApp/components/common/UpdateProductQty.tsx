@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Toast from "react-native-toast-message";
 import { addItemOrUpdateItemQuantity, getUserCart } from "@/features/cartSlice";
 import Button from "./Button";
+import { replaceHttp } from "@/utils/replaceHttp";
 const UpdateProductQty = ({
   modalVisible,
   setModalVisible,
@@ -90,7 +91,7 @@ const UpdateProductQty = ({
           <View style={styles.productRow}>
             <Image
               source={{
-                uri: product.mainImage,
+                uri: replaceHttp(product.mainImage),
               }}
               style={styles.productImage}
             />

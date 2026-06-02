@@ -64,10 +64,9 @@ axiosInstance.interceptors.response.use(
                 const refreshToken = await AsyncStorage.getItem("refreshToken");
 
                 if (!refreshToken) {
-                    console.log("Refresh token not found");
                     return Promise.reject(error);
                 }
-                const url = "https://deductive-stephane-collusive.ngrok-free.dev/auth/refresh-token";
+                const url = `${process.env.EXPO_PUBLIC_BASE_URL}/api/v1/users/refresh-access-token`;
 
                 const response: AxiosResponse<{ data : {accessToken: string, refreshToken: string} }> = await axios.post(url, { refreshToken: refreshToken }, {
                     headers: {

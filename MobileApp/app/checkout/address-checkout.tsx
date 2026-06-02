@@ -139,7 +139,7 @@ const Checkout = () => {
         <Button
           textStyle={styles.addButtonText}
           title={TEXTS.CHECKOUT.CONTINUE}
-          disabled={!addresses?.length}
+          disabled={!addresses?.length || !primaryAddress}
           onPress={() => {
             dispatch(setAddressId(primaryAddress?._id || ""));
             router.push(ROUTES_PATH.paymentCheckout);

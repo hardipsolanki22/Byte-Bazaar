@@ -39,7 +39,6 @@ const Payment = () => {
   useEffect(() => {
     const loadCheckoutData = async () => {
       const addressId = await AsyncStorage.getItem("checkout_addressId");
-      console.log({ addressId });
       dispatch(loadAddressId(addressId));
     };
     loadCheckoutData();
