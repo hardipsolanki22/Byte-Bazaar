@@ -1,13 +1,6 @@
-import { StatusBar, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, Redirect } from "expo-router";
+import {  Redirect } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
-import Header from "@/components/home/Header";
-import { COLORS } from "@/theme/colors";
-import ImageSlider from "@/components/home/ImageSlider";
-import CategoryFilter from "@/components/home/Filter";
-import Products from "@/components/home/Products";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { currentUser } from "@/features/authSlice";
 import { getHeroBanners } from "@/features/heroBannerSlice";
@@ -18,9 +11,10 @@ import { getUserCart } from "@/features/cartSlice";
 
 const index = () => {
   const dispatch = useAppDispatch();
-  const { appInitialized, isAuthenticated } = useAppSelector(
-    (state) => state.users,
-  );
+  const { appInitialized, isAuthenticated ,userData} = useAppSelector( (state) => state.users);
+  const { loading: categoriesLoading } = useAppSelector((state) => state.categories);
+  const { loading: heroBannerLoading } = useAppSelector((state) => state.heroBanners);
+  const { loading: productsLoading } = useAppSelector((state) => state.products);
 
   useEffect(() => {
     (dispatch(currentUser()),
@@ -30,9 +24,9 @@ const index = () => {
       dispatch(getUserCart());
   }, [dispatch]);
 
-  if (!appInitialized) return <AppLoader />;
+  if (!appInitialized || categoriesLoading === "pending" || heroBannerLoading === "pending" || productsLoading === "pending") return <AppLoader />;
 
-  if (isAuthenticated) return <Redirect href={ROUTES_PATH.home} />;
+  if (isAuthenticated && userData) return <Redirect href={ROUTES_PATH.home} />;
   else return <Redirect href={ROUTES_PATH.auth.LOGIN} />;
 };
 

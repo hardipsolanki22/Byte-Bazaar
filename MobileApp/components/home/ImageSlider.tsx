@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
-  Text,
   FlatList,
-  Dimensions,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -15,7 +13,6 @@ import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getHeroBanners } from "@/features/heroBannerSlice";
-import HeroBannerSkeleton from "../skeletons/HeroBannerSkeleton";
 
 const ImageSlider = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +22,6 @@ const ImageSlider = () => {
     if (!banners?.length) dispatch(getHeroBanners());
   }, []);
 
-  
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -40,11 +36,6 @@ const ImageSlider = () => {
       setActiveIndex(viewableItems[0].index);
     }
   });
-
-  if (loading === "pending") {
-    return <HeroBannerSkeleton />;
-  }
-
 
   return (
     <View style={styles.container}>
@@ -94,7 +85,6 @@ export default ImageSlider;
 const styles = StyleSheet.create({
   container: {
     width: SCREEN_WIDTH,
-    // marginHorizontal: SPACING.screenHorizontal
   },
 
   slide: {

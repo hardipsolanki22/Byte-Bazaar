@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { COLORS } from "@/theme/colors";
@@ -13,29 +20,16 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getAddresses } from "@/features/addressSlice";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import AddAddressBottomSheet from "@/components/sheet/AddOrUpdateAddress";
-import AddressSkeleton from "@/components/skeletons/addressSkeleton";
 import PageHeader from "@/components/common/PageHeader";
 import { ROUTES_PATH } from "@/constants";
-import { setAddressId } from "@/features/checkoutSlice";
-
-// const addresses = [
-//   {
-//     _id: "1",
-//     addressLine: "Techrover , Mileston",
-//     city: "Junagadh",
-//     state: "Gujarat",
-//     country: "India",
-//     pincode: "362507",
-//     isPrimary: true,
-//   },
-// ];
+import { setAddressId } from "@/features/checkoutSlice"
 
 const Checkout = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { addresses, loading } = useAppSelector((state) => state.addresses);
   const cart = useAppSelector((state) => state.cart.cart);
-  const primaryAddress = addresses?.find(a => a.isPrimary)
+  const primaryAddress = addresses?.find((a) => a.isPrimary);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["100%"], []);
@@ -52,14 +46,8 @@ const Checkout = () => {
   }, [dispatch]);
 
   const renderAddressItem = ({ item }: any) => {
-    return loading === "pending" ? (
-      <AddressSkeleton />
-    ) : (
+    return (
       <View style={styles.addressCard}>
-        {/* Radio */}
-        {/* <View style={styles.radioOuter}>
-          <View style={styles.radioInner} />
-        </View> */}
         {item.isPrimary ? (
           <Fontisto name="radio-btn-active" size={24} color="black" />
         ) : (
@@ -83,56 +71,62 @@ const Checkout = () => {
       <PageHeader title="Select Address" />
       <View style={styles.container}>
         {/* SCROLLABLE CONTENT */}
-        <FlatList
-          data={addresses}
-          keyExtractor={(item) => item._id}
-          renderItem={renderAddressItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-          ListFooterComponent={
-            <View style={styles.priceContainer}>
-              {/* Price Details */}
-              <Text style={styles.priceTitle}>Price Details</Text>
+        {loading === "pending" ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={COLORS.logo} />
+          </View>
+        ) : (
+          <FlatList
+            data={addresses}
+            keyExtractor={(item) => item._id}
+            renderItem={renderAddressItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            ListFooterComponent={
+              <View style={styles.priceContainer}>
+                {/* Price Details */}
+                <Text style={styles.priceTitle}>{TEXTS.CHECKOUT.PRICE_DETAILS}</Text>
 
-              <View style={styles.priceBox}>
-                <View style={styles.priceRow}>
-                  <Text style={styles.priceLabel}>Total Products Price:</Text>
+                <View style={styles.priceBox}>
+                  <View style={styles.priceRow}>
+                    <Text style={styles.priceLabel}>{TEXTS.CHECKOUT.TOTAL_PRICE}</Text>
 
-                  <Text style={styles.priceValue}>+ ₹{cart?.cartTotal}</Text>
-                </View>
+                    <Text style={styles.priceValue}>+ ₹{cart?.cartTotal}</Text>
+                  </View>
 
-                <View style={styles.priceRow}>
-                  <Text style={styles.discountLabel}>Total Discount:</Text>
+                  <View style={styles.priceRow}>
+                    <Text style={styles.discountLabel}>{TEXTS.CHECKOUT.TOTAL_DISCOUNT}</Text>
 
-                  <Text style={styles.discountValue}>
-                    - ₹{cart?.discountValue}
-                  </Text>
-                </View>
+                    <Text style={styles.discountValue}>
+                      - ₹{cart?.discountValue}
+                    </Text>
+                  </View>
 
-                <View style={styles.innerDivider} />
+                  <View style={styles.innerDivider} />
 
-                <View style={styles.priceRow}>
-                  <Text style={styles.totalLabel}>Total Price:</Text>
+                  <View style={styles.priceRow}>
+                    <Text style={styles.totalLabel}>{TEXTS.CHECKOUT.TOTAL_PRICE}</Text>
 
-                  <Text style={styles.totalValue}>
-                    ₹ {cart?.discountedTotal}
-                  </Text>
+                    <Text style={styles.totalValue}>
+                      ₹ {cart?.discountedTotal}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          }
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>
-                {TEXTS.CHECKOUT.NO_ADDRESS_TITLE}
-              </Text>
+            }
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyTitle}>
+                  {TEXTS.CHECKOUT.NO_ADDRESS_TITLE}
+                </Text>
 
-              <Text style={styles.emptySubtitle}>
-                {TEXTS.CHECKOUT.NO_ADDRESS_SUBTITLE}
-              </Text>
-            </View>
-          }
-        />
+                <Text style={styles.emptySubtitle}>
+                  {TEXTS.CHECKOUT.NO_ADDRESS_SUBTITLE}
+                </Text>
+              </View>
+            }
+          />
+        )}
 
         {/* FIXED CONTINUE BUTTON */}
       </View>
@@ -146,10 +140,10 @@ const Checkout = () => {
           textStyle={styles.addButtonText}
           title={TEXTS.CHECKOUT.CONTINUE}
           disabled={!addresses?.length}
-          onPress={() =>{
-            dispatch(setAddressId(primaryAddress?._id || ""))
-             router.push(ROUTES_PATH.paymentCheckout)
-            }}
+          onPress={() => {
+            dispatch(setAddressId(primaryAddress?._id || ""));
+            router.push(ROUTES_PATH.paymentCheckout);
+          }}
         />
       </View>
 
@@ -181,10 +175,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
-    paddingHorizontal: SPACING.lg,
+    padding: SPACING.md,
   },
 
   headerContainer: {

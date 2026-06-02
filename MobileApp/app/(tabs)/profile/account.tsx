@@ -1,20 +1,12 @@
 import React, { useMemo, useRef } from "react";
-
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-
 import { Feather } from "@expo/vector-icons";
-
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
-import { RADIUS } from "@/theme/radius";
-
 import { TEXTS } from "@/constants/plainText";
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { useAppSelector } from "@/store/hooks";
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import EditProfileBottomSheet from "@/components/sheet/UpdateUserProfile";
 
 const Account = () => {
@@ -32,18 +24,19 @@ const Account = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>{TEXTS.ACCOUNT.TITLE}</Text>
-        <Text style={styles.subtitle}>{TEXTS.ACCOUNT.SUBTITLE}</Text>
-        <View style={styles.divider} />
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>{TEXTS.ACCOUNT.TITLE}</Text>
 
-        {/* Profile Section */}
-        <View style={styles.profileContainer}>
-          {/* Edit Icon */}
+          <Text style={styles.subtitle}>{TEXTS.ACCOUNT.SUBTITLE}</Text>
+        </View>
+
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
           <Pressable onPress={openBottomSheet} style={styles.editButton}>
-            <Feather name="edit-2" size={18} color={COLORS.black} />
+            <Feather name="edit-2" size={16} color={COLORS.black} />
           </Pressable>
 
-          {/* Profile Image */}
           <Image
             source={{
               uri: userData?.avatar,
@@ -51,19 +44,30 @@ const Account = () => {
             style={styles.profileImage}
           />
 
-          {/* User Info */}
-          <View style={styles.infoContainer}>
-            <View style={styles.textRow}>
+          <Text style={styles.userName}>{userData?.fullName}</Text>
+
+          <Text style={styles.userEmail}>{userData?.email}</Text>
+
+          <View style={styles.infoSection}>
+            <View style={styles.infoRow}>
               <Text style={styles.label}>{TEXTS.ACCOUNT.FULL_NAME}</Text>
+
               <Text style={styles.value}>{userData?.fullName}</Text>
             </View>
 
-            <View style={styles.textRow}>
+            <View style={styles.rowDivider} />
+
+            <View style={styles.infoRow}>
               <Text style={styles.label}>{TEXTS.ACCOUNT.EMAIL}</Text>
+
               <Text style={styles.value}>{userData?.email}</Text>
             </View>
-            <View style={styles.textRow}>
+
+            <View style={styles.rowDivider} />
+
+            <View style={styles.infoRow}>
               <Text style={styles.label}>{TEXTS.ACCOUNT.PHONE}</Text>
+
               <Text style={styles.value}>{userData?.phoneNumber}</Text>
             </View>
           </View>
@@ -94,67 +98,122 @@ export default Account;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: SPACING.lg,
+  },
+
+  header: {
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.xl,
-    borderWidth: 1,
-    borderColor: COLORS.white,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.lg,
   },
 
   title: {
-    fontSize: FONT_SIZE.lg,
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.black,
     textAlign: "center",
   },
 
   subtitle: {
-    marginTop: SPACING.sm,
-    fontSize: FONT_SIZE.md,
+    marginTop: SPACING.xs,
+    fontSize: FONT_SIZE.sm,
     color: COLORS.gray,
-    textAlign: "center",
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: COLORS.border,
-    marginVertical: SPACING.xl,
-  },
-
-  profileContainer: {
-    alignItems: "center",
-  },
-
-  editButton: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    zIndex: 10,
-  },
-
-  profileImage: {
-    width: 130,
-    height: 130,
-    borderRadius: RADIUS.full,
-  },
-
-  infoContainer: {
-    marginTop: SPACING.md,
-    gap: SPACING.xs,
-    alignItems: "center",
-  },
-  textRow: {
-    flexDirection: "row",
-  },
-  label: {
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.medium,
     textAlign: "center",
     lineHeight: 20,
   },
 
+  profileCard: {
+    margin: SPACING.md,
+
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+
+    padding: SPACING.xl,
+
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+
+  editButton: {
+    position: "absolute",
+
+    top: SPACING.md,
+    right: SPACING.md,
+
+    width: 34,
+    height: 34,
+
+    borderRadius: 17,
+
+    backgroundColor: COLORS.gray100,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    zIndex: 10,
+  },
+
+  profileImage: {
+    width: 120,
+    height: 120,
+
+    borderRadius: 60,
+
+    alignSelf: "center",
+  },
+
+  userName: {
+    marginTop: SPACING.md,
+
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+
+    color: COLORS.black,
+    textAlign: "center",
+  },
+
+  userEmail: {
+    marginTop: SPACING.xs,
+
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.gray,
+
+    textAlign: "center",
+  },
+
+  infoSection: {
+    marginTop: SPACING.xl,
+  },
+
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    paddingVertical: SPACING.md,
+  },
+
+  rowDivider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+  },
+
+  label: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.medium,
+    color: COLORS.gray,
+  },
+
   value: {
-    fontWeight: FONT_WEIGHT.regular,
+    flex: 1,
+
+    marginLeft: SPACING.md,
+
+    textAlign: "right",
+
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.medium,
+
+    color: COLORS.black,
   },
 });

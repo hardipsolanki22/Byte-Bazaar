@@ -6,6 +6,7 @@ export interface Product {
     mainImage: string;
     averageRating: number;
     ratingCount: number;
+    stock: number;
     slug: string;
   }
 

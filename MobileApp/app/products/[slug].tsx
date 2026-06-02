@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -9,9 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
-
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
@@ -23,16 +22,13 @@ import PageHeader from "@/components/common/PageHeader";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { calRatingPercentage } from "@/services/calRatingPercentage";
-import SingleProductSkeleton from "@/components/skeletons/SingleProductSkeleton";
 import { getProduct } from "@/features/productSlice";
 import { getRating } from "@/features/ratingSlice";
-import Header from "@/components/home/Header";
 import Toast from "react-native-toast-message";
 import { addItemOrUpdateItemQuantity, getUserCart } from "@/features/cartSlice";
 import { ROUTES_PATH } from "@/constants";
 
 const ProductDetails = () => {
-  console.log("product render")
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -105,7 +101,9 @@ const ProductDetails = () => {
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <PageHeader title={TEXTS.ProductDetails.title} showCart />
       {productLoading === "pending" || ratingLoading === "pending" ? (
-        <SingleProductSkeleton />
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.logo} />
+        </View>
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -176,7 +174,7 @@ const ProductDetails = () => {
 
             {/* Stock */}
             <View style={styles.stockContainer}>
-              <Text style={styles.stockText}>In Stock</Text>
+              <Text style={styles.stockText}>{singleProduct && singleProduct?.stock > 0 ? TEXTS.ProductDetails.IN_STOCK : TEXTS.ProductDetails.OUT_OF_STOCK}</Text>
             </View>
 
             {/* Rating */}
@@ -189,7 +187,7 @@ const ProductDetails = () => {
               </View>
 
               <Text style={styles.reviewText}>
-                ({singleProduct?.productRating.totalReviews} reviews)
+                ({singleProduct?.productRating.totalReviews} {TEXTS.ProductDetails.reviews})
               </Text>
             </View>
           </View>
@@ -199,7 +197,7 @@ const ProductDetails = () => {
             <>
               <View style={styles.reviewSection}>
                 <Text style={styles.reviewTitle}>
-                  Product Ratings & Reviews
+                  {TEXTS.ProductDetails.reviews} & Ratings
                 </Text>
 
                 {/* Overall Rating */}
@@ -217,10 +215,10 @@ const ProductDetails = () => {
                 </View>
 
                 <Text style={styles.ratingSubText}>
-                  {singleProduct?.productRating.totalRatings} Ratings,
+                  {singleProduct?.productRating.totalRatings} {TEXTS.ProductDetails.reviews},
                 </Text>
                 <Text style={styles.ratingSubText}>
-                  {singleProduct?.productRating.totalReviews} Reviews
+                  {singleProduct?.productRating.totalReviews} {TEXTS.ProductDetails.reviews}
                 </Text>
 
                 {/* Rating Bars */}
@@ -399,7 +397,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.primary,
   },
-
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   scrollContent: {
     marginHorizontal: SPACING.md,
   },

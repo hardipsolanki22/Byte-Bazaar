@@ -40,7 +40,6 @@ interface EditProfileBottomSheetProps {
 const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
   const { userData, loading } = useAppSelector(({ users }) => users);
   const dispatch = useAppDispatch();
-
   const [avatar, setAvatar] = useState<string | null>(userData?.avatar || null);
 
   const {
@@ -127,7 +126,6 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
   return (
     <SafeAreaView
       style={styles.container}
-      // behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       {/* HEADER */}
       <View style={styles.header}>

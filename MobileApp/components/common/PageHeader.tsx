@@ -1,15 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-
 import React from "react";
-
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-
 import { useRouter } from "expo-router";
-
 import { SPACING } from "@/theme/spacing";
 import { COLORS } from "@/theme/colors";
 import { RADIUS } from "@/theme/radius";
-
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { ROUTES_PATH } from "@/constants";
 import { useAppSelector } from "@/store/hooks";
@@ -62,13 +57,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.md,
-
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
-
     backgroundColor: COLORS.primary,
   },
 
@@ -76,20 +68,16 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: RADIUS.full,
-
     justifyContent: "center",
     alignItems: "center",
   },
 
   headerTitle: {
     flex: 1,
-
     textAlign: "center",
-
     fontSize: FONT_SIZE.lg,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.black,
-
     marginHorizontal: SPACING.sm,
   },
 

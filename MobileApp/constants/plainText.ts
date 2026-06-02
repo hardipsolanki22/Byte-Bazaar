@@ -61,6 +61,9 @@ export const TEXTS = {
         addToCart: "Add To Cart",
         buyNow: "Buy Now",
         title: "Product Details",
+        IN_STOCK: "In Stock",
+        OUT_OF_STOCK: "Out of Stock",
+        reviews: "reviews"
     },
     ACCOUNT: {
         TITLE: "Account Details",
@@ -94,6 +97,13 @@ export const TEXTS = {
         LOGOUT: "Logout",
         LOGOUT_SUBTITLE:
             "Sign out of your account from this device.",
+        ERRORS: {
+            OLD_PASSWORD_REQUIRED: "Old password is required",
+            NEW_PASSWORD_REQUIRED: "New password is required",
+            CONFIRM_PASSWORD_REQUIRED: "Confirm password is required",
+            PASSWORD_MISMATCH: "Passwords do not match",
+            PASSWORD_MIN_LENGTH: "Password must be at least 6 characters",
+        },
     },
     EDIT_PROFILE: {
         TITLE: "User Details",
@@ -128,6 +138,43 @@ export const TEXTS = {
         NO_ADDRESS_TITLE: "No Address Found",
         NO_ADDRESS_SUBTITLE:
             "Please add a delivery address to continue checkout.",
+        PAYMENT_ORDER_DETAILS: "Payment & Order Details",
+        PAYMENT_STATUS: "Payment Status:",
+        PAYMENT_METHOD: "Payment Method:",
+        ORDER_PRICE: "Order Price:",
+        CART_TOTAL: "Cart Total:",
+        DELIVERY_ADDRESS: "Delivery Address",
+    },
+    ABOUT: {
+        TITLE: "About",
+        SUBTITLE: "Learn more about the app and developer",
+        APP_NAME: "Byte Bazaar",
+        APP_VERSION: "Version 1.0.0",
+        DEVELOPER: "Developer",
+        DEVELOPER_NAME: "Hardip Solanki",
+        ROLE: "React Native Developer",
+        GITHUB: "GitHub",
+        GITHUB_USERNAME: "hardipsolanki22",
+        BIO:
+            "Passionate React Native developer focused on building scalable, high-performance mobile applications with clean architecture and modern UI.",
+        CONTACT_TITLE: "Connect",
+        APPLICATION: "Application",
+        APP_NAME_LABEL: "App Name",
+        VERSION_LABEL: "Version",
+        DEVELOPER_LABEL: "Developer",
+    },
+    ORDER: {
+        STATUS: "Status",
+        ITEMS: " items",
+    },
+    CART: {
+        EMPTY_CART_TITLE: "Your cart is empty",
+        EMPTY_CART_SUBTITLE: "Add some items to get started",
+        CHECKOUT: "Checkout",
+        PRODUCTS: "Products",
+        PRICE_DETAILS: "Price Details",
+        TOTAL_DISCOUNT: "Total Discount",
+        TOTAL_PRICE: "Total Price",
     },
 
 }

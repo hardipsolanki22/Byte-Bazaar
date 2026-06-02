@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type {
+    ChangePasswordReq,
+    ChangePasswordRes,
     LogoutUserResponse,
     UserAvatarUpdateReq,
     UserAvatarUpdateRes,
@@ -180,6 +182,25 @@ export const updateAvatar = createAsyncThunk(
     },
 )
 
+export const changePassword = createAsyncThunk(
+    'users/change-password',
+    async (userData: ChangePasswordReq, { rejectWithValue }) => {
+        try {
+            const response = await patchReq<ChangePasswordReq, ChangePasswordRes>(
+                "/api/v1/users/change-password",
+                userData,
+            )
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+
 // Define the initial state using that type
 const initialState: UserState = {
     isAuthenticated: false,
@@ -288,6 +309,17 @@ export const authSlice = createSlice({
                 if (state.userData) state.userData = { ...state.userData, avatar: payload.data.avatar }
             })
             .addCase(updateAvatar.rejected, (state) => {
+                state.loading = "failed"
+            })
+
+             // change password
+            .addCase(changePassword.pending, (state) => {
+                state.loading = "pending"
+            })
+            .addCase(changePassword.fulfilled, (state) => {
+                state.loading = "succeeded"
+            })
+            .addCase(changePassword.rejected, (state) => {
                 state.loading = "failed"
             })
     }

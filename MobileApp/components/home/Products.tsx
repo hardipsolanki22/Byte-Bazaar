@@ -1,4 +1,11 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect } from "react";
 import { COLORS } from "@/theme/colors";
 import { Product } from "@/types/product";
@@ -6,9 +13,7 @@ import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
 import Feather from "@expo/vector-icons/Feather";
 import ImageSlider from "./ImageSlider";
-import CategoryFilter from "./Filter";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import ProductCardSkeleton from "../skeletons/ProductCardSkeleton";
 import { getProducts } from "@/features/productSlice";
 import { Link } from "expo-router";
 
@@ -19,7 +24,6 @@ const Products = () => {
   useEffect(() => {
     if (!products?.length) dispatch(getProducts());
   }, [dispatch]);
-
 
   const productDetail = (product: Product) => {
     return (
@@ -60,10 +64,10 @@ const Products = () => {
         ListHeaderComponent={
           <>
             <ImageSlider />
-            {loading === "pending" ? (
-              <ProductCardSkeleton />
-            ) : (
-              <CategoryFilter />
+            {!!!products?.length && loading === "pending" && (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color={COLORS.logo} />
+              </View>
             )}
           </>
         }
@@ -79,7 +83,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    margin: SPACING.md,
+    marginHorizontal: SPACING.md,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   productDetailContainer: {
     flex: 1,
@@ -90,7 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.sm,
     gap: SPACING.md,
     backgroundColor: COLORS.white,
-
   },
   imageContainer: {
     width: "100%",

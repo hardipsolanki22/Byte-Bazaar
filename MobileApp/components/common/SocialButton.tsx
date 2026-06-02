@@ -1,7 +1,4 @@
-// src/components/common/SocialButton.tsx
-
 import React from "react";
-
 import {
   ActivityIndicator,
   Pressable,
@@ -10,7 +7,6 @@ import {
   Text,
   ViewStyle,
 } from "react-native";
-
 import { COLORS } from "@/theme/colors";
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { RADIUS } from "@/theme/radius";
@@ -18,14 +14,10 @@ import { SPACING } from "@/theme/spacing";
 
 interface SocialButtonProps {
   title: string;
-
   onPress: () => void;
-
   children: React.ReactNode;
-
   loading?: boolean;
   disabled?: boolean;
-
   style?: StyleProp<ViewStyle>;
 }
 
@@ -33,10 +25,8 @@ const SocialButton = ({
   title,
   onPress,
   children,
-
   loading = false,
   disabled = false,
-
   style,
 }: SocialButtonProps) => {
   const isDisabled = disabled || loading;
@@ -47,13 +37,10 @@ const SocialButton = ({
       onPress={onPress}
       style={({ pressed }) => [
         styles.container,
-
         pressed &&
           !isDisabled &&
           styles.pressed,
-
         isDisabled && styles.disabled,
-
         style,
       ]}
     >
@@ -64,7 +51,6 @@ const SocialButton = ({
       ) : (
         <>
           {children}
-
           <Text style={styles.title}>
             {title}
           </Text>

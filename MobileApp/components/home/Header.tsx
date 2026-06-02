@@ -13,7 +13,6 @@ import { SPACING } from "@/theme/spacing";
 import Logo from "@/assets/svg/Logo";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getCategories } from "@/features/categorySlice";
-import CategorySkeleton from "../skeletons/CategorySkeleton";
 import { getProductsByCategory } from "@/features/productSlice";
 import { RADIUS } from "@/theme/radius";
 import { FONT_WEIGHT } from "@/theme/typography";
@@ -50,9 +49,6 @@ const Header = () => {
           </View>
         </Pressable>
       </View>
-      {loading === "pending" ? (
-        <CategorySkeleton />
-      ) : (
         <FlatList
           data={catagories}
           renderItem={({ item }) => (
@@ -71,7 +67,6 @@ const Header = () => {
             padding: SPACING.md,
           }}
         />
-      )}
     </View>
   );
 };

@@ -1,30 +1,25 @@
 import React, { useEffect } from "react";
-
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Ionicons } from "@expo/vector-icons";
-
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getUserOrders } from "@/features/orderSlice";
-import OrdersSkeleton from "@/components/skeletons/ordersSkeleton";
 import { useRouter } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
 import PageHeader from "@/components/common/PageHeader";
+import { TEXTS } from "@/constants/plainText";
 
 const orders = () => {
   const dispatch = useAppDispatch();
@@ -33,8 +28,6 @@ const orders = () => {
   useEffect(() => {
     dispatch(getUserOrders());
   }, []);
-
-  if (loading === "pending") return <OrdersSkeleton />;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -84,7 +77,7 @@ const orders = () => {
             <Text style={styles.orderDate}>{order.createdAt}</Text>
 
             <View style={styles.statusRow}>
-              <Text style={styles.statusLabel}>Status:</Text>
+              <Text style={styles.statusLabel}>{TEXTS.ORDER.STATUS}:</Text>
 
               <Text
                 style={[
@@ -100,7 +93,7 @@ const orders = () => {
           </View>
 
           <View style={styles.rightHeader}>
-            <Text style={styles.totalItems}>{order.totalItems} Items</Text>
+            <Text style={styles.totalItems}>{order.totalItems}{TEXTS.ORDER.ITEMS}</Text>
           </View>
         </View>
         {/* Divider */}
@@ -120,19 +113,26 @@ const orders = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       <PageHeader title="My Orders" />
       {/* Orders */}
-      <FlatList
-        data={userOrders}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={{ height: SPACING.xl }} />}
-        renderItem={({ item }) => <OrderCard order={item} />}
-      />
+
+      {!!!userOrders?.length && loading === "pending" ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.logo} />
+        </View>
+      ) : (
+        <FlatList
+          data={userOrders}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={{ height: SPACING.md }} />}
+          renderItem={({ item }) => <OrderCard order={item} />}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -143,12 +143,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
   header: {
-    paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.md,
-    paddingBottom: SPACING.lg,
-    backgroundColor: COLORS.white,
+    margin: SPACING.md,
   },
 
   headerTitle: {
@@ -163,14 +165,14 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    padding: SPACING.lg,
+    margin: SPACING.md,
     paddingBottom: 120,
   },
 
   orderCard: {
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.lg,
+    borderRadius: RADIUS.sm,
+    padding: SPACING.md,
   },
 
   orderHeader: {
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
 
   statusLabel: {
     fontSize: FONT_SIZE.sm,
-    fontWeight: "600",
+    fontWeight: FONT_WEIGHT.medium,
   },
 
   statusText: {

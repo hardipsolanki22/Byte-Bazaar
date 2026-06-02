@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -12,18 +12,17 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
-
+import {  Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { getUserSingleOrder } from "@/features/orderSlice";
 import PageHeader from "@/components/common/PageHeader";
-import OrderDetailsSkeleton from "@/components/skeletons/singleOrderSkeleton";
+import { getStatusConfig } from "@/services/orderStatusText";
+import { TEXTS } from "@/constants/plainText";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -72,123 +71,142 @@ const OrderDetailsScreen = () => {
     dispatch(getUserSingleOrder(orderId));
   }, [dispatch, orderId]);
 
-  if (loading === "idle" || loading === "pending")
-    return <OrderDetailsSkeleton />;
+  const statusConfig = getStatusConfig(userSingleOrder?.status);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <PageHeader title={`# ${userSingleOrder?._id}`} />
+      <PageHeader title={`#${orderId}`} />
       {/* Products */}
-      <FlatList
-        data={userSingleOrder?.order}
-        keyExtractor={(item) => item.product._id}
-        ItemSeparatorComponent={() => <View style={{ height: SPACING.md }} />}
-        renderItem={({ item }) => <ProductCard item={item} />}
-        ListFooterComponent={
-          <>
-            {/* Payment Details */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Payment & Order Details</Text>
+      {loading === "pending" ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={COLORS.logo} />
+        </View>
+      ) : (
+        <FlatList
+          data={userSingleOrder?.order}
+          keyExtractor={(item) => item.product._id}
+          ItemSeparatorComponent={() => <View style={{ height: SPACING.md }} />}
+          renderItem={({ item }) => <ProductCard item={item} />}
+          style={styles.list}
+          ListFooterComponent={
+            <>
+              {/* Payment Details */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>{TEXTS.CHECKOUT.PAYMENT_ORDER_DETAILS}</Text>
 
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Payment Status:</Text>
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{TEXTS.CHECKOUT.PAYMENT_STATUS}</Text>
 
-                  <Text
-                    style={[
-                      styles.paymentStatus,
-                      {
-                        color: getStatusColor(
-                          userSingleOrder?.status as string,
-                        ),
-                      },
-                    ]}
-                  >
-                    {userSingleOrder?.status}
-                  </Text>
-                </View>
+                    <Text
+                      style={[
+                        styles.paymentStatus,
+                        {
+                          color: getStatusColor(
+                            userSingleOrder?.status as string,
+                          ),
+                        },
+                      ]}
+                    >
+                      {userSingleOrder?.status}
+                    </Text>
+                  </View>
 
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Payment Method:</Text>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{TEXTS.CHECKOUT.PAYMENT_METHOD}</Text>
 
-                  <Text style={styles.detailValue}>
-                    {userSingleOrder?.paymentType}
-                  </Text>
-                </View>
+                    <Text style={styles.detailValue}>
+                      {userSingleOrder?.paymentType}
+                    </Text>
+                  </View>
 
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Order Price:</Text>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{TEXTS.CHECKOUT.ORDER_PRICE}</Text>
 
-                  <Text style={styles.detailValue}>
-                    ₹{userSingleOrder?.orderPrice}
-                  </Text>
-                </View>
+                    <Text style={styles.detailValue}>
+                      ₹{userSingleOrder?.orderPrice}
+                    </Text>
+                  </View>
 
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Cart Total:</Text>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{TEXTS.CHECKOUT.CART_TOTAL}</Text>
 
-                  <Text style={styles.detailValue}>
-                    ₹{userSingleOrder?.cartTotal}
-                  </Text>
-                </View>
+                    <Text style={styles.detailValue}>
+                      ₹{userSingleOrder?.cartTotal}
+                    </Text>
+                  </View>
 
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Discount Applied:</Text>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>{TEXTS.CHECKOUT.TOTAL_DISCOUNT}</Text>
 
-                  <Text style={styles.discountText}>
-                    ₹{userSingleOrder?.discountValue}
-                  </Text>
+                    <Text style={styles.discountText}>
+                      ₹{userSingleOrder?.discountValue}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
 
-            {/* Order Status */}
-            <View style={styles.statusCard}>
-              <View style={styles.statusTopRow}>
-                <View style={styles.statusIconContainer}>
+              {/* Order Status */}
+              <View style={styles.statusCard}>
+                <View style={styles.statusTopRow}>
+                  <View style={[styles.statusIconContainer, {
+                    backgroundColor: statusConfig.bannerColor
+                  }]}>
+                    <Ionicons
+                      name={statusConfig.icon as any}
+                      size={18}
+                      color={statusConfig.iconColor}
+                    />
+                  </View>
+
+                  <View>
+                    <Text style={styles.statusTitle}>
+                      {userSingleOrder?.status}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={[
+                    styles.statusBanner,
+                    {
+                      backgroundColor: statusConfig.bannerColor,
+                    },
+                  ]}
+                >
                   <Ionicons
-                    name="car-sport-outline"
-                    size={18}
-                    color={COLORS.yellow}
+                    name={statusConfig.icon as any}
+                    size={16}
+                    color={COLORS.white}
                   />
-                </View>
 
-                <View>
-                  <Text style={styles.statusTitle}>
-                    {userSingleOrder?.status}
+                  <Text style={styles.statusBannerText}>
+                    {statusConfig.message}
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.pendingBanner}>
-                <Feather name="clock" size={16} color={COLORS.white} />
+              {/* Delivery Address */}
+              <View style={styles.addressCard}>
+                <View style={styles.addressHeader}>
+                  <MaterialIcons name="location-on" size={20} color={COLORS.black} />
 
-                <Text style={styles.pendingBannerText}>
-                  Your order is pending and will be processed soon.
+                  <Text style={styles.addressTitle}>{TEXTS.CHECKOUT.DELIVERY_ADDRESS}</Text>
+                </View>
+
+                <Text style={styles.addressText}>
+                  {userSingleOrder?.address.addressLine},{" "}
+                  {userSingleOrder?.address.city},{" "}
+                  {userSingleOrder?.address.state},{" "}
+                  {userSingleOrder?.address.country} -{" "}
+                  {userSingleOrder?.address.pincode}
                 </Text>
               </View>
-            </View>
-
-            {/* Delivery Address */}
-            <View style={styles.addressCard}>
-              <View style={styles.addressHeader}>
-                <MaterialIcons name="location-on" size={20} color="#DC2626" />
-
-                <Text style={styles.addressTitle}>Delivered Location</Text>
-              </View>
-
-              <Text style={styles.addressText}>
-                {userSingleOrder?.address.addressLine},{" "}
-                {userSingleOrder?.address.city},{" "}
-                {userSingleOrder?.address.state},{" "}
-                {userSingleOrder?.address.country} -{" "}
-                {userSingleOrder?.address.pincode}
-              </Text>
-            </View>
-          </>
-        }
-      />
+            </>
+          }
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -199,7 +217,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
+  list: {
+    height: "100%",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   contentContainer: {
     padding: SPACING.lg,
     paddingBottom: 120,
@@ -223,7 +248,7 @@ const styles = StyleSheet.create({
   productCard: {
     flexDirection: "row",
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
+    borderRadius: RADIUS.md,
     padding: SPACING.md,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -273,7 +298,7 @@ const styles = StyleSheet.create({
 
   detailsContainer: {
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
+    borderRadius: RADIUS.md,
     padding: SPACING.lg,
     gap: SPACING.md,
   },
@@ -308,7 +333,7 @@ const styles = StyleSheet.create({
   statusCard: {
     marginTop: SPACING["3xl"],
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
+    borderRadius: RADIUS.md,
     padding: SPACING.lg,
     margin: SPACING.sm,
   },
@@ -321,8 +346,7 @@ const styles = StyleSheet.create({
   statusIconContainer: {
     width: 42,
     height: 42,
-    borderRadius: 999,
-    backgroundColor: "#FEF3C7",
+    borderRadius: RADIUS.full,
     justifyContent: "center",
     alignItems: "center",
     marginRight: SPACING.md,
@@ -360,7 +384,7 @@ const styles = StyleSheet.create({
   addressCard: {
     marginTop: SPACING.lg,
     backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
+    borderRadius: RADIUS.md,
     padding: SPACING.lg,
     margin: SPACING.sm,
   },
@@ -381,5 +405,19 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     color: COLORS.gray,
     lineHeight: 22,
+  },
+  statusBanner: {
+    marginTop: SPACING.md,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: SPACING.sm,
+  },
+
+  statusBannerText: {
+    flex: 1,
+    color: COLORS.white,
+    fontWeight: "600",
   },
 });

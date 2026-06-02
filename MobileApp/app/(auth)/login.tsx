@@ -24,7 +24,7 @@ import { ROUTES_PATH } from "@/constants";
 import { Controller, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { UserLoginRequest } from "@/types/auth";
-import { loginUser } from "@/features/authSlice";
+import { currentUser, loginUser } from "@/features/authSlice";
 import Toast from "react-native-toast-message";
 import { Linking } from "react-native";
 const login = () => {
@@ -47,11 +47,15 @@ const login = () => {
     dispatch(loginUser(data))
       .unwrap()
       .then((data) => {
-        Toast.show({
-          type: "success",
-          text1: data.message,
-        });
-        router.push(ROUTES_PATH.home);
+        dispatch(currentUser())
+          .unwrap()
+          .then(() => {
+            Toast.show({
+              type: "success",
+              text1: data.message,
+            });
+            router.push(ROUTES_PATH.home);
+          });
       })
       .catch((error) => {
         Toast.show({

@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
@@ -14,7 +21,7 @@ import AddAddressBottomSheet from "@/components/sheet/AddOrUpdateAddress";
 const Address = () => {
   const dispatch = useAppDispatch();
 
-  const { addresses } = useAppSelector(({ addresses }) => addresses);
+  const { addresses, loading } = useAppSelector(({ addresses }) => addresses);
   const [isUAddressUpdate, setIsUAddressUpdate] = useState(false);
 
   const [updateAddressId, setUpdateAddressId] = useState("");
@@ -35,30 +42,29 @@ const Address = () => {
   const renderAddressItem = ({ item }: any) => {
     return (
       <View style={styles.card}>
-        {/* Edit Button */}
         <Pressable
           onPress={() => {
-            (setIsUAddressUpdate(true),
-              setUpdateAddressId(item._id),
-              openBottomSheet());
+            setIsUAddressUpdate(true);
+            setUpdateAddressId(item._id);
+            openBottomSheet();
           }}
           style={styles.editButton}
         >
-          <Feather name="edit-2" size={18} color={COLORS.black} />
+          <Feather name="edit-2" size={16} color={COLORS.black} />
         </Pressable>
 
-        {/* Location Icon */}
-        <View style={styles.iconContainer}>
-          <Ionicons name="location-outline" size={60} />
-        </View>
+        <View style={styles.cardHeader}>
+          <View style={styles.locationBadge}>
+            <Ionicons name="location" size={20} color={COLORS.black} />
+          </View>
 
-        {/* Address Info */}
-        <View style={styles.infoContainer}>
           <Text style={styles.addressType}>
             {item.isPrimary ? TEXTS.ADDRESS.HOME : TEXTS.ADDRESS.OTHER}
           </Text>
+        </View>
 
-          <Text style={styles.addressText}>{item.addressLine}</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.addressLine}>{item.addressLine}</Text>
 
           <Text style={styles.addressText}>
             {item.city}, {item.state}
@@ -83,24 +89,30 @@ const Address = () => {
 
           <View style={styles.divider} />
         </View>
-
-        {/* Address List */}
-        <FlatList
-          data={addresses}
-          keyExtractor={(item) => item._id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-          renderItem={renderAddressItem}
-          ListFooterComponent={
-            <Button
-              title={TEXTS.ADDRESS.ADD_NEW}
-              onPress={() => {
-                (setIsUAddressUpdate(false), setUpdateAddressId(""), openBottomSheet());
-              }}
-              style={styles.addButton}
-            />
-          }
-        />
+        {loading === "pending" ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={COLORS.logo} />
+          </View>
+        ) : (
+          <FlatList
+            data={addresses}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            renderItem={renderAddressItem}
+            ListFooterComponent={
+              <Button
+                title={TEXTS.ADDRESS.ADD_NEW}
+                onPress={() => {
+                  (setIsUAddressUpdate(false),
+                    setUpdateAddressId(""),
+                    openBottomSheet());
+                }}
+                style={styles.addButton}
+              />
+            }
+          />
+        )}
       </View>
 
       <BottomSheetModal
@@ -131,60 +143,94 @@ export default Address;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: SPACING.lg,
-    borderColor: COLORS.white,
   },
-
+  iconContainer: {
+    marginBottom: SPACING.md,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   header: {
     backgroundColor: COLORS.white,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.lg,
   },
 
   title: {
-    fontSize: FONT_SIZE.lg,
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.black,
     textAlign: "center",
   },
 
   subtitle: {
-    marginTop: SPACING.sm,
-    fontSize: FONT_SIZE.md,
+    marginTop: SPACING.xs,
+    fontSize: FONT_SIZE.sm,
     color: COLORS.gray,
     textAlign: "center",
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: COLORS.border,
-    marginBottom: SPACING.xl,
-    marginTop: SPACING.sm,
+    lineHeight: 20,
   },
 
   listContent: {
-    paddingBottom: SPACING.xl,
+    padding: SPACING.md,
+    paddingBottom: SPACING["4xl"],
   },
-
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginVertical: SPACING.xl,
+  },
   card: {
     backgroundColor: COLORS.white,
+    borderRadius: 16,
+
     padding: SPACING.lg,
-    marginBottom: SPACING.lg,
-    position: "relative",
+    marginBottom: SPACING.md,
+
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+
+  cardHeader: {
+    flexDirection: "row",
     alignItems: "center",
+    marginBottom: SPACING.md,
+  },
+
+  locationBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+
+    backgroundColor: COLORS.gray100,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginRight: SPACING.sm,
   },
 
   editButton: {
     position: "absolute",
+    top: SPACING.md,
     right: SPACING.md,
-    top: SPACING.lg,
+
+    width: 34,
+    height: 34,
+
+    borderRadius: 17,
+
+    backgroundColor: COLORS.gray100,
+
+    justifyContent: "center",
+    alignItems: "center",
+
     zIndex: 10,
   },
-
-  iconContainer: {
-    marginBottom: SPACING.md,
-  },
-
   infoContainer: {
-    alignItems: "center",
     gap: SPACING.xs,
   },
 
@@ -192,18 +238,22 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.md,
     fontWeight: FONT_WEIGHT.bold,
     color: COLORS.black,
-    marginBottom: SPACING.sm,
+  },
+
+  addressLine: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.medium,
+    color: COLORS.black,
+    lineHeight: 22,
   },
 
   addressText: {
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.regular,
+    fontSize: FONT_SIZE.sm,
     color: COLORS.gray,
-    textAlign: "center",
     lineHeight: 20,
   },
-
   addButton: {
     marginTop: SPACING.sm,
+    marginBottom: SPACING.xl,
   },
 });

@@ -27,6 +27,7 @@ import {
 import { router } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
 import { getUserCart } from "@/features/cartSlice";
+import { TEXTS } from "@/constants/plainText";
 
 const Payment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -38,7 +39,7 @@ const Payment = () => {
   useEffect(() => {
     const loadCheckoutData = async () => {
       const addressId = await AsyncStorage.getItem("checkout_addressId");
-      console.log({addressId})
+      console.log({ addressId });
       dispatch(loadAddressId(addressId));
     };
     loadCheckoutData();
@@ -83,9 +84,7 @@ const Payment = () => {
     );
   };
   const handlePlaceOrder = () => {
-    console.log("clicl")
     if (!addressId) return;
-    console.log({addressId})
     dispatch(
       createOrder({
         addressId,
@@ -140,17 +139,17 @@ const Payment = () => {
           ListFooterComponent={
             <View style={styles.priceContainer}>
               {/* Price Details */}
-              <Text style={styles.priceTitle}>Price Details</Text>
+              <Text style={styles.priceTitle}>{TEXTS.CHECKOUT.PRICE_DETAILS}</Text>
 
               <View style={styles.priceBox}>
                 <View style={styles.priceRow}>
-                  <Text style={styles.priceLabel}>Total Products Price:</Text>
+                  <Text style={styles.priceLabel}>{TEXTS.CHECKOUT.TOTAL_PRODUCTS_PRICE}</Text>
 
                   <Text style={styles.priceValue}>+ ₹{cart?.cartTotal}</Text>
                 </View>
 
                 <View style={styles.priceRow}>
-                  <Text style={styles.discountLabel}>Total Discount:</Text>
+                  <Text style={styles.discountLabel}>{TEXTS.CHECKOUT.TOTAL_DISCOUNT}</Text>
 
                   <Text style={styles.discountValue}>
                     - ₹{cart?.discountValue}
@@ -160,7 +159,7 @@ const Payment = () => {
                 <View style={styles.innerDivider} />
 
                 <View style={styles.priceRow}>
-                  <Text style={styles.totalLabel}>Total Price:</Text>
+                  <Text style={styles.totalLabel}>{TEXTS.CHECKOUT.TOTAL_PRICE}</Text>
 
                   <Text style={styles.totalValue}>
                     ₹ {cart?.discountedTotal}
@@ -193,7 +192,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    paddingHorizontal: SPACING.lg,
+    padding: SPACING.md,
   },
 
   listContent: {
@@ -211,7 +210,6 @@ const styles = StyleSheet.create({
   },
 
   selectedPaymentCard: {
-    // borderColor: COLORS.black,
     backgroundColor: COLORS.paymentMethod,
   },
 
@@ -222,8 +220,6 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    // width: 40,
-    // height: 40,
     borderRadius: RADIUS.md,
     justifyContent: "center",
     alignItems: "center",

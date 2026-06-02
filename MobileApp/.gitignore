@@ -14,6 +14,12 @@ dist/
 web-build/
 expo-env.d.ts
 
+
+# env files
+.env
+.env.local
+.env.production
+
 # Native
 .kotlin/
 *.orig.*
@@ -25,6 +31,11 @@ expo-env.d.ts
 
 # Metro
 .metro-health-check*
+
+#env files
+.env
+.env.local
+
 
 # debug
 npm-debug.*

@@ -1,7 +1,4 @@
-// src/components/common/Input.tsx
-
-import React, { forwardRef, useState } from "react";
-
+import React, { useState } from "react";
 import {
   Pressable,
   StyleProp,
@@ -13,9 +10,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
-
 import { COLORS } from "@/theme/colors";
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
 import { RADIUS } from "@/theme/radius";
