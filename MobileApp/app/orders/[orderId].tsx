@@ -22,6 +22,7 @@ import { getUserSingleOrder } from "@/features/orderSlice";
 import PageHeader from "@/components/common/PageHeader";
 import { getStatusConfig } from "@/services/orderStatusText";
 import { TEXTS } from "@/constants/plainText";
+import { replaceHttp } from "@/utils/replaceHttp";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -43,7 +44,7 @@ const ProductCard = ({ item }: any) => {
   return (
     <Pressable style={styles.productCard}>
       <Image
-        source={{ uri: item.product.mainImage }}
+        source={{ uri: replaceHttp(item.product.mainImage) }}
         style={styles.productImage}
       />
 
